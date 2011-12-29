@@ -1,0 +1,5 @@
+@c -*-texinfo ; coding: utf-8 -*-
+@set UPDATED 19 Decembre 2011
+@set UPDATED-MONTH Decembre 2011
+@set EDITION 1
+@set VERSION 0.9

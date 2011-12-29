@@ -1,0 +1,161 @@
+\input texinfo
+@c -*-texinfo-*-
+@documentencoding UTF-8
+
+@c start of header
+@setfilename kise.info
+@set KISE Kisê
+@settitle @value{KISE}
+@set MANUAL-REVISION 1
+@c end of header
+
+@include version.texi
+
+
+@copying
+This manual documents @value{KISE} version @value{VERSION}.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.  A
+copy of the license is included in the section entitled ``GNU Free
+Documentation License.''Ce manuel est ...
+
+@end copying
+
+@titlepage
+@sp 10
+@title @value{KISE}
+@subtitle Edition @value{EDITION}, revision @value{MANUAL-REVISION}, for use with @value{KISE} @value{VERSION}
+
+@author The @value{KISE} Developpers
+
+@c the next two commands start the copyright
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@c insert the table of contents
+@contents
+
+@ifnottex
+@node Top
+@top 
+
+
+@end ifnottex
+
+
+@c with emacs, use Texinfo/Update All Menus
+@menu
+* Overview of @value{KISE}::    
+* Using @value{KISE}::          
+* Printing dialog::             
+* Index::                       
+@end menu
+
+@node Overview of @value{KISE}
+@chapter Overview of @value{KISE}
+
+@value{KISE} allows you to save timesheet.
+
+The application window has five parts: a menu, a toolbar, the
+timesheet entry, the list of entries and an information area.
+
+For now, the menu is disabled.
+
+The toolbar has ten buttons, they allow:
+
+@itemize @bullet
+@item
+to connect to a database;
+
+@item
+to duplicate, add or delete a timesheet entry;
+
+@item
+to print;
+
+@item
+to go to the first, the previous, the next, the last record;
+
+@item
+to open preferences.
+
+@end itemize
+
+The fields are reference, date, who, for whom, what, duration (in
+hours), to be charged and description. The combos (who, for whom and
+what) are dynamic, they reflect the contents of the database but it is
+possible to copy what we want.
+
+The list of entries has two parts, the filter criteria and the list.
+
+With the filter criteria, it's possible to filter entries in one or
+more conditions, according to several operators.
+
+The selection of a row of the list shows the detail in the timesheet
+entry.
+
+Finally, the information area gives the total time (in hours and
+days), the charged times, the selected record and the number of
+records (in accordance with the filter).
+
+When an error occurs, a messsage will appear at the bottom right.
+
+@section Filter criteria
+
+To filter entries, type a few letters in a topic in the filter
+criteria.
+
+@cindex chapter, first
+
+
+
+
+@node Using @value{KISE}
+@chapter Using @value{KISE}
+
+blabla
+
+@node Printing dialog
+@chapter Printing dialog
+
+The printing dialog is very powerfull. You can choose to print in a
+pdf file or with a printer.
+
+You can define many templates. A template organises how and what to
+print the entries. To create a new template, clic the + button and
+change the name in the combo. To delete a template, clic the - button;
+an alert asks you to confirm the delete. When there is only one
+model, the - button is disabled.
+
+You choose to print only the selected entry or all entries (= all
+filtered entries).
+
+You choose also items to print, group and sort.
+
+When an item is grouped, a title will be printed with the content of
+the item.
+
+You can specify, for each item, whether it should be sorted in
+ascending, descending or unsorted; select the appropriate option.
+
+When you check the group box of an item, the print box is also
+check. The item moves to the top
+
+ When you clear a print box with group box 
+
+
+
+@node Index
+@unnumbered Index
+
+@printindex cp
+
+@bye
+
+Expliquer les notions de filtre, de groupement (grouper = titre imprimÃ©)
+

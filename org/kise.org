@@ -1,0 +1,201 @@
+;; -*- mode: org; coding: utf-8 -*-
+
+#+TITLE: kise TODO file
+
+* GUI
+
+** Important stuff
+
+*** STARTED adding GPLv3 to all files in Kisê, sqlite and latex
+
+*** STARTED adding GPLv3 to all files in 2.0 [common]
+
+*** TODO :use-module (kise strings) must become 'common'
+
+*** TODO (connect (reuse-db-cb kc-widget) incomplete
+
+*** TODO need to catch latex compilition errors !!
+
+*** TODO adding us and a4papar to the printing options
+
+or get them from locale too ...
+
+*** DONE p-common uses 'topdfg' which is not distributed !!
+CLOSED: [2011-12-09 Fri 17:25]
+- State "DONE"       from "TODO"       [2011-12-09 Fri 17:25]
+
+*** TODO printing: offering an option for nl->sp
+
+*** DONE For who -> For whom, 
+CLOSED: [2011-12-23 Fri 15:36]
+- State "DONE"       from "TODO"       [2011-12-23 Fri 15:36]
+
+*** DONE updating connect for kise_printing_template
+CLOSED: [2011-12-23 Fri 15:36]
+- State "DONE"       from "TODO"       [2011-12-23 Fri 15:36]
+
+*** DONE debug should become an command line arg
+CLOSED: [2011-12-23 Fri 15:36]
+- State "DONE"       from "TODO"       [2011-12-23 Fri 15:36]
+
+*** TODO setting G_FILENAME_ENCODING [see doc p 364]
+
+*** TODO programming the preferences dialog
+
+*** TODO programming an undo system
+
+*** TODO implementing a search & replace tool
+
+*** TODO printing [50%]
+
+- [ ] npthousand must use locales
+- [X] adding a reference entry, defaut Ymd
+- [X] better grouping p-widget
+- [ ] pdfname using version if more then 1/day
+- [X] p-draft basic functionality
+- [ ] do we need a p-commercial functionality ?
+
+*** TODO we need to cach combo values [slow db]
+
+*** STARTED writting filters [0%]
+
+- [-] date filters [25%]
+  - [ ] process-kword-match
+  - [ ] process-month-match
+  - [ ] process-range-match
+  - [X] process-operator-match
+
+- [ ] text filters [0%]
+  - [ ] 
+  - [ ] missing prep-string-for-sql for all text filters
+
+*** STARTED message dialogs [66%]
+
+- [X] 1 button
+- [X] 2 buttons
+- [ ] 3 buttons
+
+*** TODO mdialogs: need to be able to change their image dynamically 
+
+*** TODO adding preferences button and dialog
+
+*** DONE programming the connect dialog
+CLOSED: [2011-11-07 Mon 11:33]
+- State "DONE"       from "STARTED"    [2011-11-07 Mon 11:33]
+
+*** DONE adding to-be-charged to filter rules
+CLOSED: [2011-08-24 Wed 19:43] 
+- State "DONE"       from "TODO"       [2011-08-24 Wed 19:43]
+
+*** DONE str/prep-str-for-pg
+CLOSED: [2011-06-21 Tue 20:04]
+- State "DONE"       from "STARTED"    [2011-06-21 Tue 20:04]
+
+
+
+** Secondary stuff
+
+*** TODO offering seeing/deleting created_*, modified_* in option
+
+*** TODO pane to expand the list
+
+when I expand the window, now the field description expands, good. But
+sometimes, I would see more records in the list.
+
+*** TODO resolution: fixed size gtkentry widgets and
+
+similar should be 'resized' @ app init because each user has its own
+[may have] DPI settings [mine is 76, christian's is 96]. This would
+allow to reduce the default minimum [as in glade] size of the app for
+users who uses DPI < 96. See 
+
+	/usr/local/share/guile-gnome-2/gnome/gw/gdk.scm
+
+	(get-resolution (gdk-screen-get-default))
+	(system "xrdb -query | grep dpi")
+
+	(get (reference-entry tl-widget) 'width-request)
+	(set (reference-entry tl-widget) 'width-request 80)
+
+*** TODO flyspell in the description widget would be a must
+
+*** TODO better layout for the warning's message DB connection problem
+
+*** TODO memory of the position of the main window
+
+*** TODO display the name of the database
+
+*** TODO memory of the last record in the database ?
+
+*** TODO about dialog: using stats as well
+
+*** TODO add entry: focus should be for-who
+
+*** TODO duplicate entry: focus should be
+
+*** TODO store the last selected template in the print dialog
+
+*** TODO store the last size of the print dialog (if the user wants to remove the scroll bar)
+
+*** TODO message dialog: TAB like message alignment
+
+
+;; with "~10,,,' @A" it would be right justified but because this is
+;; passed to a gtk label widget, which uses variable size font, it is
+;; not sufficient and not as nice at this time
+
+*** DONE bg colour of filter fields [gtk.rc]
+CLOSED: [2011-08-30 Tue 17:50] 
+- State "DONE"       from "TODO"       [2011-08-30 Tue 17:50]
+
+*** DONE filter to-be-charged-cb with label [glade]
+CLOSED: [2011-08-30 Tue 13:04] 
+- State "DONE"       from "TODO"       [2011-08-30 Tue 13:04]
+
+*** DONE write the task completion entry callback
+CLOSED: [2011-05-25 Fri 13:20]
+- State "DONE"       from "TODO"       [2011-06-24 Fri 13:20]
+
+
+* Internal
+
+** TODO db-kise/fields-offsets: extending with tex table info
+
+** TODO kp/get-grouping-infos should not return first-grouped
+
+because as implemented, if there is at least a grouped item, it is the
+first row [per definition, the application reorganize and places
+grouped items before others. Obviously, callers need not to use it,
+which is the case right now and until this is done.
+
+** TODO converting libglade from 3.7 to 3.10
+
+** TODO gtkrc.kise, glade and text files locations hard coded
+
+these 2 files are loaded followoing a hard coded location. this will
+not work for a distributed kise version
+
+** DONE renaming filter -> active-filter
+CLOSED: [2011-08-12 Tue 12:28] 
+- State "DONE"       from "TODO"       [2011-08-16 Tue 12:28]
+
+filter is a core procedure in 2.0 and better be renamed
+
+
+* i18n
+
+** STARTED investigating gettext
+
+Since guile now handles utf8 strings 'properly' we may use
+gettext. [see ~/alto/asys/wiki/gettext.org]
+
+Just for the record, guile-1.6 couldn't handle anything else than
+ascii. But fortunatly, in a 'blind' way, getting a latin-x and/or
+utf-8 string from postgres directly passing it to gtk and/or using
+format to 'build' a more sophisticated string result to pass on to gtk
+[guile-gnome] was possible. So our previous i18n 'technology' has been
+to keep track of any translatable string/message in postgres
+
+Note: we need to keep an eye open using guile-gnome-platform which,
+with respect to utf-8 strings, locales ..., has been recently but only
+partially patched, as far as I know.

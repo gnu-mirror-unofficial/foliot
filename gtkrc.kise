@@ -1,0 +1,80 @@
+
+###
+### Combo globals
+###
+
+style "combobox_style"
+{
+	# xthickness = 1
+	# ythickness = 1
+
+	GtkComboBox::appears-as-list = 1
+	base[NORMAL] = "#e8e8e8"
+        base[ACTIVE] = "#e8e8e8"
+	base[INSENSITIVE] = "#e8e8e8"
+}
+
+# class "GtkComboBox"  style "combobox_style"
+widget "*kise/who_combo"  style "combobox_style"
+widget "*kise/for_whom_combo"  style "combobox_style"
+widget "*kise/what_combo"  style "combobox_style"
+
+
+###
+### GtkEntry globals
+###
+
+style "no_selection_on_focus"
+{
+	GtkEntry::select-on-focus = 0
+}
+
+class "GtkEntry"     style "no_selection_on_focus"
+
+
+###
+### Non editable entries
+###
+
+style "non-editable-entry"
+{
+	base[NORMAL]      = "#ffffff"
+        base[ACTIVE]      = "#ffffff"
+	base[INSENSITIVE] = "#e8e8e8"
+}
+
+
+###
+### Never editable entries
+###
+
+style "never-editable-entry" = "non-editable-entry"
+{
+	GtkEntry::shadow_type = GTK_SHADOW_ETCHED_IN
+}
+
+widget "*kise/reference_entry" style "never-editable-entry"
+widget "*kise/db_name_entry" style "never-editable-entry"
+
+
+###
+### filters
+###
+
+style "entry-filters"
+{
+	base[NORMAL] = "#aabbaa"
+	base[ACTIVE] = "#aabbaa"
+	base[PRELIGHT] = "#aabbaa"
+	base[SELECTED] = "#aabbaa"
+	base[INSENSITIVE] = "#aabbaa"
+
+}
+
+widget "*kise/filter_date" style "entry-filters"
+widget "*kise/filter_who" style "entry-filters"
+widget "*kise/filter_for_whom" style "entry-filters"
+widget "*kise/filter_what" style "entry-filters"
+widget "*kise/filter_to_be_charged_cb" style "entry-filters"
+widget "*kise/filter_to_be_charged_combo" style "entry-filters"
+widget "*kise/filter_description" style "entry-filters"
