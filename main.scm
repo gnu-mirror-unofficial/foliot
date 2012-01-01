@@ -65,7 +65,9 @@ exec guile-gnome-2 -e main -s $0 "$@"
 ;;;
 
 (define (display-version port)
-  (aglobs/display (string-append "GNU Kisê " (aglobs/get 'version)) port))
+  ;; 'GNU Kise', really nice! But let's wait GNU evaluation/acceptance
+  ;; (aglobs/display (string-append "GNU Kise " (aglobs/get 'version)) port)
+  (aglobs/display (string-append "Kise " (aglobs/get 'version)) port))
 
 (define (display-help port)
   (aglobs/display "Usage: kise [options...]" port)
@@ -102,7 +104,7 @@ exec guile-gnome-2 -e main -s $0 "$@"
 					 (gnome gtk)
 					 (gnome gtk graphical-repl)
 					 (gnome glib)))
-	   (aglobs/display (string-append "  " (_ "loading Kisê") "...") port)
+	   (aglobs/display (string-append "  " (_ "loading Kise") "...") port)
 	   (gtk-rc-parse (aglobs/get 'gtkrcfile))
 	   (primitive-eval '(use-modules (kise kise)))
 	   (load-user-init)
