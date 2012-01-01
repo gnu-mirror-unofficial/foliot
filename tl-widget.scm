@@ -90,6 +90,7 @@
 
 	   date-lb
 	   date-entry
+	   date-icon
 
 	   who-lb
 	   who-entry
@@ -209,6 +210,8 @@
 
   (dialog :accessor dialog :init-keyword :dialog :init-value #f)
   (menubar :accessor menubar :init-keyword :menubar :init-value #f)
+  (tooltip :accessor tooltip :init-keyword :tooltip :init-value #f)
+
   (sorting-lb :accessor sorting-lb :init-keyword :sorting-lb :init-value #f)
   (sorting-combo :accessor sorting-combo :init-keyword :sorting-combo :init-value #f)
 
@@ -228,6 +231,7 @@
   (reference-entry :accessor reference-entry :init-keyword :reference-entry :init-value #f)
   (date-lb :accessor date-lb :init-keyword :date-lb :init-value #f)
   (date-entry :accessor date-entry :init-keyword :date-entry :init-value #f)
+  (date-icon :accessor date-icon :init-keyword :date-icon :init-value #f)
   (who-lb :accessor who-lb :init-keyword :who-lb :init-value #f)
   (who-entry :accessor who-entry :init-keyword :who-entry :init-value #f)
   (who-combo :accessor who-combo :init-keyword :who-combo :init-value #f)
@@ -877,12 +881,14 @@
 
 (define (ktlw/make-tl-widget uname gfile)
   (let* ((xmlc (glade-xml-new gfile  #f "kise"))
+	 (t-tip (gtk-tooltips-new))
 	 (tl-widget (make <kise/tl-widget>
 		      :user-name uname
 		      :glade-file gfile
 		      :xml-code xmlc
 		      :dialog (get-widget xmlc "kise")
 		      :menubar (get-widget xmlc "kise/menubar")
+		      :tooltip t-tip
 		      :sorting-lb (get-widget xmlc "kise/sorting_lb")
 		      :sorting-combo (get-widget xmlc "kise/sorting_combo")
 
@@ -901,6 +907,7 @@
 		      :reference-entry (get-widget xmlc "kise/reference_entry")
 		      :date-lb (get-widget xmlc "kise/date_lb")
 		      :date-entry (get-widget xmlc "kise/date_entry")
+		      :date-icon (get-widget xmlc "kise/date_icon")
 
 		      :who-lb (get-widget xmlc "kise/who_lb")
 		      :who-combo (get-widget xmlc "kise/who_combo")
@@ -953,7 +960,7 @@
     (ktlw/connect-combos tl-widget)
     (set-sensitive (filter-select-bt tl-widget) #f)
     ;; not yet but soon
-    ;; (kise/translate)
+    (ktlw/translate tl-widget)
     tl-widget))
 
 
@@ -1224,6 +1231,26 @@
   (set! (gui-callback? tl-widget) #t)
   ;; this has to be last
   (ktlw/update-totals-status-bars tl-widget))
+
+;;;
+;;; Tooltips and dialog translation
+;;;
+
+(define (ktlw/translate tl-widget)
+  (let ((t-tip (tooltip tl-widget)))
+    #;(set-icon-from-stock (date-entry tl-widget)
+			 GTK_ENTRY_ICON_SECONDARY
+			 GTK_STOCK_ABOUT)
+    #;(set-markup (date-lb tl-widget) "<a href=\"www.fsf.org\">Date:</a>")
+    #;(set-tooltip (date-icon tl-widget) t-tip
+		 (_ "Dates:
+
+In its current version [1], Kisê only support the following date format: dd<sep>mm<sep>yyyy
+
+	<sep> can be '.', '/' or '-' providing it's used consistently [twice the same seperator in a date].
+
+[1]	support for locale will be provided in the future") "")
+    #f))
 
 
 #!
