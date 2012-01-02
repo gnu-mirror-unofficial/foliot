@@ -534,9 +534,7 @@ christian
                               <widget class="GtkImage" id="kise/date_icon">
                                 <property name="visible">True</property>
                                 <property name="has_tooltip">True</property>
-                                <property name="tooltip" translatable="yes">Dates:
-
-In its current version [1], Kis&#xEA; only supports the following date format: dd&lt;sep&gt;mm&lt;sep&gt;yyyy, where &lt;sep&gt; can be '.', '/' or '-' providing it's used consistently [twice the same seperator in a date].
+                                <property name="tooltip" translatable="yes">In its current version [1], Kis&#xEA; only supports the following date format: dd&lt;sep&gt;mm&lt;sep&gt;yyyy, where &lt;sep&gt; can be '.', '/' or '-' providing it's used consistently [twice the same seperator in a date].
 
 [1]	support for locale will be provided in the future.</property>
                                 <property name="stock">gtk-info</property>
@@ -876,17 +874,17 @@ Date filters [2]:
 	a_date
 	&lt;op&gt;a_date [or &lt;op&gt; a_date]
 
-	where &lt;op&gt; can be &lt;, &lt;=, =, &gt;, &gt;=
+	where &lt;op&gt; can be &lt;, &lt;=, =, &gt;=, &gt;
 
 Text filters:
 	a_string		contains a_string
 	=a_string	strictly contains a_string
+	=			is empty 
 	*a_string		ends with a_string
 	a_string*		starts with a_string
 
 [1]	combining AND filter sets using the OR operator requires a more sophisticated interface, but it will be provided in the future;
-[2]	date range and keywords - 'today', 'this month' ... - are under work.
-</property>
+[2]	date range and keywords - 'today', 'this month' ... - are under work.</property>
                                 <property name="stock">gtk-info</property>
                                 <property name="icon-size">2</property>
                               </widget>
