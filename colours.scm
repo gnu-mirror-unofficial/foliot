@@ -25,7 +25,8 @@
 (define-module (kise colours)
   :use-module (gnome gtk)
 
-  :export (*kc/filters-bg*
+  :export (*kc/filters-fg*
+	   *kc/filters-bg*
 	   *kc/dialog-title-eb-bg*))
 
 
@@ -55,6 +56,8 @@
 ;;; Kise globals
 ;;;
 
+;; (define *kc/filters-fg* "#91571c") ;; light brown
+(define *kc/filters-fg* "#2f4f2f") ;; dark green
 (define *kc/filters-bg* "#aabbaa") ;; pale green
 
 ;; (define *kc/dialog-title-eb-bg* "#e1eee1")

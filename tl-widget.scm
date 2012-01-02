@@ -90,7 +90,7 @@
 
 	   date-lb
 	   date-entry
-	   date-icon
+	   date-icon ;; exported because currently hidden in kise.scm
 
 	   who-lb
 	   who-entry
@@ -119,6 +119,7 @@
 	   db-name-lb2
 	   db-name-entry
 
+	   filter-icon ;; exported because currently hidden in kise.scm
 	   filter-apply-bt
 	   filter-clear-bt
 	   filter-select-bt
@@ -254,15 +255,23 @@
   (db-name-lb2 :accessor db-name-lb2 :init-keyword :db-name-lb2 :init-value #f)
   (db-name-entry :accessor db-name-entry :init-keyword :db-name-entry :init-value #f)
 
+  (filter-icon :accessor filter-icon :init-keyword :filter-icon :init-value #f)
+  (filter-criteria-lb :accessor filter-criteria-lb :init-keyword :filter-criteria-lb :init-value #f)
   (filter-apply-bt :accessor filter-apply-bt :init-keyword :filter-apply-bt :init-value #f)
   (filter-clear-bt :accessor filter-clear-bt :init-keyword :filter-clear-bt :init-value #f)
   (filter-select-bt :accessor filter-select-bt :init-keyword :filter-select-bt :init-value #f)
   
+  (filter-date-lb :accessor filter-date-lb :init-keyword :filter-date-lb :init-value #f)
   (filter-date-entry :accessor filter-date-entry :init-keyword :filter-date-entry :init-value #f)
+  (filter-who-lb :accessor filter-who-lb :init-keyword :filter-who-lb :init-value #f)
   (filter-who-entry :accessor filter-who-entry :init-keyword :filter-who-entry :init-value #f)
+  (filter-for-whom-lb :accessor filter-for-whom-lb :init-keyword :filter-for-whom-lb :init-value #f)
   (filter-for-whom-entry :accessor filter-for-whom-entry :init-keyword :filter-for-whom-entry :init-value #f)
+  (filter-what-lb :accessor filter-what-lb :init-keyword :filter-what-lb :init-value #f)
   (filter-what-entry :accessor filter-what-entry :init-keyword :filter-what-entry :init-value #f)
+  (filter-description-lb :accessor filter-description-lb :init-keyword :filter-description-lb :init-value #f)
   (filter-description-entry :accessor filter-description-entry :init-keyword :filter-description-entry :init-value #f)
+  (filter-to-be-charged-lb :accessor filter-to-be-charged-lb :init-keyword :filter-to-be-charged-lb :init-value #f)
   (filter-to-be-charged-cb :accessor filter-to-be-charged-cb :init-keyword :filter-to-be-charged-cb :init-value #f)
   (filter-to-be-charged-eb :accessor filter-to-be-charged-eb :init-keyword :filter-to-be-charged-eb :init-value #f)
   (filter-to-be-charged-combo :accessor filter-to-be-charged-combo :init-keyword :filter-to-be-charged-combo :init-value #f)
@@ -933,15 +942,23 @@
 		      :db-name-lb2 (get-widget xmlc "kise/db_name_lb2")
 		      :db-name-entry (get-widget xmlc "kise/db_name_entry")
 
+		      :filter-icon (get-widget xmlc "kise/filter_icon")
+		      :filter-criteria-lb (get-widget xmlc "kise/filter_criteria_lb")
 		      :filter-apply-bt (get-widget xmlc "kise/filter_apply_bt")
 		      :filter-clear-bt (get-widget xmlc "kise/filter_clear_bt")
 		      :filter-select-bt (get-widget xmlc "kise/filter_select_bt")
 		      
+		      :filter-date-lb (get-widget xmlc "kise/filter_date_lb")
 		      :filter-date-entry (get-widget xmlc "kise/filter_date")
+		      :filter-who-lb (get-widget xmlc "kise/filter_who_lb")
 		      :filter-who-entry (get-widget xmlc "kise/filter_who")
+		      :filter-for-whom-lb (get-widget xmlc "kise/filter_for_whom_lb")
 		      :filter-for-whom-entry (get-widget xmlc "kise/filter_for_whom")
+		      :filter-what-lb (get-widget xmlc "kise/filter_what_lb")
 		      :filter-what-entry (get-widget xmlc "kise/filter_what")
+		      :filter-description-lb (get-widget xmlc "kise/filter_description_lb")
 		      :filter-description-entry (get-widget xmlc "kise/filter_description")
+		      :filter-to-be-charged-lb (get-widget xmlc "kise/filter_to_be_charged_lb")
 		      :filter-to-be-charged-cb (get-widget xmlc "kise/filter_to_be_charged_cb")
 		      :filter-to-be-charged-eb (get-widget xmlc "kise/filter_to_be_charged_eb")
 		      :filter-to-be-charged-combo (get-widget xmlc "kise/filter_to_be_charged_combo")
@@ -1232,9 +1249,40 @@
   ;; this has to be last
   (ktlw/update-totals-status-bars tl-widget))
 
+
 ;;;
 ;;; Tooltips and dialog translation
 ;;;
+
+(define (ktlw/dates-tooltip-str)
+  (_ "In its current version [1], Kisê only supports the following date format: dd<sep>mm<sep>yyyy, where <sep> can be '.', '/' or '-' providing it's used consistently [twice the same seperator in a date].
+
+[1]	support for locale will be provided in the future."))
+
+(define (ktlw/what-tooltip-str)
+  (_ "We suggest the use of keywords seperated by '/' [1]: '/admin', '/admin/expenses', '/sysadmin/install', '/contrib/gnu/gettext', '/personal', ...
+
+[1]	This way, the distinct database content of this field represents your activity tree. We actually plan to display it as such in the future."))
+
+(define (ktlw/filter-criteria-tooltip-str)
+  (_ "When more then one filter field is used, they are combined  using the AND operator [1].
+
+Date filters [2]:
+	a_date
+	<op>a_date [or <op> a_date]
+
+	where <op> can be <, <=, =, >=, >
+
+Text filters:
+	a_string		contains a_string
+	=a_string	strictly contains a_string
+	=			is empty 
+	*a_string		ends with a_string
+	a_string*		starts with a_string
+
+[1]	combining AND filter sets using the OR operator requires a more sophisticated interface, but it will be provided in the future;
+[2]	date range and keywords - 'today', 'this month' ... - are under work."))
+
 
 (define (ktlw/translate tl-widget)
   (let ((t-tip (tooltip tl-widget)))
@@ -1242,15 +1290,22 @@
 			 GTK_ENTRY_ICON_SECONDARY
 			 GTK_STOCK_ABOUT)
     #;(set-markup (date-lb tl-widget) "<a href=\"www.fsf.org\">Date:</a>")
-    #;(set-tooltip (date-icon tl-widget) t-tip
-		 (_ "Dates:
-
-In its current version [1], Kisê only support the following date format: dd<sep>mm<sep>yyyy
-
-	<sep> can be '.', '/' or '-' providing it's used consistently [twice the same seperator in a date].
-
-[1]	support for locale will be provided in the future") "")
-    #f))
+    (set-tip t-tip (date-lb tl-widget) (ktlw/dates-tooltip-str))
+    (set-tip t-tip (what-lb tl-widget) (ktlw/what-tooltip-str))
+    (set-tip t-tip (filter-criteria-lb tl-widget) (ktlw/filter-criteria-tooltip-str))
+    (set-label (filter-date-lb tl-widget)
+	       (format #f "<span foreground=\"~A\">~A:</span>" *kc/filters-fg* (_ "Date")))
+    (set-label (filter-who-lb tl-widget)
+	       (format #f "<span foreground=\"~A\">~A:</span>" *kc/filters-fg* (_ "Who")))
+    (set-label (filter-for-whom-lb tl-widget)
+	       (format #f "<span foreground=\"~A\">~A:</span>" *kc/filters-fg* (_ "For whom")))
+    (set-label (filter-what-lb tl-widget)
+	       (format #f "<span foreground=\"~A\">~A:</span>" *kc/filters-fg* (_ "What")))
+    (set-label (filter-to-be-charged-lb tl-widget)
+	       (format #f "<span foreground=\"~A\">~A:</span>" *kc/filters-fg* (_ "To be charged")))
+    (set-label (filter-description-lb tl-widget)
+	       (format #f "<span foreground=\"~A\">~A:</span>" *kc/filters-fg* (_ "Description")))
+    ))
 
 
 #!

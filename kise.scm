@@ -453,6 +453,8 @@
 
     (show-all (dialog tl-widget))
     (gtk2/hide `(;; ,(menubar tl-widget)
+		 ,(date-icon tl-widget)
+		 ,(filter-icon tl-widget)
 		 ,(db-name-entry tl-widget)
 		 ,(get-widget (xml-code tl-widget) "kise/order_tb")
 		 ,(get-widget (xml-code tl-widget) "kise/db_name_bt")

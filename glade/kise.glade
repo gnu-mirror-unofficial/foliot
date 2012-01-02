@@ -428,7 +428,8 @@ maintenance</property>
                           <widget class="GtkLabel" id="kise/what_lb">
                             <property name="visible">True</property>
                             <property name="xalign">1</property>
-                            <property name="label" translatable="yes">What:</property>
+                            <property name="label" translatable="yes">&lt;u&gt;&lt;span foreground="#000000"&gt;What:&lt;/span&gt;&lt;/u&gt;</property>
+                            <property name="use_markup">True</property>
                             <property name="use_underline">True</property>
                           </widget>
                           <packing>
@@ -531,27 +532,29 @@ christian
                           <widget class="GtkHBox" id="hbox2">
                             <property name="visible">True</property>
                             <child>
-                              <widget class="GtkImage" id="kise/date_icon">
+                              <widget class="GtkLabel" id="kise/date_lb">
                                 <property name="visible">True</property>
-                                <property name="has_tooltip">True</property>
-                                <property name="tooltip" translatable="yes">In its current version [1], Kis&#xEA; only supports the following date format: dd&lt;sep&gt;mm&lt;sep&gt;yyyy, where &lt;sep&gt; can be '.', '/' or '-' providing it's used consistently [twice the same seperator in a date].
-
-[1]	support for locale will be provided in the future.</property>
-                                <property name="stock">gtk-info</property>
-                                <property name="icon-size">2</property>
+                                <property name="xalign">1</property>
+                                <property name="label" translatable="yes">&lt;u&gt;&lt;span foreground="#000000"&gt;Date:&lt;/span&gt;&lt;/u&gt;</property>
+                                <property name="use_markup">True</property>
+                                <property name="use_underline">True</property>
                               </widget>
                               <packing>
                                 <property name="position">0</property>
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkLabel" id="kise/date_lb">
+                              <widget class="GtkImage" id="kise/date_icon">
                                 <property name="visible">True</property>
-                                <property name="xalign">1</property>
-                                <property name="label" translatable="yes">Date:</property>
-                                <property name="use_underline">True</property>
+                                <property name="has_tooltip">True</property>
+                                <property name="tooltip" translatable="yes">In its current version [1], Kis&#xEA; only supports the following date format: dd&lt;sep&gt;mm&lt;sep&gt;yyyy, where &lt;sep&gt; can be '.', '/' or '-' providing it's used consistently [twice the same seperator in a date].
+
+[1]	support for locale will be provided in the future.</property>
+                                <property name="stock">gtk-dialog-question</property>
+                                <property name="icon-size">2</property>
                               </widget>
                               <packing>
+                                <property name="expand">False</property>
                                 <property name="position">1</property>
                               </packing>
                             </child>
@@ -691,10 +694,10 @@ christian
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="GtkLabel" id="kise/client_lb10">
+                                      <widget class="GtkLabel" id="kise/filter_for_whom_lb">
                                         <property name="visible">True</property>
                                         <property name="xalign">0</property>
-                                        <property name="label" translatable="yes">&lt;span foreground="#91571c"&gt;For whom:&lt;/span&gt;</property>
+                                        <property name="label" translatable="yes">&lt;span foreground="#9d5814"&gt;For whom:&lt;/span&gt;</property>
                                         <property name="use_markup">True</property>
                                         <property name="use_underline">True</property>
                                       </widget>
@@ -722,7 +725,7 @@ christian
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="GtkLabel" id="kise/client_lb11">
+                                      <widget class="GtkLabel" id="kise/filter_what_lb">
                                         <property name="visible">True</property>
                                         <property name="xalign">0</property>
                                         <property name="label" translatable="yes">&lt;span foreground="#91571c"&gt;What:&lt;/span&gt;</property>
@@ -765,7 +768,7 @@ christian
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="GtkLabel" id="kise/filter_to_be_chaged_lb">
+                                      <widget class="GtkLabel" id="kise/filter_to_be_charged_lb">
                                         <property name="visible">True</property>
                                         <property name="xalign">1</property>
                                         <property name="label" translatable="yes">&lt;span foreground="#91571c"&gt;To be charged:&lt;/span&gt;</property>
@@ -799,7 +802,7 @@ no
                                       <widget class="GtkLabel" id="kise/filter_description_lb">
                                         <property name="visible">True</property>
                                         <property name="xalign">1</property>
-                                        <property name="label" translatable="yes">&lt;span foreground="#91571c"&gt;Description:&lt;/span&gt;</property>
+                                        <property name="label" translatable="yes">&lt;span foreground="#2f4f2f"&gt;Description:&lt;/span&gt;</property>
                                         <property name="use_markup">True</property>
                                         <property name="use_underline">True</property>
                                       </widget>
@@ -827,7 +830,7 @@ no
                                       </packing>
                                     </child>
                                     <child>
-                                      <widget class="GtkLabel" id="kise/client_lb6">
+                                      <widget class="GtkLabel" id="kise/filter_date_lb">
                                         <property name="visible">True</property>
                                         <property name="xalign">0</property>
                                         <property name="label" translatable="yes">&lt;span foreground="#91571c"&gt;Date:&lt;/span&gt;</property>
@@ -836,7 +839,7 @@ no
                                       </widget>
                                     </child>
                                     <child>
-                                      <widget class="GtkLabel" id="kise/client_lb8">
+                                      <widget class="GtkLabel" id="kise/filter_who_lb">
                                         <property name="visible">True</property>
                                         <property name="xalign">0</property>
                                         <property name="label" translatable="yes">&lt;span foreground="#91571c"&gt;Who:&lt;/span&gt;</property>
@@ -865,6 +868,16 @@ no
                               <placeholder/>
                             </child>
                             <child>
+                              <widget class="GtkLabel" id="kise/filter_criteria_lb">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">&lt;u&gt;&lt;b&gt;&lt;span foreground="#2f4f2f"&gt;Filter criteria:&lt;/span&gt;&lt;/b&gt;&lt;/u&gt;</property>
+                                <property name="use_markup">True</property>
+                              </widget>
+                              <packing>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                            <child>
                               <widget class="GtkImage" id="kise/filter_icon">
                                 <property name="visible">True</property>
                                 <property name="has_tooltip">True</property>
@@ -885,18 +898,8 @@ Text filters:
 
 [1]	combining AND filter sets using the OR operator requires a more sophisticated interface, but it will be provided in the future;
 [2]	date range and keywords - 'today', 'this month' ... - are under work.</property>
-                                <property name="stock">gtk-info</property>
+                                <property name="stock">gtk-dialog-question</property>
                                 <property name="icon-size">2</property>
-                              </widget>
-                              <packing>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkLabel" id="label1">
-                                <property name="visible">True</property>
-                                <property name="label" translatable="yes">&lt;b&gt;&lt;span foreground="#91571c"&gt;Filter criteria:&lt;/span&gt;&lt;/b&gt;</property>
-                                <property name="use_markup">True</property>
                               </widget>
                               <packing>
                                 <property name="position">2</property>
