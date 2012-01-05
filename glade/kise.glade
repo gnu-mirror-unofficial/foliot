@@ -3,9 +3,10 @@
   <!-- interface-requires gtk+ 2.6 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <widget class="GtkWindow" id="kise">
-    <property name="width_request">455</property>
+    <property name="width_request">495</property>
+    <property name="height_request">732</property>
     <property name="title" translatable="yes">Kis&#xEA;</property>
-    <property name="type_hint">dialog</property>
+    <property name="window_position">center</property>
     <child>
       <widget class="GtkVBox" id="vbox5">
         <property name="visible">True</property>
@@ -44,6 +45,7 @@
           </widget>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">False</property>
             <property name="position">0</property>
           </packing>
         </child>
@@ -60,6 +62,19 @@
                     <property name="label" translatable="yes">Connect</property>
                     <property name="use_underline">True</property>
                     <property name="stock_id">gtk-connect</property>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkToolButton" id="kise/quit_bt">
+                    <property name="visible">True</property>
+                    <property name="tooltip" translatable="yes">Quit...</property>
+                    <property name="label" translatable="yes">Quit</property>
+                    <property name="use_underline">True</property>
+                    <property name="stock_id">gtk-quit</property>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
@@ -257,12 +272,11 @@
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkScrolledWindow" id="scrolledwindow74">
+                          <widget class="GtkScrolledWindow" id="kise/description_sw">
                             <property name="height_request">100</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="hscrollbar_policy">automatic</property>
-                            <property name="vscrollbar_policy">automatic</property>
                             <property name="shadow_type">in</property>
                             <child>
                               <widget class="GtkTextView" id="kise/description_entry">
@@ -300,7 +314,7 @@
                             <property name="visible">True</property>
                             <child>
                               <widget class="GtkSpinButton" id="kise/duration_sb">
-                                <property name="width_request">50</property>
+                                <property name="width_request">60</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">&#x2022;</property>
@@ -319,6 +333,7 @@
                               <widget class="GtkLabel" id="kise/date_lb1">
                                 <property name="visible">True</property>
                                 <property name="xalign">0</property>
+                                <property name="xpad">4</property>
                                 <property name="label" translatable="yes">hours</property>
                                 <property name="use_underline">True</property>
                               </widget>
@@ -367,7 +382,7 @@
                         </child>
                         <child>
                           <widget class="GtkComboBoxEntry" id="kise/for_whom_combo">
-                            <property name="width_request">106</property>
+                            <property name="width_request">120</property>
                             <property name="visible">True</property>
                             <property name="items" translatable="yes">alto
 cmh</property>
@@ -443,7 +458,7 @@ maintenance</property>
                         </child>
                         <child>
                           <widget class="GtkComboBoxEntry" id="kise/who_combo">
-                            <property name="width_request">106</property>
+                            <property name="width_request">120</property>
                             <property name="visible">True</property>
                             <property name="items" translatable="yes">david
 christian
@@ -473,7 +488,7 @@ christian
                         </child>
                         <child>
                           <widget class="GtkEntry" id="kise/date_entry">
-                            <property name="width_request">80</property>
+                            <property name="width_request">97</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="invisible_char">&#x2022;</property>
@@ -679,7 +694,7 @@ christian
                                     <property name="row_spacing">2</property>
                                     <child>
                                       <widget class="GtkEntry" id="kise/filter_who">
-                                        <property name="width_request">80</property>
+                                        <property name="width_request">97</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="invisible_char">&#x2022;</property>
@@ -710,7 +725,7 @@ christian
                                     </child>
                                     <child>
                                       <widget class="GtkEntry" id="kise/filter_for_whom">
-                                        <property name="width_request">80</property>
+                                        <property name="width_request">97</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="invisible_char">&#x2022;</property>
@@ -755,7 +770,7 @@ christian
                                     </child>
                                     <child>
                                       <widget class="GtkEntry" id="kise/filter_date">
-                                        <property name="width_request">80</property>
+                                        <property name="width_request">97</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="invisible_char">&#x2022;</property>
@@ -779,6 +794,7 @@ christian
                                         <property name="top_attach">2</property>
                                         <property name="bottom_attach">3</property>
                                         <property name="x_options">GTK_FILL</property>
+                                        <property name="y_options">GTK_FILL</property>
                                       </packing>
                                     </child>
                                     <child>
@@ -837,6 +853,10 @@ no
                                         <property name="use_markup">True</property>
                                         <property name="use_underline">True</property>
                                       </widget>
+                                      <packing>
+                                        <property name="x_options">GTK_FILL</property>
+                                        <property name="y_options">GTK_FILL</property>
+                                      </packing>
                                     </child>
                                     <child>
                                       <widget class="GtkLabel" id="kise/filter_who_lb">
@@ -849,6 +869,8 @@ no
                                       <packing>
                                         <property name="left_attach">1</property>
                                         <property name="right_attach">2</property>
+                                        <property name="x_options">GTK_FILL</property>
+                                        <property name="y_options">GTK_FILL</property>
                                       </packing>
                                     </child>
                                   </widget>
@@ -1163,7 +1185,7 @@ Text filters:
     </child>
   </widget>
   <widget class="GtkDialog" id="kp/dialog">
-    <property name="width_request">400</property>
+    <property name="width_request">430</property>
     <property name="title" translatable="yes">Printing</property>
     <property name="type_hint">dialog</property>
     <child internal-child="vbox">
@@ -1272,32 +1294,14 @@ Text filters:
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkHBox" id="hbox7">
+                              <widget class="GtkCheckButton" id="kp/latex_keep_files_cb">
+                                <property name="label" translatable="yes">keep a copy of the generated latex files</property>
                                 <property name="visible">True</property>
-                                <child>
-                                  <widget class="GtkFixed" id="fixed1">
-                                    <property name="width_request">20</property>
-                                    <property name="visible">True</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <widget class="GtkCheckButton" id="kp/tex_cb">
-                                    <property name="label" translatable="yes">keep a copy of the generated latex files</property>
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">False</property>
-                                    <property name="use_underline">True</property>
-                                    <property name="xalign">0</property>
-                                    <property name="draw_indicator">True</property>
-                                  </widget>
-                                  <packing>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
+                                <property name="draw_indicator">True</property>
                               </widget>
                               <packing>
                                 <property name="position">1</property>

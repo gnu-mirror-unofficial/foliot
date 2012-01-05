@@ -114,7 +114,7 @@
   (printer-combo :accessor printer-combo :init-keyword :printer-combo :init-value #f)
   (pdf-cb :accessor pdf-cb :init-keyword :pdf-cb :init-value #f)
   (pdf :accessor pdf :init-keyword :pdf :init-value #f)
-  (tex-cb :accessor tex-cb :init-keyword :tex-cb :init-value #f)
+  (latex-keep-files-cb :accessor latex-keep-files-cb :init-keyword :latex-keep-files-cb :init-value #f)
   (tex :accessor tex :init-keyword :tex :init-value #f)
   (template-frame-lb :accessor template-frame-lb :init-keyword :template-frame-lb :init-value #f)
   (template-add-bt :accessor template-add-bt :init-keyword :template-add-bt :init-value #f)
@@ -681,7 +681,7 @@
 			  :printer-frame-lb (get-widget xmlc "kp/printer_frame_lb")
 			  :printer-combo (get-widget xmlc "kp/printer_combo")
 			  :pdf-cb (get-widget xmlc "kp/pdf_cb")
-			  :tex-cb (get-widget xmlc "kp/tex_cb")
+			  :latex-keep-files-cb (get-widget xmlc "kp/latex_keep_files_cb")
 			  :template-add-bt (get-widget xmlc "kp/template_add_bt")
 			  :template-rem-bt (get-widget xmlc "kp/template_rem_bt")
 			  :template-combo (get-widget xmlc "kp/template_combo")
@@ -727,16 +727,16 @@
 		     (if value
 			 (begin
 			   (set-sensitive (printer-combo kp-widget) #f)
-			   (set-sensitive (tex-cb kp-widget) #t)
+			   ;; (set-sensitive (latex-keep-files-cb kp-widget) #t)
 			   (set! (pdf kp-widget) #t))
 			 (begin
 			   (set-sensitive (printer-combo kp-widget) #t)
-			   (set-sensitive (tex-cb kp-widget) #f)
+			   ;; (set-sensitive (latex-keep-files-cb kp-widget) #f)
 			   (set! (pdf kp-widget) #f))))))
-	(connect (tex-cb kp-widget)
+	(connect (latex-keep-files-cb kp-widget)
 		 'toggled
 		 (lambda (widget)
-		   (let ((value (get-active (tex-cb kp-widget))))
+		   (let ((value (get-active (latex-keep-files-cb kp-widget))))
 		     (if value
 			 (set! (tex kp-widget) #t)
 			 (set! (tex kp-widget) #f)))))
@@ -859,7 +859,9 @@
 	(set! (tpl-active-pos-at-entry-focus-in kp-widget) 0)
 	(set-active (template-combo kp-widget) 0)
 	(kp/set-gtk-entries kp-widget)
-	(gtk2/set-sensitive `(,(m-com-rb kp-widget)
+	(gtk2/set-sensitive `(,(latex-keep-files-cb kp-widget)
+			      ,(i-selected-rb kp-widget)
+			      ,(m-com-rb kp-widget)
 			      ,(g-up-bt kp-widget) ;; no default row is select per default
 			      ,(g-down-bt kp-widget))
 			    #f)

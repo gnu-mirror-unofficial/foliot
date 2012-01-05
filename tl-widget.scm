@@ -74,6 +74,7 @@
 	   ;; sorting-combo
 
 	   con-bt
+	   quit-bt
 	   dup-bt
 	   add-bt
 	   del-bt
@@ -113,6 +114,7 @@
 	   to-be-charged-cb
 
 	   description-lb
+	   description-sw
 	   description-entry
 
 	   db-name-lb1
@@ -129,6 +131,7 @@
 	   filter-for-whom-entry
 	   filter-what-entry
 	   filter-description-entry
+	   filter-to-be-charged-lb
 	   filter-to-be-charged-cb
 	   filter-to-be-charged-eb
 	   filter-to-be-charged-combo
@@ -136,6 +139,7 @@
 	   active-filter
 	   id-set
 
+	   sw
 	   tv
 	   tv-model
 	   tv-sel
@@ -217,6 +221,7 @@
   (sorting-combo :accessor sorting-combo :init-keyword :sorting-combo :init-value #f)
 
   (con-bt :accessor con-bt :init-keyword :con-bt :init-value #f)
+  (quit-bt :accessor quit-bt :init-keyword :quit-bt :init-value #f)
   (dup-bt :accessor dup-bt :init-keyword :dup-bt :init-value #f)
   (add-bt :accessor add-bt :init-keyword :add-bt :init-value #f)
   (del-bt :accessor del-bt :init-keyword :del-bt :init-value #f)
@@ -249,6 +254,7 @@
   ;; (what-tv-sel :accessor what-tv-sel :init-keyword :what-tv-sel :init-value #f)
   (to-be-charged-cb :accessor to-be-charged-cb :init-keyword :to-be-charged-cb :init-value #f)
   (description-lb :accessor description-lb :init-keyword :description-lb :init-value #f)
+  (description-sw :accessor description-sw :init-keyword :description-sw :init-value #f)
   (description-entry :accessor description-entry :init-keyword :description-entry :init-value #f)
 
   (db-name-lb1 :accessor db-name-lb1 :init-keyword :db-name-lb1 :init-value #f)
@@ -279,6 +285,7 @@
   (active-filter :accessor active-filter :init-keyword :active-filter :init-value #f)
   (id-set :accessor id-set :init-keyword :id-set :init-value #f)
 
+  (sw :accessor sw :init-keyword :sw :init-value #f)
   (tv :accessor tv :init-keyword :tv :init-value #f)
   (tv-model :accessor tv-model :init-keyword :tv-model :init-value #f)
   (tv-sel :accessor tv-sel :init-keyword :tv-sel :init-value #f)
@@ -361,7 +368,7 @@
 	 (column1   (make <gtk-tree-view-column>
 		      :title       (_ "Date")
 		      :sizing      'fixed
-		      :fixed-width 80
+		      :fixed-width 90
 		      :clickable   #f
 		      :resizable   #f
 		      :reorderable #f
@@ -380,7 +387,7 @@
 	 ;; FOR WHOM
 	 (renderer3 (make <gtk-cell-renderer-text>))
 	 (column3   (make <gtk-tree-view-column>
-		      :title       (_ "For whom")
+		      :title       (_ "For wh.")
 		      :sizing      'fixed
 		      :fixed-width 65
 		      :clickable   #f
@@ -395,7 +402,7 @@
 	 (column4   (make <gtk-tree-view-column>
 		      :title       (_ "Dur.")
 		      :sizing      'fixed
-		      :fixed-width 37
+		      :fixed-width 50
 		      :clickable   #f
 		      :resizable   #f
 		      :reorderable #f
@@ -405,7 +412,7 @@
 	 (column5   (make <gtk-tree-view-column>
 		       :title       (_ "C")
 		       :sizing      'fixed
-		       :fixed-width 20
+		       :fixed-width 30
 		       :alignment   .5))
 	 ;; WHAT
 	 (renderer6 (make <gtk-cell-renderer-text>))
@@ -902,6 +909,7 @@
 		      :sorting-combo (get-widget xmlc "kise/sorting_combo")
 
 		      :con-bt (get-widget xmlc "kise/con_bt")
+		      :quit-bt (get-widget xmlc "kise/quit_bt")
 		      :dup-bt (get-widget xmlc "kise/dup_bt")
 		      :add-bt (get-widget xmlc "kise/add_bt")
 		      :del-bt (get-widget xmlc "kise/del_bt")
@@ -936,6 +944,7 @@
 
 		      :to-be-charged-cb (get-widget xmlc "kise/to_be_charged_cb")
 		      :description-lb (get-widget xmlc "kise/description_lb")
+		      :description-sw (get-widget xmlc "kise/description_sw")
 		      :description-entry (get-widget xmlc "kise/description_entry")
 
 		      :db-name-lb1 (get-widget xmlc "kise/db_name_lb1")
@@ -963,6 +972,7 @@
 		      :filter-to-be-charged-eb (get-widget xmlc "kise/filter_to_be_charged_eb")
 		      :filter-to-be-charged-combo (get-widget xmlc "kise/filter_to_be_charged_combo")
 		      
+		      :sw (get-widget xmlc "kise/sw")
 		      :tv (get-widget xmlc "kise/tv")
 		      :status-bar-1 (get-widget xmlc "kise/status_bar_1")
 		      :status-bar-2 (get-widget xmlc "kise/status_bar_2")

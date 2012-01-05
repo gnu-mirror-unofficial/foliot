@@ -176,8 +176,8 @@
     (let* ((main-window (dialog tl-widget))
 	   (focusw (get-focus main-window))
 	   (old-row  (current-row tl-widget)))
-      ;; (format #t "        focus widget: ~S, focus name: ~A~%" focusw (and focusw (get-name focusw)))
-      ;; (format #t "Enregistrer-saisie-courante: old-row: ~A~%" old-row)
+      ;; (format #t "focus window ~S, widget ~S, name: ~A~%" main-window focusw (and focusw (get-name focusw)))
+      ;; (format #t "saving entries for row: ~A~%" old-row)
       (when (and old-row
 		 focusw
 		 (not (eq? focusw (tv tl-widget))))
@@ -214,6 +214,16 @@
 	  (ktlw/no-db-mode tl-widget)
 	  (emit (con-bt tl-widget) 'clicked)))))
 
+(define (kise/exit tl-widget)
+  (md2b/select-gui (dialog tl-widget)
+		   (_ "Exit")
+		   (_ "Exit")
+		   (_ "Exit Kisê ?")
+		   (lambda () 
+		     (kise/on-tv-row-change tl-widget)
+		     (exit 0))
+		   (lambda () 'nothing)))
+
 (define (kise/animate-ui uname gfile version debug-mode)
   (let ((tl-widget (ktlw/make-tl-widget uname gfile)))
     ;; the config has already been red, now just call kcfg/get when
@@ -224,13 +234,17 @@
     (connect (dialog tl-widget)
 	     'delete-event
 	     (lambda (. args)
-	       (kise/on-delete-window tl-widget)))
+	       (kise/exit tl-widget)
+	       #t)) ;; stops the event to be propagated
 
     (connect (con-bt tl-widget)
 	     'clicked
 	     (lambda (button)
-	       (kise/on-tv-row-change tl-widget)
 	       (kc/select-gui tl-widget)))
+
+    (connect (quit-bt tl-widget)
+	     'clicked
+	     (lambda (button) (kise/exit tl-widget)))
 
     (connect (dup-bt tl-widget)
 	     'clicked
@@ -452,7 +466,7 @@
 			#f)
 
     (show-all (dialog tl-widget))
-    (gtk2/hide `(;; ,(menubar tl-widget)
+    (gtk2/hide `(,(menubar tl-widget)
 		 ,(date-icon tl-widget)
 		 ,(filter-icon tl-widget)
 		 ,(db-name-entry tl-widget)
@@ -473,16 +487,26 @@
 
 
 ;;;
+;;;
+;;;
+
+(kise/set-debug-variables)
+(get-property-names <gtk-label>)
+(get (filter-date tl-widget) 'width-request)
+(get-allocation (description-sw tl-widget))
+(get-allocation (filter-date-entry tl-widget))
+(get-allocation (filter-to-be-charged-lb tl-widget))
+
+
+;;;
 ;;; Colours [see Glade as well]
 ;;;
 
 ;; dark blue
 <span foreground="#002F94"><b>Filtre</b></span>
-
-;; diarrée :-)
+;; some brown
 <span foreground="#aa5500">Date:</span>
-
-;; diarrée peu moins 'orange'
+;; some brown less 'orange'
 <span foreground="#91571c">Date:</span>
 
 
