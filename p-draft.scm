@@ -2,20 +2,21 @@
 
 ;;;; Copyright (C) 2011, 2012
 ;;;; Free Software Foundation, Inc.
-;;;;
-;;;; This library is free software; you can redistribute it and/or
-;;;; modify it under the terms of the GNU Lesser General Public
-;;;; License as published by the Free Software Foundation; either
-;;;; version 3 of the License, or (at your option) any later version.
-;;;; 
-;;;; This library is distributed in the hope that it will be useful,
-;;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+
+;;;; This file is part of Kisê.
+
+;;;; Kisê is free software: you can redistribute it and/or modify it
+;;;; under the terms of the GNU General Public License as published by
+;;;; the Free Software Foundation, either version 3 of the License, or
+;;;; (at your option) any later version.
+
+;;;; Kisê is distributed in the hope that it will be useful, but
+;;;; WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;;;; Lesser General Public License for more details.
-;;;; 
-;;;; You should have received a copy of the GNU Lesser General Public
-;;;; License along with this library; if not, write to the Free Software
-;;;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+;;;; General Public License for more details.
+
+;;;; You should have received a copy of the GNU General Public License
+;;;; along with Kisê.  If not, see <http://www.gnu.org/licenses/>.
 ;;;;
 
 ;;; Commentary:
@@ -325,7 +326,9 @@
     ((3) "1.2cm")
     ((4) "1.7cm")))
 
-;; ^ second row , first row first field will use a multicolumn
+;; when 2 rows [description on the second], an extra field is added
+;; and row 1 field 1 uses a multicolumn, for better readability of the
+;; row's description and of the table in general.
 (define (kp/get-ltx-preamble-rowfmt-nb-cols core-fields)
   (let* ((description? (member 'description core-fields (lambda (x y) (eq? x (car y)))))
 	 (preamble "")
@@ -453,6 +456,14 @@ reactivated within the table via the \showrowcolors command.
 		     (lambda () 'nothing)))
 !#
 
+(define (kp/display-ltx-preamble-debug-info groups core-fields preamble rowfmt nb-cols description?)
+  (format #t "
+     Groups: ~S
+Core fields: ~S
+   Preamble: ~S
+ Row format: ~S~%~%"
+	  groups core-fields preamble rowfmt))
+
 (define (kp/write-draft-core-content ostream tuples groups core-fields kp-widget tl-widget draftLT-file-object)
   (let* ((current (make-vector (length groups) #f))
 	 (pdir (p-directory draftLT-file-object))
@@ -461,10 +472,10 @@ reactivated within the table via the \showrowcolors command.
 	 (ltx-shortname (format #f "~A~A" (short-filename draftLT-file-object) ltxtable-idx))
 	 (ltx-fullname (format #f "~A/~A.tex" pdir ltx-shortname))
 	 (ltx-stream (open-output-file ltx-fullname)))
-    (format #t "Groups: ~S~%Core fields: ~S~%" groups core-fields)
     (kp/write-ltx-offset ostream ltx-offset)
     (receive (preamble rowfmt nb-cols description?)
 	(kp/get-ltx-preamble-rowfmt-nb-cols core-fields)
+      (kp/display-ltx-preamble-debug-info groups core-fields preamble rowfmt nb-cols description?)
       (if (null? groups)
 	  (begin
 	    (format ostream "\\bigskip~%")
