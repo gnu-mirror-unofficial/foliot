@@ -6,11 +6,7 @@
 
 ** Bugs
 
-*** CLOSED [[25] 4] printing a '0.0 hours' [sub]set crashs Kisê
-CLOSED: [2011-12-28 Wed 14:47]
-- State "CLOSED"     from "OPEN"       [2011-12-28 Wed 14:47]
-
-ktlw/get-totals updated so it will never happen again :)
+*** OPEN [[25] 3] printing: grouping items only crashes
 
 *** CANCELLED [[24] 3] escape char for LaTeX
 CLOSED: [2011-12-19 Mon 10:24]
