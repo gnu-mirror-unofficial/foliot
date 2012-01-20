@@ -1286,9 +1286,11 @@ Date filters [2]:
 	where <op> can be <, <=, =, >=, >
 
 Text filters:
+	=			is empty
+	*			is not empty
 	a_string		contains a_string
+	\"a_word\"		contains a_word
 	=a_string	strictly contains a_string
-	=			is empty 
 	*a_string		ends with a_string
 	a_string*		starts with a_string
 
