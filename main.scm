@@ -30,51 +30,102 @@ exec guile-gnome-2 -e main -s $0 "$@"
 ;;; Code:
 
 (read-set! keywords 'prefix)
+
+
+;;;
+;;; 1st of a 2 steps load modules
+;;;    [ to handle the locale 'problem' ]
+;;;
+
 (use-modules (ice-9 getopt-long)
+	     (ice-9 format)
 	     ;; common
+	     (system locale) ;; re-eport aglobs
 	     (system passwd)
 	     (system i18n)
-	     (system aglobs)
 	     (kise globals))
 
 
-(eval-when (compile)
-  (primitive-eval '(use-modules (oop goops)
-				(gnome gnome)
-				(gnome gnome-ui)
-				(gnome gtk)
-				(gnome gtk graphical-repl)
-				(gnome glib))))
-
-
 ;;;
-;;; Globals
+;;; Globals and locale
 ;;;
 
 (eval-when (compile load eval)
+  (define (display-version port)
+    ;; 'GNU Kise', really nice! But let's wait GNU evaluation/acceptance
+    ;; (aglobs/display (string-append "GNU Kise " (aglobs/get 'version)) port)
+    (aglobs/display (string-append "Kise " (aglobs/get 'version)) port))
+
+  (define (display-copyright port)
+    (aglobs/display "Copyright (C) 2011, 2012 Free Software Foundation, Inc." port)
+    (aglobs/display "" port)
+    (aglobs/display "Kise comes with ABSOLUTELY NO WARRANTY.  This program is free
+software, and you are welcome to redistribute it under certain
+conditions.  See <http://www.gnu.org/licenses/gpl.html>, for more
+details." port)
+    (aglobs/display "" port))
+
+
+  (define (display-help port)
+    (aglobs/display "Usage: kise [OPTION...]" port)
+    (aglobs/display "  --help, -h        display this usage information" port)
+    (aglobs/display "  --version, -v     display version information" port)
+    (aglobs/display "  --debug, -d       open a debugger aside the application" port))
+
+  (define (display-undefined-lang-str)
+    "      Your $LANG environment variable is set to ~S which is not installed
+      on this system. As a fallback, we will use this ~S locale instead.")
+
+  (define (display-undefined-lang port lang fallback)
+    (aglobs/display "    Warning:" port)
+    (aglobs/display (format #f "~?" (display-undefined-lang-str)
+			    (list lang fallback)) port))
+
+  (define (set-locale msg-port)
+    (let ((locale (aglobs/get 'lang)))
+      (catch #t
+	(lambda () (setlocale LC_ALL "")) ;; gettext will not work otherwise
+	(lambda (key . parameters)
+	  ;; (format (current-error-port) "Uncaught throw to ’~a: ~a\n" key parameters)
+	  (let* ((lang (aglobs/get 'lang))
+		 (utf8-locales (sys/get-utf8-locales))
+		 (fallback (or (sys/get-utf8-fallback '("C" "en"))
+			       (and (not (null? utf8-locales)) (car utf8-locales))
+			       "C")))
+	    (display-undefined-lang msg-port lang fallback)
+	    (setenv "LANG" fallback)
+	    (set! locale fallback)
+	    (setlocale LC_ALL fallback))
+	  #f))
+      (aglobs/set 'locale locale)
+      locale))
+
   (aglobs/set 'command-synopsis
 	      '((version   (single-char #\v) (value #f))
 		(help      (single-char #\h) (value #f))
 		(debug     (single-char #\d) (value #f))))
   (aglobs/set 'version "0.9")
   (textdomain "main")
-  (bindtextdomain "main" (aglobs/get 'pofdir)))
+  (bindtextdomain "main" (aglobs/get 'pofdir))
+
+  ;; these 2 must be executed before writting to the port AND loading
+  ;; any gnome modules
+  (let ((port (current-output-port)))
+    (set-port-encoding! port "utf-8")
+    (set-locale port)))
 
 
 ;;;
-;;; Usage and other display
+;;; 2d load modules step
 ;;;
 
-(define (display-version port)
-  ;; 'GNU Kise', really nice! But let's wait GNU evaluation/acceptance
-  ;; (aglobs/display (string-append "GNU Kise " (aglobs/get 'version)) port)
-  (aglobs/display (string-append "Kise " (aglobs/get 'version)) port))
-
-(define (display-help port)
-  (aglobs/display "Usage: kise [options...]" port)
-  (aglobs/display "  --help, -h        Show this usage information" port)
-  (aglobs/display "  --version, -v     Show version information" port)
-  (aglobs/display "  --debug, -d       Open a debugger aside the application" port))
+(use-modules (oop goops)
+	     (gnome gnome)
+	     (gnome gnome-ui)
+	     (gnome gtk)
+	     (gnome gtk graphical-repl)
+	     (gnome glib)
+	     (kise kise))
 
 
 ;;;
@@ -89,25 +140,15 @@ exec guile-gnome-2 -e main -s $0 "$@"
 	 (port (current-output-port))
 	 (uname (sys/get 'uname))
 	 (version (aglobs/get 'version)))
-    (set-port-encoding! port "utf-8")
     (cond (version? (display-version port))
 	  (help? (display-help port))
 	  (else
-	   (aglobs/set 'debug #t)
-	   (catch #t
-	     (lambda () (setlocale LC_ALL "")) ;; gettext will not work otherwise
-	     (lambda args #f))
 	   (display-version port)
+	   (display-copyright port)
+	   (aglobs/set 'debug debug?)
 	   (aglobs/display (string-append "  " (_ "loading core modules") "...") port)
-	   (primitive-eval '(use-modules (oop goops)
-					 (gnome gnome)
-					 (gnome gnome-ui)
-					 (gnome gtk)
-					 (gnome gtk graphical-repl)
-					 (gnome glib)))
 	   (aglobs/display (string-append "  " (_ "loading Kise") "...") port)
 	   (gtk-rc-parse (aglobs/get 'gtkrcfile))
-	   (primitive-eval '(use-modules (kise kise)))
 	   (load-user-init)
 	   (gnome-program-init "Kise" version)
 	   (gnome-authentication-manager-init)
