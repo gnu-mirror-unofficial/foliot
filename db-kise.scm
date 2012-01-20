@@ -223,7 +223,7 @@
 				 ((6) (list (db-kise/fields) group-by))
 				 ((7) (list (db-kise/fields) order-by))
 				 ((8) (list (db-kise/fields)))))))
-    (format #t "db-kise/select-another-some~%  ~S~%" query-string)
+    ;; (format #t "db-kise/select-another-some~%  ~S~%" query-string)
     (sqlite/query (db-con) query-string)))
 
 (define (db-kise/select-distinct-str)

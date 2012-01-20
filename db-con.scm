@@ -26,6 +26,7 @@
 (define-module (kise db-con)
   ;; common
   :use-module (macros reexport)
+  :use-module (macros when)
   :use-module (system aglobs)
   :use-module (db sqlite)
 
@@ -50,11 +51,22 @@
 (define (db-con)
   (aglobs/get 'db-con))
 
+(define (db-con/load-pcre-ext-str)
+  "select load_extension('~A')")
+
 (define (db-con/open filename)
-  (let ((db (sqlite-open filename 6)))
-    (and db
-	 (aglobs/set 'db-con db)
-	 db)))
+  (let ((db (sqlite-open filename)) ;; 6
+	(pcre-lib-ext "/usr/lib/sqlite3/pcre.so"))
+    (if db
+	(begin
+	  (aglobs/set 'db-con db)
+	  (when (access? pcre-lib-ext R_OK)
+	    (sqlite-enable-load-extension db 1)
+	    (sqlite/query db (format #f "~?" (db-con/load-pcre-ext-str) (list pcre-lib-ext)))
+	    (sqlite-enable-load-extension db 0) ;; avoiding security holes
+	    (aglobs/set 'db-pcre #t))
+	  db)
+	#f)))
 
 (define (db-con/close)
   (sqlite-close (db-con))
