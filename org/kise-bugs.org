@@ -6,7 +6,60 @@
 
 ** Bugs
 
-*** OPEN [[25] 3] printing: grouping items only crashes
+*** CLOSED [[32] 3] to-be-charged now implies sorting the database
+CLOSED: [2012-06-17 Sun 14:48]
+- State "CLOSED"     from "OPEN"       [2012-06-17 Sun 14:48]
+
+it does not and should, which will trigger a db reload, _and_ set the
+g_reselect_path? to the new-path, which must be used inside the tv-sel 'changed
+signal [otherwise, due to the 'toggle preseance on the signals chain, a wrong
+row is selected ... [see printing g_reselect_path? as well]]
+
+*** CLOSED [[31] 3] ktlw/duplicate was not working properly
+CLOSED: [2012-04-22 Sun 14:54]
+- State "CLOSED"     from "OPEN"       [2012-04-22 Sun 14:54]
+
+due to a wrong 'order by' in select, missing to_be_charged -> wrong row
+selection in certain situations; db-kise/select* all modified for the
+above.
+
+*** CLOSED [[30] 3] date: sqlite3 strfmtime date range _limitation_
+CLOSED: [2012-04-22 Sun 13:24]
+- State "CLOSED"     from "OPEN"       [2012-04-22 Sun 13:24]
+
+has we anyway _have to_ limit the valid date range, for strfmtime passing
+'unixepoch' modifier in its arg list, we now do it properly and from 01.01.1970
+till 31.12.2037 [unpredictable behavior has been detected ouside a _larger_
+range.
+
+*** CLOSED [[29] 3] date: years as more then 4 digits did cause a _hidden_ problem
+CLOSED: [2012-04-22 Sun 12:21]
+- State "CLOSED"     from "OPEN"       [2012-04-03 Sun 12:21]
+
+sqlite3 strfmtime _only_ accept ISO dates [yyyy-mm-dd], kisê did accept more
+then 5 digits, but the database field would then be empty.
+
+*** CLOSED [[28] 3] date allows '22.02.20bli'
+CLOSED: [2012-02-26 Sun 14:26]
+- State "CLOSED"     from "OPEN"       [2012-02-26 Sun 14:26]
+
+*** CLOSED [[27] 3] printing: grouping on duration crashes
+CLOSED: [2012-02-02 Thu 11:31]
+- State "CLOSED"     from "OPEN"       [2012-02-02 Thu 11:31]
+
+this is because kp/group-compare-current, in p-dratf.scm, used string=? on all
+arguments, oh dear...  now uses fp/=? on floats :lo:
+
+*** STARTED [[26] 3] kise.conf should not define any logo per default
+
+which it did by mistake.  still, we will need to modify the existing code as
+soon as we'll have implemented preferences.  indeed, as it is right now, the
+system writes back to the config file what it gave/has/had at load time, which
+now is correctly initially set to #f
+
+*** CLOSED [[25] 3] printing: grouping items only crashes
+CLOSED: [2012-02-02 Thu 11:25]
+- State "CLOSED"     from "OPEN"       [2012-02-02 Thu 11:25]
 
 *** CANCELLED [[24] 3] escape char for LaTeX
 CLOSED: [2011-12-19 Mon 10:24]
@@ -34,8 +87,8 @@ as already the case for printing, nav buttons ...
 
 *** OPEN [[22] 3] connect: database's schema incomplete, cancel
 
-When the user try to connect an other database with a
-incomplete Kisé schema, he click cancel and then he try to print
+When the user try to connect another database with a incomplete Kisê schema, he
+click cancel and then he try to print
 
 *** CLOSED [[21] 3] gui - filter-clear not restoring gui-callback
 CLOSED: [2011-11-16 Wed 11:34]
@@ -133,7 +186,6 @@ detailed view.
 *** CLOSED [     3] clicking a row does not update the statusbar ratio
 CLOSED: [2011-08-04 Thu 17:08] 
 - State "CLOSED"       from "OPEN"       [2011-08-04 Thu 17:08]
-
 
 *** CLOSED [[11] 4] text filters not calling str/prep-str-for-pg
 CLOSED: [2011-09-11 Sun 20:13] 

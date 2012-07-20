@@ -6,6 +6,31 @@
 
 ** Important stuff
 
+*** TODO date/get-filter is called twice
+
+1 @ filter-date-entry focus out
+2 when filter-apply is called
+
+-> store (date/get-filter ..) -> <kise/tl-widget>
+
+*** TODO filter -> sub-sql-exp [dbf/get-filter] should be kept
+
+since =ktlw/select-ctime= _needs_ *it* /too/ and so far does call
++dbf/get-filter+ which is unnecessary and very consumming
+
+*** STARTED removing (macros when) -> 2.0.5 min guile
+
+starting with 2.0.4, when and unless are part of guile core. we will require
+that version as the minimum and need remove these two macros from common/macros
+
+*** DONE main script -v should display the license 
+CLOSED: [2012-01-23 Mon 11:23]
+- State "DONE"       from "TODO"       [2012-01-23 Mon 11:23]
+
+*** DONE main script should not display 'loading ...' 
+CLOSED: [2012-01-23 Mon 11:23]
+- State "DONE"       from "TODO"       [2012-01-23 Mon 11:23]
+
 *** DONE adding GPLv3 to all files in Kisê, sqlite and latex
 CLOSED: [2012-01-10 Tue 10:10]
 - State "DONE"       from "STARTED"    [2012-01-10 Tue 10:10]
@@ -108,7 +133,9 @@ CLOSED: [2011-06-21 Tue 20:04]
 when I expand the window, now the field description expands, good. But
 sometimes, I would see more records in the list.
 
-*** TODO resolution: fixed size gtkentry widgets and
+*** DONE resolution: fixed size gtkentry widgets and
+CLOSED: [2012-04-23 Mon 00:31]
+- State "DONE"       from "TODO"       [2012-04-23 Mon 00:31]
 
 similar should be 'resized' @ app init because each user has its own
 [may have] Xft.dpi settings [mine is 76, christian's is 96]. This would
