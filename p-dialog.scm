@@ -255,23 +255,44 @@
   ;;	-> does not affect other options
   ;;	-> row moved after the last row with group ON
   ;; grouping infos MUST be gathered BEFORE any setting on any toggle
+
   (receive (nb-rows first-grouped last-grouped last-printed)
       (if (gui-callback? kp-widget) (kp/get-grouping-infos kp-widget) (values -1 #f #f #f))
-    (let* ((piter-get (lambda (model iter) (kpiter/get 'print model iter)))
-	   (piter-set (lambda (model iter value) (kpiter/set 'print model iter value)))
-	   (giter-get (lambda (model iter) (kpiter/get 'group model iter)))
-	   (giter-set (lambda (model iter value) (kpiter/set 'group model iter value)))
-	   (new-value (if (null? value)
-			  (gtk2/fixed-toggled model iter giter-get giter-set)
-			  (gtk2/fixed-toggled model iter giter-get giter-set (car value)))))
-      (when (gui-callback? kp-widget)
-	(kp/on-g-tv-row-change kp-widget) ;; <- making sure focus-out-event tpl-entry ...
-	(kp/row-move kp-widget model iter 'group new-value
-		     nb-rows first-grouped last-grouped last-printed)
-	(when new-value 
-	  (gtk2/fixed-toggled model iter piter-get piter-set #t)
-	  (kp/check-print-bt-sensitiveness kp-widget))
-	(kp/update-grouping kp-widget)))))
+    ;; (format #t "1st grouped: ~S, last: ~S, total: ~S~%" first-grouped last-grouped
+    ;; (and first-grouped last-grouped (1+ (- last-grouped first-grouped))))
+    (let ((piter-get (lambda (model iter) (kpiter/get 'print model iter)))
+	  (piter-set (lambda (model iter value) (kpiter/set 'print model iter value)))
+	  (giter-get (lambda (model iter) (kpiter/get 'group model iter)))
+	  (giter-set (lambda (model iter value) (kpiter/set 'group model iter value))))
+      (case caller
+	((fill) ;; dialog creation, value is not null
+	 (gtk2/fixed-toggled model iter giter-get giter-set (car value)))
+	((toggled)
+	 (let* ((old-value (giter-get model iter))
+		(new-value (not old-value)))
+	   (if new-value
+	       ;; only if nb checked < 4
+	       (if (or (not first-grouped)
+		       (< (1+ (- last-grouped first-grouped)) 4))
+		   (begin
+		     (gtk2/fixed-toggled model iter giter-get giter-set)
+		     (kp/on-g-tv-row-change kp-widget) ;; <- making sure focus-out-event tpl-entry ...
+		     (kp/row-move kp-widget model iter 'group new-value
+				  nb-rows first-grouped last-grouped last-printed)
+		     (gtk2/fixed-toggled model iter piter-get piter-set #t)
+		     (kp/check-print-bt-sensitiveness kp-widget)
+		     (kp/update-grouping kp-widget))
+		   (md1b/select-gui (dialog kp-widget)
+				    (_ "Warning!")
+				    (_ "Grouping:")
+				    (_ "You may not select more then 4 items to be grouped.")
+				    (lambda () 'nothing)))
+	       (begin
+		 (gtk2/fixed-toggled model iter giter-get giter-set)
+		 (kp/on-g-tv-row-change kp-widget) ;; <- making sure focus-out-event tpl-entry ...
+		 (kp/row-move kp-widget model iter 'group new-value
+			      nb-rows first-grouped last-grouped last-printed)
+		 (kp/update-grouping kp-widget)))))))))
 
 (define (kp/sorting-radios-callback kp-widget model iter mode)
   (let* (;; (row (string->number path)) 
@@ -289,19 +310,16 @@
       ((asc) (unless (asc-get model iter)
 	       (let ((new-value (gtk2/fixed-toggled model iter asc-get asc-set)))
 		 (gtk2/fixed-toggled model iter desc-get desc-set (not new-value))
-		 (gtk2/fixed-toggled model iter none-get none-set (not new-value))
-		 )))
+		 (gtk2/fixed-toggled model iter none-get none-set (not new-value)))))
       ((desc) (unless (desc-get model iter)
 		(let ((new-value (gtk2/fixed-toggled model iter desc-get desc-set)))
 		  (gtk2/fixed-toggled model iter asc-get asc-set (not new-value))
-		  (gtk2/fixed-toggled model iter none-get none-set (not new-value))
-		  )))
+		  (gtk2/fixed-toggled model iter none-get none-set (not new-value)))))
       ((none) (unless (none-get model iter)
 		(let ((new-value (gtk2/fixed-toggled model iter none-get none-set)))
 		  (gtk2/fixed-toggled model iter asc-get asc-set (not new-value))
-		  (gtk2/fixed-toggled model iter desc-get desc-set (not new-value))
-		  ))))
-    (when (gui-callback? kp-widget) 
+		  (gtk2/fixed-toggled model iter desc-get desc-set (not new-value))))))
+    (when (gui-callback? kp-widget)
       (kp/on-g-tv-row-change kp-widget)
       (kp/update-grouping kp-widget))))
 
@@ -905,6 +923,7 @@
 
 (use-modules (kise p-dialog))
 (reload-module (resolve-module '(kise p-dialog)))
+(module-filename (resolve-module '(kise p-dialog)))
 ,m (kise p-dialog)
 
 (kp/set-debug-variables)

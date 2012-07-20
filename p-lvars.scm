@@ -53,6 +53,9 @@
 
 
 (eval-when (compile load eval)
+  (re-export-public-interface (system dates)
+			      (system i18n)
+			      (system aglobs))
   (textdomain "p-lvars")
   (bindtextdomain "p-lvars" (aglobs/get 'pofdir)))
 
@@ -90,20 +93,19 @@
 	    (list date ;; will check but should use the locale
 		  (basename (pdf tex-files) ".pdf")
 		  (_ "Page")
-		  (_ "Timesheet Report")
+		  (_ "Time tracking Report")
 		  (_ "reference")
-
 		  ;; left header
 		  (if ulogo
 		      (format #f "\\includegraphics[height=26mm]{~A}" ulogo)
 		      (format #f "\\klabel{~A}\\\\~~\\\\~~\\\\" (_ "Your logo here")))
 		  ;; right header
 		  ;;   this field is defined in draft-command
-		  
 		  ;; footer
-		  (format #f "~~printed on ~A by ~A" date (sys/get 'uname))
-		  "\\pagetext ~~ \\thepage/\\pageref{LastPage}~"
-		  ))
+		  (format #f "~~~A ~A ~A ~A" 
+			  (_ "printed on") date 
+			  (_ "by") (sys/get 'uname))
+		  "\\pagetext ~~ \\thepage/\\pageref{LastPage}~"))
     (close ostream)))
 
 

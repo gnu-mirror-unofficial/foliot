@@ -296,8 +296,12 @@
 	(different-pos -1))
     (dotimes (i (length tuple-group-values))
       (let* ((c-val (list-ref tuple-group-values i))
-	     (same? (string=? (vector-ref current i) c-val)))
-	(if same? 
+	     (same? (cond ((string? c-val) (string=? (vector-ref current i) c-val))
+			  ((number? c-val) (fp/=? (vector-ref current i) c-val))
+			  (else
+			   (format #t "Warning: kp/group-compare-current, unmanaged value type ~S~%" c-val)
+			   #t)))) ;; <- not knowing, we suppose it is the same as before
+	(if same?
 	    (set! same-nb (1+ same-nb))
 	    (when (= different-pos -1) (set! different-pos i)))
 	(set! c-values (cons c-val c-values))))
@@ -492,34 +496,39 @@ Core fields: ~S
 			      (begin
 				(kp/fill-current current group-values)
 				(kp/write-draft-core-sections ostream groups 0 tuple)
-				(kp/write-draft-ltxtable-cmd ostream ltx-shortname)
-				(tex/write-utf8-comment-line ltx-stream)
-				(kp/write-draft-begin-ltx ltx-stream preamble)
-				(kp/write-draft-ltx-tuple ltx-stream tuple core-fields rowfmt nb-cols description? ltx-offset))
+				(unless (null? core-fields)
+				  (kp/write-draft-ltxtable-cmd ostream ltx-shortname)
+				  (tex/write-utf8-comment-line ltx-stream)
+				  (kp/write-draft-begin-ltx ltx-stream preamble)
+				  (kp/write-draft-ltx-tuple ltx-stream tuple core-fields rowfmt nb-cols description? ltx-offset)))
 			      (receive (c-values same-nb different-pos)
 				  (kp/group-compare-current current group-values)
-				;; (format #t "comp cur;:~%  c-values: ~S, same-nb: ~A, different-pos ~A~%" 
+				;; (format #t "comp cur;:~%  c-values: ~S, same-nb: ~A, different-pos ~A~%"
 				;; c-values same-nb different-pos)
 				(case different-pos
 				  ((-1)
-				   (kp/write-draft-ltx-tuple ltx-stream tuple core-fields rowfmt nb-cols description? ltx-offset))
+				   (unless (null? core-fields)
+				     (kp/write-draft-ltx-tuple ltx-stream tuple core-fields rowfmt nb-cols description? ltx-offset)))
 				  (else
 				   (kp/fill-current current group-values)
-				   (kp/write-draft-end-ltx ltx-stream)
-				   (close ltx-stream)
-				   (set! ltxtable-idx (1+ ltxtable-idx))
-				   (set! ltx-shortname (format #f "~A~A" (short-filename draftLT-file-object) ltxtable-idx))
-				   (set! ltx-fullname (format #f "~A/~A.tex" pdir ltx-shortname))
-				   (set! ltx-stream (open-output-file ltx-fullname))
+				   (unless (null? core-fields)
+				     (kp/write-draft-end-ltx ltx-stream)
+				     (close ltx-stream)
+				     (set! ltxtable-idx (1+ ltxtable-idx))
+				     (set! ltx-shortname (format #f "~A~A" (short-filename draftLT-file-object) ltxtable-idx))
+				     (set! ltx-fullname (format #f "~A/~A.tex" pdir ltx-shortname))
+				     (set! ltx-stream (open-output-file ltx-fullname)))
 				   (kp/write-draft-core-sections ostream groups different-pos tuple)
-				   (kp/write-draft-ltxtable-cmd ostream ltx-shortname)
-				   (tex/write-utf8-comment-line ltx-stream)
-				   (kp/write-draft-begin-ltx ltx-stream preamble)
-				   (kp/write-draft-ltx-tuple ltx-stream tuple core-fields rowfmt nb-cols description? ltx-offset)))))))
+				   (unless (null? core-fields)
+				     (kp/write-draft-ltxtable-cmd ostream ltx-shortname)
+				     (tex/write-utf8-comment-line ltx-stream)
+				     (kp/write-draft-begin-ltx ltx-stream preamble)
+				     (kp/write-draft-ltx-tuple ltx-stream tuple core-fields rowfmt nb-cols description? ltx-offset))))))))
 		;; (list (car tuples) (cadr tuples) (caddr tuples))
 		tuples)
-	    (kp/write-draft-end-ltx ltx-stream)
-	    (close ltx-stream))))))
+	    (unless (null? core-fields)
+	      (kp/write-draft-end-ltx ltx-stream)
+	      (close ltx-stream)))))))
 
 (define (kp/write-draft-content ostream kp-widget tl-widget draftLT-file-object)
   (let* ((db-name (basename (db-file tl-widget)))
@@ -588,7 +597,7 @@ Core fields: ~S
 (use-modules (kise p-draft))
 (reload-module (resolve-module '(kise p-draft)))
 
-this bugs latex: [tex/prep]
+this bugs latex: [tex/prep] just to test
 
 http://en.wikibooks.org/w/index.php?title=LaTeX/Tables&stable=0#Need_more_complicated_features.3F
 
