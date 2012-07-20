@@ -35,7 +35,6 @@
   ;; common
   :use-module (macros reexport)
   :use-module (macros push)
-  :use-module (macros when)
   :use-module (macros do)
   :use-module (system dates)
   :use-module (system i18n)
@@ -67,7 +66,8 @@
 	   treeview
 	   selection
 	   row
-	   iter))
+	   iter
+	   tuple))
 
 
 (eval-when (compile load eval)
@@ -106,6 +106,7 @@
 (define selection #f)
 (define row #f)
 (define iter #f)
+(define tuple #f)
 
 (define (kise/set-debug-variables)
   (set! tl-widget *tl-widget*)
@@ -113,8 +114,8 @@
   (set! model (tv-model tl-widget))
   (set! selection (tv-sel tl-widget))
   (set! row (current-row tl-widget))
-  (set! iter (current-iter tl-widget)))
-
+  (set! iter (current-iter tl-widget))
+  (set! tuple (ktlw/get-tuple tl-widget row)))
 
 #!
 
@@ -130,9 +131,6 @@
 ;;; row selection related stuff
 ;;;
 
-(define (kise/set-cur-globals tl-widget row iter)
-  (set! (current-row tl-widget) row)
-  (set! (current-iter tl-widget) iter))
 
 (define (kise/set-gtk-entries tl-widget row iter)
   (let ((tuple (ktlw/get-tuple tl-widget row))
@@ -172,17 +170,17 @@
   (exit 0))
 
 (define (kise/on-tv-row-change tl-widget)
-  ;;(format #t "On TV row change~%")
+  ;; (format #t "On TV row change~%")
   (when (gui-callback? tl-widget)
     (let* ((main-window (dialog tl-widget))
 	   (focusw (get-focus main-window))
 	   (old-row  (current-row tl-widget)))
-      ;; (format #t "focus window ~S, widget ~S, name: ~A~%" main-window focusw (and focusw (get-name focusw)))
-      ;; (format #t "saving entries for row: ~A~%" old-row)
+      ;; (format #t "~A focusw: ~A~%" (get-name main-window) (and focusw (get-name focusw)))
       (when (and old-row
+		 (>= old-row 0) ;; -1 when no rows
 		 focusw
 		 (not (eq? focusw (tv tl-widget))))
-	;; (emit focusw 'focus-out-event focusw #f)
+	;; (format #t "  saving entries for row: ~A~%" old-row)
 	(if (eq? focusw (description-entry tl-widget))
 	    (set-focus main-window (date-entry tl-widget))
 	    (set-focus main-window (description-entry tl-widget)))))))
@@ -231,45 +229,38 @@
     ;; necessary or (kcgf/get 'reload) [if you manually change the
     ;; file for example for testing purposes]
     (set! *tl-widget* tl-widget)
-
     (connect (dialog tl-widget)
 	     'delete-event
 	     (lambda (. args)
 	       (kise/exit tl-widget)
 	       #t)) ;; stops the event to be propagated
-
     (connect (con-bt tl-widget)
 	     'clicked
 	     (lambda (button)
+	       (kise/on-tv-row-change tl-widget)
 	       (kc/select-gui tl-widget)))
-
     (connect (quit-bt tl-widget)
 	     'clicked
 	     (lambda (button) (kise/exit tl-widget)))
-
     (connect (dup-bt tl-widget)
 	     'clicked
 	     (lambda (button)
 	       (kise/on-tv-row-change tl-widget)
 	       (ktlw/duplicate tl-widget)))
-
     (connect (add-bt tl-widget)
 	     'clicked
 	     (lambda (button)
 	       (kise/on-tv-row-change tl-widget)
 	       (ktlw/add tl-widget)))
-
     (connect (del-bt tl-widget)
 	     'clicked
 	     (lambda (button)
 	       (ktlw/delete tl-widget)))
-
     (connect (print-bt tl-widget)
 	     'clicked
 	     (lambda (button)
 	       (kise/on-tv-row-change tl-widget)
 	       (kp/select-gui tl-widget)))
-
     (connect (first-bt tl-widget)
 	     'clicked
 	     (lambda (button)
@@ -286,7 +277,6 @@
 	     'clicked
 	     (lambda (button)
 	       (ktlw/select-row tl-widget (- (length (db-tuples tl-widget)) 1))))
-
     #!
     (connect (help-bt tl-widget)
 	     'clicked
@@ -317,6 +307,7 @@
 		       (row (current-row tl-widget))
 		       (iter (current-iter tl-widget))
 		       (value (get-value widget)))
+		   ;; (dimfi row iter value)
 		   (kiseiter/set 'duration model iter value)
 		   ;; update-db
 		   (ktlw/set 'duration tl-widget value row)
@@ -326,17 +317,22 @@
 	     'toggled
 	     (lambda (widget)
 	       (when (gui-callback? tl-widget)
+		 ;; (dimfi "to-be-charged callback, gui-callback true...")
 		 (let* ((model (tv-model tl-widget))
 			(row (current-row tl-widget))
 			(tuple (ktlw/get-tuple tl-widget row))
 			(id (db-kise/get tuple 'id))
 			(iter (current-iter tl-widget))
 			(new-value (get-active widget)))
+		   ;; do it on the toggle in the list store too ...
 		   (when (active-filter tl-widget) (ktlw/add-id id tl-widget))
+		   (set! (gui-callback? tl-widget) #f)
 		   (kiseiter/set 'to-be-charged model iter new-value)
+		   (set! (gui-callback? tl-widget) #t)
 		   ;; update-db
 		   (ktlw/set 'to_be_charged tl-widget (sqlite/boolean new-value) row)
-		   (ktlw/update-totals-status-bars tl-widget)))))
+		   (ktlw/update-totals-status-bars tl-widget)
+		   (ktlw/update-store-check-position tl-widget 'to_be_charged new-value #f)))))
 
     (connect (description-entry tl-widget)
 	     'focus-out-event
@@ -383,8 +379,7 @@
 		      (empty? (string-null? trimed))
 		      (filter? (and (not empty?)
 				    (date/get-filter trimed))))
-		 (if (and (not empty?)
-			  (not filter?))
+		 (if (not filter?)
 		     (begin
 		       (gdk-beep)
 		       (gtk2/status-pop (status-bar-2 tl-widget) "")
@@ -446,39 +441,49 @@
     (connect (tv-sel tl-widget)
 	     'changed
 	     (lambda (selection)
+	       ;; (dimfi "row-changed " (g-reselect-path? tl-widget))
 	       (kise/on-tv-row-change tl-widget)
-	       (receive (model iter)
-		   (get-selected selection)
-		 (if iter
-		     (let* ((path (get-path model iter))
-			    (row (car path))
-			    (guicbpv? (gui-callback? tl-widget)))
-		       ;; (format #t "row-changed - new-row:  ~S~%" row)
-		       (gtk2/status-pop (status-bar-2 tl-widget) "")
-		       (kise/set-cur-globals tl-widget row iter)
-		       (set! (gui-callback? tl-widget) #f)
-		       (kise/set-gtk-entries tl-widget row iter)
-		       (set! (gui-callback? tl-widget) guicbpv?)
-		       (ktlw/check-nav-tb-sensitive-needs tl-widget (1+ row))
-		       (ktlw/update-status-bar-1 tl-widget))))))
+	       (unless (g-reselect-path? tl-widget)
+		 (receive (model iter)
+		     (get-selected selection)
+		   (if iter ;; is #f when filter-apply and prev row not in subset
+		       (let* ((path (get-path model iter))
+			      (row (car path))
+			      (guicbpv? (gui-callback? tl-widget)))
+			 ;; (dimfi "row-changed - new-row: " row)
+			 (gtk2/status-pop (status-bar-2 tl-widget) "")
+			 (ktlw/set-cur-globals tl-widget row iter)
+			 (set! (gui-callback? tl-widget) #f)
+			 (kise/set-gtk-entries tl-widget row iter)
+			 (set! (gui-callback? tl-widget) guicbpv?)
+			 (ktlw/check-nav-tb-sensitive-needs tl-widget (1+ row))
+			 (ktlw/update-status-bar-1 tl-widget)))))))
 
-    (gtk2/set-sensitive `(,(reference-entry tl-widget)
-			  ,(db-name-entry tl-widget))
-			#f)
+    (connect (tv tl-widget)
+	     'cursor-changed
+	     (lambda (tview)
+	       ;; this signal is last activated and could be used
+	       ;; instead of the (g-reselect-path? tl-widget) 'trick'
+	       (if (g-reselect-path? tl-widget)
+		   (let ((tv-sel (tv-sel tl-widget))
+			 (path (g-reselect-path? tl-widget)))
+		     ;; (dimfi "cursor changed, g-reselect-path: " path)
+		     (unselect-all tv-sel)
+		     (set! (g-reselect-path? tl-widget) #f)
+		     (select-path tv-sel path)))
+	       #f))
 
+    (gtk2/set-sensitive `(,(reference-entry tl-widget)) #f)
     (show-all (dialog tl-widget))
     (gtk2/hide `(,(menubar tl-widget)
 		 ,(date-icon tl-widget)
-		 ,(filter-icon tl-widget)
-		 ,(db-name-entry tl-widget)
 		 ,(get-widget (xml-code tl-widget) "kise/order_tb")
 		 ,(get-widget (xml-code tl-widget) "kise/db_name_bt")
+		 ,(get-widget (xml-code tl-widget) "kise/nav_tb_2")
 		 ,(db-name-lb2 tl-widget)
+		 ,(db-name-lb3 tl-widget)
 		 ,(filter-to-be-charged-cb tl-widget)))
-
-    (kise/open-db tl-widget)
-
-    ))
+    (kise/open-db tl-widget)))
 
 
 #!
