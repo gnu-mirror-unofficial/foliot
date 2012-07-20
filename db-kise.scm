@@ -147,29 +147,33 @@
 			(list (db-kise/fields)
 			      reference))))
 
+(define (db-kise/select-order-by-str)
+  "date_ desc, who asc, for_whom asc, what asc, to_be_charged asc, id desc")
+
 (define (db-kise/select-all-str)
   "select ~A
      from kise
- order by date_ desc, who asc, for_whom asc, what asc, id desc")
+ order by ~A")
 
 (define (db-kise/select-all . aggregate?)
   (let ((what (if (null? aggregate?) (db-kise/fields) (car aggregate?))))
     (sqlite/query (db-con)
 		  (format #f "~?" (db-kise/select-all-str)
-			  (list what)))))
+			  (list what
+				(db-kise/select-order-by-str))))))
 
 (define (db-kise/select-some-str)
   "select ~A
      from kise
     where ~A
- order by date_ desc, who asc, for_whom asc, what asc, id desc")
+ order by ~A")
 
 (define (db-kise/select-some-with-ids-str)
   "select ~A
      from kise
     where ~A
        or id in ~A
- order by date_ desc, who asc, for_whom asc, what asc, id desc")
+ order by ~A")
 
 (define (db-kise/select-some where ids . aggregate?)
   (let ((what (if (null? aggregate?) (db-kise/fields) (car aggregate?))))
@@ -178,19 +182,18 @@
 			 (format #f "~?" (db-kise/select-some-with-ids-str)
 				 (list what
 				       where
-				       (dbf/build-set-expression ids)
-				       ))))
+				       (sqlite/build-set-expression ids)
+				       (db-kise/select-order-by-str)))))
 	  (where
 	   (sqlite/query (db-con)
 			 (format #f "~?" (db-kise/select-some-str)
 				 (list what
 				       where
-				       ))))
+				       (db-kise/select-order-by-str)))))
 	  (else
 	   (if (null? aggregate?)
 	       (db-kise/select-all)
-	       (db-kise/select-all (car aggregate?))
-	       )))))
+	       (db-kise/select-all (car aggregate?)))))))
 
 (define (db-kise/select-another-some-str mode)
   (case mode
@@ -260,7 +263,7 @@
     (modified_by . 12)))
 
 (define (db-kise/get-pos what)
-  (cdr (assoc what (db-kise/fields-offsets))))
+  (assq-ref (db-kise/fields-offsets) what))
 
 
 ;;;
@@ -268,8 +271,12 @@
 ;;;
 
 (define (db-kise/get db-tuple what)
-  ;; db-tuple is a vector
-  (vector-ref db-tuple (db-kise/get-pos what)))
+  ;; db-tuple is a vector. NULL values are returned as #f by sqlite.scm
+  ;; which is a problem if the field is used in _text_ widget
+  (let ((value (vector-ref db-tuple (db-kise/get-pos what))))
+    (case what
+      ((date date_) (if value value ""))
+      (else value))))
 
 (define (db-kise/set db-tuple what value)
   ;; db-tuple is a vector
@@ -435,6 +442,7 @@
 (reload-module (resolve-module '(kise db-kise)))
 
 (db-con/open "/tmp/new.db")
+(db-con/open "/usr/alto/db/sqlite.alto.tests.db")
 (sqlite-close (db-con))
 
 (db-kise/get-next-id)
@@ -509,5 +517,7 @@
  update kise
     set date_ = '1246060800'
   where id = '40';
+
+select id, strftime('%d.%m.%Y', date_, 'unixepoch') as date_ from kise;
 
 !#
