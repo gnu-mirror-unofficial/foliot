@@ -76,7 +76,14 @@
 ;;;
 
 (define (kc/connect-cant-connect-str)
-  (_ "Some problem occured while trying to open ~A. It could be that you don't have writing permissions over it, or that it is not a Kisê database file. Please check all of the above and start again or create/connect to another Kisê database."))
+  (_ "I can not open ~A: or it is not a Kisê database file, or you don't have writing permissions over it."))
+
+#!
+Some problem occured while trying to open ~A. It could be that you
+don't have writing permissions over it, or that it is not a Kisê
+database file. Please check all of the above and start again or
+create/connect to another Kisê database.
+!#
 
 (define (kc/connect-cant-create-str)
   (_ "You don't have 'writing permissions' in this directory: ~A. Please check your permissions and try again or make another directory selection."))
