@@ -4,7 +4,7 @@
   <!-- interface-naming-policy toplevel-contextual -->
   <widget class="GtkWindow" id="kise">
     <property name="width_request">495</property>
-    <property name="height_request">732</property>
+    <property name="height_request">670</property>
     <property name="title" translatable="yes">Kis&#xEA;</property>
     <property name="window_position">center</property>
     <child>
@@ -50,10 +50,10 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkHandleBox" id="cc/handlebox">
+          <widget class="GtkHandleBox" id="kise/handlebox">
             <property name="visible">True</property>
             <child>
-              <widget class="GtkToolbar" id="cc/toolbar">
+              <widget class="GtkToolbar" id="kise/toolbar">
                 <property name="visible">True</property>
                 <child>
                   <widget class="GtkToolButton" id="kise/con_bt">
@@ -273,7 +273,6 @@
                         </child>
                         <child>
                           <widget class="GtkScrolledWindow" id="kise/description_sw">
-                            <property name="height_request">100</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="hscrollbar_policy">automatic</property>
@@ -393,7 +392,7 @@ cmh</property>
                             <property name="right_attach">4</property>
                             <property name="top_attach">1</property>
                             <property name="bottom_attach">2</property>
-                            <property name="x_options"></property>
+                            <property name="x_options"/>
                             <property name="y_options">GTK_FILL</property>
                           </packing>
                         </child>
@@ -443,7 +442,7 @@ maintenance</property>
                           <widget class="GtkLabel" id="kise/what_lb">
                             <property name="visible">True</property>
                             <property name="xalign">1</property>
-                            <property name="label" translatable="yes">&lt;u&gt;&lt;span foreground="#000000"&gt;What:&lt;/span&gt;&lt;/u&gt;</property>
+                            <property name="label" translatable="yes">What:</property>
                             <property name="use_markup">True</property>
                             <property name="use_underline">True</property>
                           </widget>
@@ -468,7 +467,7 @@ christian
                           <packing>
                             <property name="left_attach">3</property>
                             <property name="right_attach">4</property>
-                            <property name="x_options"></property>
+                            <property name="x_options"/>
                             <property name="y_options">GTK_FILL</property>
                           </packing>
                         </child>
@@ -517,7 +516,7 @@ christian
                         </child>
                         <child>
                           <widget class="GtkEntry" id="kise/reference_entry">
-                            <property name="width_request">80</property>
+                            <property name="width_request">97</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="invisible_char">&#x2022;</property>
@@ -887,6 +886,74 @@ no
                             <property name="visible">True</property>
                             <property name="spacing">4</property>
                             <child>
+                              <widget class="GtkToolbar" id="kise/nav_tb_2">
+                                <property name="visible">True</property>
+                                <property name="toolbar_style">icons</property>
+                                <property name="show_arrow">False</property>
+                                <property name="icon_size">1</property>
+                                <property name="icon_size_set">True</property>
+                                <child>
+                                  <widget class="GtkToolButton" id="kise/first_bt1">
+                                    <property name="visible">True</property>
+                                    <property name="has_tooltip">True</property>
+                                    <property name="tooltip" translatable="yes">First</property>
+                                    <property name="label" translatable="yes">First</property>
+                                    <property name="stock_id">gtk-goto-first</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="homogeneous">True</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkToolButton" id="kise/prev_bt1">
+                                    <property name="visible">True</property>
+                                    <property name="has_tooltip">True</property>
+                                    <property name="tooltip" translatable="yes">Previous</property>
+                                    <property name="label" translatable="yes">Previous</property>
+                                    <property name="stock_id">gtk-go-back</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="homogeneous">True</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkToolButton" id="kise/next_bt1">
+                                    <property name="visible">True</property>
+                                    <property name="has_tooltip">True</property>
+                                    <property name="tooltip" translatable="yes">Next</property>
+                                    <property name="label" translatable="yes">Next</property>
+                                    <property name="stock_id">gtk-go-forward</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="homogeneous">True</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkToolButton" id="kise/last_bt1">
+                                    <property name="visible">True</property>
+                                    <property name="has_tooltip">True</property>
+                                    <property name="tooltip" translatable="yes">Last</property>
+                                    <property name="label" translatable="yes">Last</property>
+                                    <property name="stock_id">gtk-goto-last</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="homogeneous">True</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <placeholder/>
+                            </child>
+                            <child>
                               <placeholder/>
                             </child>
                             <child>
@@ -896,35 +963,21 @@ no
                                 <property name="use_markup">True</property>
                               </widget>
                               <packing>
-                                <property name="position">1</property>
+                                <property name="expand">False</property>
+                                <property name="position">3</property>
                               </packing>
                             </child>
                             <child>
                               <widget class="GtkImage" id="kise/filter_icon">
                                 <property name="visible">True</property>
                                 <property name="has_tooltip">True</property>
-                                <property name="tooltip" translatable="yes">When more then one filter field is used, they are combined  using the AND operator [1].
-
-Date filters [2]:
-	a_date
-	&lt;op&gt;a_date [or &lt;op&gt; a_date]
-
-	where &lt;op&gt; can be &lt;, &lt;=, =, &gt;=, &gt;
-
-Text filters:
-	a_string		contains a_string
-	=a_string	strictly contains a_string
-	=			is empty 
-	*a_string		ends with a_string
-	a_string*		starts with a_string
-
-[1]	combining AND filter sets using the OR operator requires a more sophisticated interface, but it will be provided in the future;
-[2]	date range and keywords - 'today', 'this month' ... - are under work.</property>
-                                <property name="stock">gtk-dialog-question</property>
+                                <property name="tooltip" translatable="yes">ON: your are working on subset of your database.</property>
+                                <property name="stock">gtk-apply</property>
                                 <property name="icon-size">2</property>
                               </widget>
                               <packing>
-                                <property name="position">2</property>
+                                <property name="expand">False</property>
+                                <property name="position">4</property>
                               </packing>
                             </child>
                             <child>
@@ -986,7 +1039,7 @@ Text filters:
                               </widget>
                               <packing>
                                 <property name="expand">False</property>
-                                <property name="position">3</property>
+                                <property name="position">5</property>
                               </packing>
                             </child>
                           </widget>
@@ -1002,7 +1055,7 @@ Text filters:
                     </child>
                     <child>
                       <widget class="GtkScrolledWindow" id="kise/sw">
-                        <property name="height_request">180</property>
+                        <property name="height_request">139</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="hscrollbar_policy">automatic</property>
@@ -1052,15 +1105,27 @@ Text filters:
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkEntry" id="kise/db_name_entry">
-                    <property name="width_request">120</property>
+                  <widget class="GtkLabel" id="kise/db_name_lb2">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="invisible_char">&#x2022;</property>
+                    <property name="xalign">1</property>
+                    <property name="label" translatable="yes">&lt;b&gt;&lt;span foreground="#777777"&gt;[ total records ]&lt;/span&gt;&lt;/b&gt;</property>
+                    <property name="use_markup">True</property>
+                    <property name="use_underline">True</property>
                   </widget>
                   <packing>
-                    <property name="expand">False</property>
                     <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkLabel" id="kise/db_name_lb3">
+                    <property name="visible">True</property>
+                    <property name="xalign">1</property>
+                    <property name="label" translatable="yes">&lt;b&gt;&lt;span foreground="#777777"&gt;[ displayed ]&lt;/span&gt;&lt;/b&gt;</property>
+                    <property name="use_markup">True</property>
+                    <property name="use_underline">True</property>
+                  </widget>
+                  <packing>
+                    <property name="position">3</property>
                   </packing>
                 </child>
                 <child>
@@ -1083,18 +1148,6 @@ Text filters:
                         <property name="homogeneous">True</property>
                       </packing>
                     </child>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="position">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="GtkLabel" id="kise/db_name_lb2">
-                    <property name="visible">True</property>
-                    <property name="xalign">1</property>
-                    <property name="label" translatable="yes">]</property>
-                    <property name="use_underline">True</property>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
@@ -1142,7 +1195,7 @@ Text filters:
               <packing>
                 <property name="top_attach">1</property>
                 <property name="bottom_attach">2</property>
-                <property name="x_options"></property>
+                <property name="x_options"/>
                 <property name="y_options">GTK_FILL</property>
               </packing>
             </child>
