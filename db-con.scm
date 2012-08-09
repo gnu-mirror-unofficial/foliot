@@ -26,7 +26,6 @@
 (define-module (kise db-con)
   ;; common
   :use-module (macros reexport)
-  :use-module (macros when)
   :use-module (system aglobs)
   :use-module (db sqlite)
 

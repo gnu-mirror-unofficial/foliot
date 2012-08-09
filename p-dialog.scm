@@ -35,7 +35,6 @@
 
   ;; common
   :use-module (macros do)
-  :use-module (macros when)
   :use-module (system i18n)
   :use-module (system aglobs)
   :use-module (gtk all)

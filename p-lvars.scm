@@ -29,7 +29,6 @@
 
   ;; common
   :use-module (macros reexport)
-  :use-module (macros when)
   :use-module (system dates)
   :use-module (system passwd)
   :use-module (system i18n)
