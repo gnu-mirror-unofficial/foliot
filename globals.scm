@@ -42,7 +42,9 @@
     (aglobs/set 'gladefile (string-append gladedir "/kise.glade"))
     (aglobs/set 'gtkrcfile (string-append kisedir "/gtkrc.kise"))
     (aglobs/set 'latexdir (string-append kisedir "/latex"))
-    (aglobs/set 'printdir "/tmp")))
+    (aglobs/set 'printdir "/tmp")
+    ;; release: kisê to common git tag alist
+    (aglobs/set 'tags '((0.9.1 . 0.1)))))
 
 
 #!
@@ -57,4 +59,5 @@
 (aglobs/get 'gtkrcfile)
 (aglobs/get 'latexdir)
 (aglobs/get 'printdir)
+(aglobs/get 'tags)
 !#
