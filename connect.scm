@@ -33,7 +33,6 @@
   ;; :use-module (macros reexport)
   :use-module (gtk all)
   :use-module (system i18n)
-  :use-module (macros when)
 
   ;; kise
   :use-module (kise db)

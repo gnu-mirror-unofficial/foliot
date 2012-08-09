@@ -32,7 +32,6 @@
   :use-module (gnome gtk)
 
   ;; common
-  :use-module (macros when)
   :use-module (system i18n)
   :use-module (gtk all)
 

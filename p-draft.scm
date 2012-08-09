@@ -33,7 +33,6 @@
   :use-module (gnome gtk)
 
   ;; common
-  :use-module (macros when)
   :use-module (macros do)
   :use-module (system dates)
   :use-module (system passwd)

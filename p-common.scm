@@ -30,7 +30,6 @@
 
   ;; common
   :use-module (macros reexport)
-  :use-module (macros when)
   :use-module (system passwd)
   :use-module (kise globals)
 

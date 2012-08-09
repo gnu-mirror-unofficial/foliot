@@ -31,7 +31,6 @@
 
   ;; common
   :use-module (macros reexport)
-  :use-module (macros when)
   :use-module (macros do)
   :use-module (db sqlite)
   :use-module (system dates)
