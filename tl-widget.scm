@@ -1,4 +1,4 @@
-; -*- mode: scheme; coding: utf-8 -*-
+;; -*- mode: scheme; coding: utf-8 -*-
 
 
 ;;;; Copyright (C) 2011, 2012
@@ -137,8 +137,6 @@
 	   filter-what-lb
 	   filter-description-entry
 	   filter-to-be-charged-lb
-	   filter-to-be-charged-cb
-	   filter-to-be-charged-eb
 	   filter-to-be-charged-combo
 
 	   active-filter
@@ -287,8 +285,6 @@
   (filter-description-lb :accessor filter-description-lb :init-keyword :filter-description-lb :init-value #f)
   (filter-description-entry :accessor filter-description-entry :init-keyword :filter-description-entry :init-value #f)
   (filter-to-be-charged-lb :accessor filter-to-be-charged-lb :init-keyword :filter-to-be-charged-lb :init-value #f)
-  (filter-to-be-charged-cb :accessor filter-to-be-charged-cb :init-keyword :filter-to-be-charged-cb :init-value #f)
-  (filter-to-be-charged-eb :accessor filter-to-be-charged-eb :init-keyword :filter-to-be-charged-eb :init-value #f)
   (filter-to-be-charged-combo :accessor filter-to-be-charged-combo :init-keyword :filter-to-be-charged-combo :init-value #f)
 
   (active-filter :accessor active-filter :init-keyword :active-filter :init-value #f)
@@ -821,63 +817,63 @@
 	(,for-whoms ,for-whom-combo for_whom)
 	(,whats ,what-combo what))))
 
+(define (ktlw/trace-combo-callback combo entry db-fname in-store? signal . row)
+  (when (aglobs/get 'debug)
+    (dimfi db-fname (unless (null? row) (car row)) signal (get-active combo) (get-text entry) in-store?)))
+
 (define (ktlw/connect-combos-1 combos-defs)
   (for-each (lambda (combo-def)
-	      (let ((tl-widget (list-ref combo-def 0))
-		    (which-combo (list-ref combo-def 1))
-		    (which-entry (list-ref combo-def 2))
-		    (db-fname (list-ref combo-def 3))
-		    (in-store? (list-ref combo-def 4))
-		    (kw-acc (list-ref combo-def 5))
-		    (db-get-values-func (list-ref combo-def 6)))
-		;; (format #t "~S, ~S, ~S~%" combo-def (which-combo tl-widget) (which-entry tl-widget))
-		(connect (which-combo tl-widget)
+	      (let* ((tl-widget (list-ref combo-def 0))
+		     (which-combo (list-ref combo-def 1))
+		     (combo (which-combo tl-widget))
+		     (which-entry (list-ref combo-def 2))
+		     (entry (which-entry tl-widget))
+		     (db-fname (list-ref combo-def 3))
+		     (in-store? (list-ref combo-def 4))
+		     (kw-acc (list-ref combo-def 5))
+		     (db-get-values-func (list-ref combo-def 6)))
+		(connect combo
 			 'changed
 			 (lambda (combo)
 			   (when (gui-callback? tl-widget)
-			     (let ((model (tv-model tl-widget))
-				   (row (current-row tl-widget))
-				   (iter (current-iter tl-widget))
-				   (value (get-text (which-entry tl-widget))))
-			       ;; (format #t "Row: ~S, iter-acc: ~S, combo: ~S 'changed: ~S~%" row kw-acc which-combo value)
-			       ;; update-db
+			     (let* ((row (current-row tl-widget))
+				    (tuple (ktlw/get-tuple tl-widget row))
+				    (id (db-kise/get tuple 'id))
+				    (value (get-text entry)))
+			       (ktlw/trace-combo-callback combo entry db-fname in-store? 'changed row)
 			       (ktlw/set db-fname tl-widget value row)
 			       ;; if active-filter, we add the id to the set, even if we are not
-			       ;; certain this is absolutely necessary,since the cost of checking would
+			       ;; certain this is absolutely necessary, since the cost of checking would
 			       ;; actually be much much higher.
-			       (when (active-filter tl-widget)
-				 (let ((tuple (ktlw/get-tuple tl-widget row)))
-				   (ktlw/add-id (db-kise/get tuple 'id) tl-widget)))
-			       ;; update store
-			       (when in-store?
-				 (ktlw/update-store-check-position tl-widget db-fname value))
-			       ))))
-		(connect (which-combo tl-widget)
+			       (when (active-filter tl-widget) (ktlw/add-id id tl-widget))
+			       (when in-store? (ktlw/update-store-check-position tl-widget db-fname value))))))
+		(connect combo
+			 'move-active
+			 (lambda (combo scroll-type)
+			   (ktlw/trace-combo-callback combo entry db-fname in-store? 'move-active)))
+		(connect combo
 			 'popup
 			 (lambda (combo)
-			   (let ((value (get-text (which-entry tl-widget)))
-				 (new-values (db-get-values-func)))
-			     (set! (kw-acc tl-widget) new-values)
-			     (gtk2/fill-combo combo new-values)
-			     (set-active combo (gtk2/combo-find-row combo value)))))
-		(connect (which-entry tl-widget)
+			   (ktlw/trace-combo-callback combo entry db-fname in-store? 'popup)))
+		(connect entry
+			 'focus-in-event
+			 (lambda (entry event)
+			   (ktlw/trace-combo-callback combo entry db-fname in-store? 'focus-in)
+			   #f)) ;; do not stop - proceed with internal methods
+		(connect entry
 			 'focus-out-event
 			 (lambda (entry event)
-			   (when (gui-callback? tl-widget)
-			     (let* ((combo (which-combo tl-widget))
-				    ;; 'changed combo callback has already been executed
-				    ;; -> the new-value is already in the DB
-				    (new-value (get-text entry))
-				    (new-values (db-get-values-func)))
-			       ;; (format #t "Row: ~S, ~S: new value: ~S, ~S - new values: ~S~%" 
-			       ;;     (current-row tl-widget) combo new-value kw-acc new-values)
-			       (set! (gui-callback? tl-widget) #f)
-			       (set! (kw-acc tl-widget) new-values)
-			       (gtk2/fill-combo combo new-values)
-			       (set-active combo (gtk2/combo-find-row combo new-value))
-			       (set! (gui-callback? tl-widget) #t)))
-			   ;; gtk2 requirement ...
-			   #f))))
+			   (let ((row (current-row tl-widget))
+				 (active (get-active combo))
+				 (value (get-text entry))
+				 (new-values (db-get-values-func)))
+			     (ktlw/trace-combo-callback combo entry db-fname in-store? 'focus-out row)
+			     (set! (gui-callback? tl-widget) #f)
+			     (set! (kw-acc tl-widget) new-values)
+			     (gtk2/fill-combo combo new-values)
+			     (set-active combo (gtk2/combo-find-row combo value))
+			     (set! (gui-callback? tl-widget) #t))
+			   #f))))  ;; do not stop - proceed with internal methods
       combos-defs))
 
 (define (ktlw/connect-combos tl-widget)
@@ -1026,8 +1022,6 @@ filter date: ~S~%"
 		      :filter-description-lb (get-widget xmlc "kise/filter_description_lb")
 		      :filter-description-entry (get-widget xmlc "kise/filter_description")
 		      :filter-to-be-charged-lb (get-widget xmlc "kise/filter_to_be_charged_lb")
-		      :filter-to-be-charged-cb (get-widget xmlc "kise/filter_to_be_charged_cb")
-		      :filter-to-be-charged-eb (get-widget xmlc "kise/filter_to_be_charged_eb")
 		      :filter-to-be-charged-combo (get-widget xmlc "kise/filter_to_be_charged_combo")
 		      
 		      :sw (get-widget xmlc "kise/sw")
