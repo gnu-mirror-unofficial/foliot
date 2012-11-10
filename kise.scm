@@ -481,8 +481,7 @@
 		 ,(get-widget (xml-code tl-widget) "kise/db_name_bt")
 		 ,(get-widget (xml-code tl-widget) "kise/nav_tb_2")
 		 ,(db-name-lb2 tl-widget)
-		 ,(db-name-lb3 tl-widget)
-		 ,(filter-to-be-charged-cb tl-widget)))
+		 ,(db-name-lb3 tl-widget)))
     (kise/open-db tl-widget)))
 
 
