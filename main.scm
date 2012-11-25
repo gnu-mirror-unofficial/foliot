@@ -60,17 +60,16 @@ conditions.  See <http://www.gnu.org/licenses/gpl.html>, for more
 details.")
 
   (define (help-message)
-  "Usage: kise [OPTION...]
-  --help, -h        display this usage information
-  --version, -v     display version information
-  --debug, -d       open a debugger aside the application")
+  "Usage: kise [OPTION]...
+  -d, --debug       open a debugger aside the application
+      --help        display this usage information
+      --version     display version information")
 
   (define (uninstalled-lang-message)
-  "
+    "
   Warning:
     Your LANG environment variable is set to ~S which is not installed
-    on this system. As a fallback, we will use ~S locale instead.
-")
+    on this system. As a fallback, we will use ~S locale instead.\n")
 
   (define (display-welcome port)
     ;; 'GNU Kise', really nice! But let's wait GNU evaluation/acceptance
@@ -104,10 +103,10 @@ details.")
       locale))
 
   (aglobs/set 'command-synopsis
-	      '((version   (single-char #\v) (value #f))
-		(help      (single-char #\h) (value #f))
-		(debug     (single-char #\d) (value #f))))
-  (aglobs/set 'version "0.9")
+	      '((debug (single-char #\d) (value #f))
+		(version (value #f))
+		(help (value #f))))
+  (aglobs/set 'version "0.9.2")
   (textdomain "main")
   (bindtextdomain "main" (aglobs/get 'pofdir))
 
