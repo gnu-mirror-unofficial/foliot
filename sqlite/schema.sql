@@ -41,9 +41,13 @@ create table kise (
   created_the    integer,
   created_by     text,
   modified_the   integer,
-  modified_by    text
+  modified_by    text,
+  imported_id    integer,
+  imported_db    integer
 );
 
+--  alter table kise add imported_id integer default '-1' not null;
+--  alter table kise add imported_db integer default '-1' not null;
 
 drop table kise_printing_templates;
 
@@ -53,4 +57,18 @@ create table kise_printing_templates (
   items            text,
   mode             text,
   group_and_sort   text
+);
+
+
+---
+--- Import
+---
+
+drop table kise_imported_db;
+
+create table kise_imported_db (
+  id               integer primary key not null,
+  name             text,
+  imported_the     integer,
+  imported_by      text
 );

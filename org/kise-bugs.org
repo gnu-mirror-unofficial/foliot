@@ -87,8 +87,8 @@ as already the case for printing, nav buttons ...
 
 *** OPEN [[22] 3] connect: database's schema incomplete, cancel
 
-When the user try to connect another database with a incomplete Kisê schema, he
-click cancel and then he try to print
+When the user try to connect another database, or if the schema needs to be
+upgraded [version upgrades] and if he cancels, we should leave kise
 
 *** CLOSED [[21] 3] gui - filter-clear not restoring gui-callback
 CLOSED: [2011-11-16 Wed 11:34]
