@@ -36,6 +36,7 @@
   :use-module (kise db-con)
   :use-module (kise db-kise)
   :use-module (kise db-printing-templates)
+  :use-module (kise db-imported-db)
 
   :export (db/add-schema
 	   db/check-schema
@@ -45,7 +46,8 @@
 (eval-when (compile load eval)
   (re-export-public-interface (kise db-con)
 			      (kise db-kise)
-			      (kise db-printing-templates)))
+			      (kise db-printing-templates)
+			      (kise db-imported-db)))
 
 
 ;;;
@@ -54,21 +56,26 @@
 
 (define (db/add-schema)
   (db-kise/add-kise-table)
-  (db-pt/add-printing-templates-table))
+  (db-pt/add-printing-templates-table)
+  (db-idb/add-imported-db-table))
 
 (define (db/check-schema)
   (let* ((db (db-con))
 	 (kise? (sqlite/table-exists? db "kise"))
-	 (kise-printing-templates? (sqlite/table-exists? db "kise_printing_templates")))
-    (cond ((and kise? kise-printing-templates?) 'complete)
-	  ((or kise? kise-printing-templates?) 'partial)
+	 (kise-printing-templates? (sqlite/table-exists? db "kise_printing_templates"))
+	 (kise-imported-db? (sqlite/table-exists? db "kise_imported_db")))
+    (cond ((and kise? kise-printing-templates? kise-imported-db?)
+	   ;; 'complete but we should still check the defs, todo.
+	   'complete)
+	  ((or kise? kise-printing-templates? kise-imported-db?) 'partial)
 	  (else
 	   'none))))
 
 (define (db/complete-schema)
   (let ((db (db-con)))
-    (unless (sqlite/table-exists? db "kise") (db-kise/add-kise-table))
-    (unless (sqlite/table-exists? db "kise_printing_templates") (db-pt/add-printing-templates-table))))
+    (db-kise/create-complete-table)
+    (db-pt/create-complete-table)
+    (db-idb/create-complete-table)))
 
 
 #!

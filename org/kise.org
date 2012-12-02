@@ -6,6 +6,20 @@
 
 ** Important stuff
 
+*** TODO db-<>/fields-offsets, db-<>/get-pos -> sqlite/get-field-pos
+
+table names are now cashed [see sqlite.scm], but we still need to cash
+the results of calling sqlite/table-info, then we should:
+
+1. get rid of all db-<>/fields-offsets;
+2. generalize db-<>/get-pos -> sqlite/get-field-pos
+
+*** TODO db-<>/find-pos -> sqlite/tuple-pos
+
+once the above is solved, delete db-<>/find-pos, generalize and use
+sqlite/tuple-pos instead. then try to see if there is a better way to implement
+it, although in memory it is slow
+
 *** TODO date/get-filter is called twice
 
 1 @ filter-date-entry focus out
@@ -18,7 +32,9 @@
 since =ktlw/select-ctime= _needs_ *it* /too/ and so far does call
 +dbf/get-filter+ which is unnecessary and very consumming
 
-*** STARTED removing (macros when) -> 2.0.5 min guile
+*** DONE removing (macros when) -> 2.0.5 min guile
+CLOSED: [2012-08-01 Mon 22:03]
+- State "DONE"       from "STARTED"    [2012-08-01 Mon 22:03]
 
 starting with 2.0.4, when and unless are part of guile core. we will require
 that version as the minimum and need remove these two macros from common/macros
@@ -88,7 +104,11 @@ CLOSED: [2011-12-23 Fri 15:36]
 - [X] p-draft basic functionality
 - [ ] do we need a p-commercial functionality ?
 
-*** TODO we need to cash combo values [slow db]
+*** DONE combos are too slow, why
+CLOSED: [2012-11-07 Mon 22:06]
+- State "DONE"       from "TODO"       [2012-11-07 Mon 22:06]
+
+see kise entry 702 for explanation
 
 *** STARTED writting filters [0%]
 

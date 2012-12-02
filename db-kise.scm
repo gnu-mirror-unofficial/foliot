@@ -33,16 +33,24 @@
   :use-module (macros reexport)
   :use-module (macros do)
   :use-module (system dates)
+  :use-module (system i18n)
+  :use-module (system aglobs)
+  :use-module (system passwd)
   :use-module (strings strings)
   :use-module (db sqlite)
 
   ;; kise
+  :use-module (kise globals)
   :use-module (kise db-con)
-
+  :use-module (kise db-imported-db)
+  
   :export (db-kise/add-kise-table
+	   db-kise/complete-table
+	   db-kise/create-complete-table
 	   db-kise/prepend-empty
 	   db-kise/select-one
 	   db-kise/select-all
+	   db-kise/select-all-other-db
 	   db-kise/select-some
 	   db-kise/select-another-some
 	   db-kise/select-distinct
@@ -54,15 +62,25 @@
 	   db-kise/find-pos
 	   db-kise/get-next-id
 	   db-kise/add
+	   db-kise/add-from-other-db
 	   db-kise/duplicate
-	   db-kise/delete))
+	   db-kise/delete
+	   db-kise/delete-some
+	   db-kise/import))
 
 
 (eval-when (compile load eval)
   (re-export-public-interface (db sqlite)
 			      (system dates)
+			      (system i18n)
+			      (system aglobs)
+			      (system passwd)
 			      (strings strings)
-			      (kise db-con)))
+			      (kise globals)
+			      (kise db-con)
+			      (kise db-imported-db))
+  (textdomain "db-kise")
+  (bindtextdomain "db-kise" (aglobs/get 'pofdir)))
 
 
 ;;;
@@ -83,7 +101,9 @@
    strftime('%d~A%m~A%Y', created_the, 'unixepoch'),
    created_by,
    strftime('%d~A%m~A%Y', modified_the, 'unixepoch'),
-   modified_by"
+   modified_by,
+   imported_id,
+   imported_db"
 	    sep sep sep sep sep sep)))
 
 
@@ -107,7 +127,7 @@
 	       (cons empty-v tuples))))))
 
 ;;;
-;;; Create table
+;;; Schema related
 ;;;
 
 (define (db-kise/add-kise-table-str)
@@ -124,11 +144,28 @@
      created_the    integer,
      created_by     text,
      modified_the   integer,
-     modified_by    text
+     modified_by    text,
+     imported_id    integer,
+     imported_db    integer
    );")
 
 (define (db-kise/add-kise-table)
-  (sqlite/command (db-con)  (db-kise/add-kise-table-str)))
+  (sqlite/command (db-con) (db-kise/add-kise-table-str)))
+
+(define (db-kise/complete-table)
+  (let* ((db (db-con))
+	 (table-info (sqlite/table-info db "kise")))
+    (unless (sqlite/tuple-pos "imported_id" table-info string=? 1)
+      ;; upgrading from 0.9.1 to 0.9.2
+      (sqlite/add-column db "kise" "imported_id integer default '-1' not null")
+      (sqlite/add-column db "kise" "imported_db integer default '-1' not null"))))
+
+(define (db-kise/create-complete-table)
+  (let* ((db (db-con))
+	 (exists? (sqlite/table-exists? db "kise")))
+   (if exists?
+       (db-kise/complete-table)
+       (db-kise/add-kise-table))))
 
 
 ;;;
@@ -160,6 +197,17 @@
 		  (format #f "~?" (db-kise/select-all-str)
 			  (list what
 				(db-kise/select-order-by-str))))))
+
+(define (db-kise/select-all-other-db-str)
+  ;; do not process dates, they will be imported as is
+  "select *
+     from kise
+ order by ~A")
+
+(define (db-kise/select-all-other-db db)
+  (sqlite/query db
+		(format #f "~?" (db-kise/select-all-other-db-str)
+			(list (db-kise/select-order-by-str)))))
 
 (define (db-kise/select-some-str)
   "select ~A
@@ -259,7 +307,9 @@
     (created_the . 9)
     (created_by . 10)
     (modified_the . 11)
-    (modified_by . 12)))
+    (modified_by . 12)
+    (imported_id . 13)
+    (imported_db . 14)))
 
 (define (db-kise/get-pos what)
   (assq-ref (db-kise/fields-offsets) what))
@@ -349,6 +399,8 @@
     (if value (1+ value) 0)))
 
 (define (db-kise/add-str)
+  ;; imported_id has its default set to -1
+  ;; imported_db too
   "insert into kise (id,
                      date_,
                      who,
@@ -360,7 +412,9 @@
                      created_the,
                      created_by,
                      modified_the,
-                     modified_by)
+                     modified_by,
+                     imported_id,
+                     imported_db)
    values ('~A',
            strftime('%s','~A'),
            '~A',
@@ -372,6 +426,8 @@
            strftime('%s','~A'),
            '~A',
            strftime('%s','~A'),
+           '~A',
+           '~A',
            '~A')")
 
 (define (db-kise/add date who for-whom what duration to-be-charged description . rests)
@@ -380,6 +436,8 @@
 	 (created-by (if (null? rests) who (list-ref rests 1)))
 	 (modified-the (if (null? rests) date (list-ref rests 2)))
 	 (modified-by (if (null? rests) who (list-ref rests 3)))
+	 (imported-id (if (null? rests) -1 (list-ref rests 4)))
+	 (imported-db (if (null? rests) -1 (list-ref rests 5)))
 	 (insert (format #f "~?" (db-kise/add-str)
 			 (list next-id
 			       date
@@ -393,7 +451,8 @@
 			       created-by
 			       modified-the
 			       modified-by
-			       ))))
+			       imported-id
+			       imported-db))))
     ;; (format #t "~S~%" insert)
     (sqlite/command (db-con) insert)
     next-id))
@@ -418,7 +477,55 @@
 		 iso-today
 		 who
 		 iso-today
-		 who)))
+		 who
+		 -1
+		 -1)))
+
+;;;
+;;; Import
+;;;
+
+(define (db-kise/add-from-other-db-str)
+  ;; imported_id has its default set to -1
+  ;; imported_db too
+  "insert into kise (id,
+                     date_,
+                     who,
+                     for_whom,
+                     what,
+                     duration,
+                     to_be_charged,
+                     description,
+                     created_the,
+                     created_by,
+                     modified_the,
+                     modified_by,
+                     imported_id,
+                     imported_db)
+   values ('~A','~A','~A','~A','~A','~A','~A','~A','~A','~A','~A','~A','~A','~A')")
+
+(define (db-kise/add-from-other-db date who for-whom what duration to-be-charged description
+				   created-the created-by modified-the modified-by
+				   imported-id imported-db)				   
+  (let* ((next-id (db-kise/get-next-id))
+	 (insert (format #f "~?" (db-kise/add-from-other-db-str)
+			 (list next-id
+			       date
+			       who
+			       for-whom
+			       what
+			       duration
+			       to-be-charged
+			       description
+			       created-the
+			       created-by
+			       modified-the
+			       modified-by
+			       imported-id
+			       imported-db))))
+    ;; (format #t "~S~%" insert)
+    (sqlite/command (db-con) insert)
+    next-id))
 
 
 ;;;
@@ -427,12 +534,69 @@
 
 (define (db-kise/delete-str)
   "delete from kise
-    where id = '~A';")
+    where id = '~A'")
 
 (define (db-kise/delete reference)
   (sqlite/command (db-con)
 		  (format #f "~?" (db-kise/delete-str)
 			  (list reference))))
+
+(define (db-kise/delete-some-str)
+  "delete from kise
+    where ~A")
+
+(define (db-kise/delete-some where)
+  (let ((db (db-con)))
+    (sqlite/begin-transaction db)
+    (sqlite/command (db-con)
+		    (format #f "~?" (db-kise/delete-some-str)
+			    (list where)))
+    (sqlite/commit db)))
+
+
+;;;
+;;; Import another db
+;;;
+
+(define (db-kise/import-1 tuples imported-db)
+  ;; (dimfi imported-db (car tuples))
+  (let ((db (db-con)))
+    (sqlite/begin-transaction db)
+    (for-each (lambda (tuple)
+		(db-kise/add-from-other-db (db-kise/get tuple 'date_)
+					   (str/prep-str-for-sql (db-kise/get tuple 'who))
+					   (str/prep-str-for-sql (db-kise/get tuple 'for_whom))
+					   (str/prep-str-for-sql (db-kise/get tuple 'what))
+					   (db-kise/get tuple 'duration)
+					   (db-kise/get tuple 'to_be_charged)
+					   (str/prep-str-for-sql (db-kise/get tuple 'description))
+					   (db-kise/get tuple 'created_the)
+					   (str/prep-str-for-sql (db-kise/get tuple 'created_by))
+					   (db-kise/get tuple 'modified_the)
+					   (str/prep-str-for-sql (db-kise/get tuple 'modified_by))
+					   (db-kise/get tuple 'id) ;; imported-id
+					   imported-db))
+	tuples)
+    (sqlite/commit db)))
+
+(define (db-kise/import filename)
+  (let* ((uname (sys/get 'uname))
+	 (today (date/system-date))
+	 (iso-today (date/iso-date today))
+	 (db-name (basename filename))
+	 (idb-tuples (db-idb/select-all))
+	 (idb-tuple-pos (db-idb/find-pos idb-tuples 'name db-name string=?))
+	 (db (db-con/open filename #f))
+	 (tuples (db-kise/select-all-other-db db)))
+    (db-con/close db #f)
+    (if idb-tuple-pos
+	(let* ((idb-tuple (list-ref idb-tuples idb-tuple-pos))
+	       (idb-id (db-idb/get idb-tuple 'id)))
+	  ;; (dimfi "deleting last import..." idb-tuple)
+	  (db-kise/delete-some (format #f "imported_db = '~A'" idb-id))
+	  (db-kise/import-1 tuples idb-id))
+	(let ((imported-db (db-idb/add db-name iso-today uname)))
+	  (db-kise/import-1 tuples imported-db)))))
 
 
 #!
@@ -472,6 +636,7 @@
 (db-kise/delete "44")
 (db-kise/select-some "who = 'bibi'" #f "sum(duration)")
 
+(db-kise/import "/usr/alto/db/sqlite.alto.christian.db")
 
 ;;;
 ;;; SQL examples/tests

@@ -1068,7 +1068,7 @@ filter date: ~S~%"
 	 (tuples (db-kise/select-some filter? ids?))
 	 (new-pos (db-kise/find-pos tuples 'id new-id =)))
     (set! (db-tuples tl-widget) tuples)
-    (unless (sqlite/pos uname (whos tl-widget) string=? 0)
+    (unless (sqlite/tuple-pos uname (whos tl-widget) string=? 0)
       (let ((prev-gui-cb? (gui-callback? tl-widget))
 	    (w-combo (who-combo tl-widget)))
 	(set! (gui-callback? tl-widget) #f)

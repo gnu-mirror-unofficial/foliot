@@ -29,13 +29,12 @@
   :use-module (system aglobs)
   :use-module (db sqlite)
 
-
   :export (db-con
+	   db-name
 	   db-con/open
 	   db-con/close
 	   
-	   db-con/add-schema
-	   ))
+	   db-con/add-schema))
 
 
 (eval-when (compile load eval)
@@ -50,26 +49,34 @@
 (define (db-con)
   (aglobs/get 'db-con))
 
+(define (db-name)
+  (aglobs/get 'db-name))
+
 (define (db-con/load-pcre-ext-str)
   "select load_extension('~A')")
 
-(define (db-con/open filename)
-  (let ((db (sqlite-open filename)) ;; 6
+(define* (db-con/open filename #:optional (set-db-con? #t))
+  (let ((db-name (basename filename))
+	(db (sqlite-open filename)) ;; 6
 	(pcre-lib-ext "/usr/lib/sqlite3/pcre.so"))
     (if db
 	(begin
-	  (aglobs/set 'db-con db)
-	  (when (access? pcre-lib-ext R_OK)
-	    (sqlite-enable-load-extension db 1)
-	    (sqlite/query db (format #f "~?" (db-con/load-pcre-ext-str) (list pcre-lib-ext)))
-	    (sqlite-enable-load-extension db 0) ;; avoiding security holes
-	    (aglobs/set 'db-pcre #t))
+	  (when set-db-con?
+	    (aglobs/set 'db-con db)
+	    (aglobs/set 'db-name db-name)
+	    (when (access? pcre-lib-ext R_OK)
+	      (sqlite-enable-load-extension db 1)
+	      (sqlite/query db (format #f "~?" (db-con/load-pcre-ext-str) (list pcre-lib-ext)))
+	      (sqlite-enable-load-extension db 0) ;; avoiding security holes
+	      (aglobs/set 'db-pcre #t)))
 	  db)
 	#f)))
 
-(define (db-con/close)
-  (sqlite-close (db-con))
-  (aglobs/set 'db-con #f))
+(define* (db-con/close db #:optional (set-db-con? #t))
+  (sqlite-close db)
+  (when set-db-con?
+    (aglobs/set 'db-con #f)
+    (aglobs/set 'db-name #f)))
 
 
 #!

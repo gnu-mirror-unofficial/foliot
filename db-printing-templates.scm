@@ -35,13 +35,15 @@
   :use-module (db sqlite)
   :use-module (system dates)
   :use-module (system i18n)
-  ;; :use-module (system aglobs)
+  :use-module (system aglobs)
   :use-module (strings strings)
 
   ;; kise
+  :use-module (kise globals)
   :use-module (kise db-con)
 
   :export (db-pt/add-printing-templates-table
+	   db-pt/create-complete-table
 	   db-pt/select-all
 	   db-pt/select-some
 	   db-pt/get
@@ -62,7 +64,10 @@
 (eval-when (compile load eval)
   (re-export-public-interface (db sqlite)
 			      (system dates)
+			      (system i18n)
+			      (system aglobs)
 			      (strings strings)
+			      (kise globals)
 			      (kise db-con))
   (textdomain "db-printing-templates")
   (bindtextdomain "db-printing-templates" (aglobs/get 'pofdir)))
@@ -84,6 +89,11 @@
 (define (db-pt/add-printing-templates-table)
   (sqlite/command (db-con) 
 		  (db-pt/add-printing-templates-table-str)))
+
+(define (db-pt/create-complete-table)
+  (let* ((db (db-con))
+	 (exists? (sqlite/table-exists? db "kise_printing_templates")))
+   (unless exists? (db-pt/add-printing-templates-table))))
 
 
 ;;;
