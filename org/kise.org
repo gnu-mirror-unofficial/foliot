@@ -6,6 +6,14 @@
 
 ** Important stuff
 
+*** DONE memorize the last window pos
+CLOSED: [2012-12-29 Sat 15:47]
+- State "DONE"       from "TODO"       [2012-12-29 Sat 15:47]
+
+and store its position in the config file, this would definitely please our
+users. for info, 166x47 is a good initial position, for 1280x800, no font
+scaling and 1 column [only] desktop files
+
 *** TODO db-<>/fields-offsets, db-<>/get-pos -> sqlite/get-field-pos
 
 table names are now cashed [see sqlite.scm], but we still need to cash
@@ -190,7 +198,9 @@ CLOSED: [2012-01-10 Tue 14:46]
 
 *** TODO store the last selected template in the print dialog
 
-*** TODO store the last size of the print dialog (if the user wants to remove the scroll bar)
+*** TODO store the last size of the print dialog 
+
+(if the user wants to remove the scroll bar)
 
 *** TODO message dialog: TAB like message alignment
 

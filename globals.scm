@@ -44,7 +44,8 @@
     (aglobs/set 'latexdir (string-append kisedir "/latex"))
     (aglobs/set 'printdir "/tmp")
     ;; release: kisê to common git tag alist
-    (aglobs/set 'tags '((0.9.1 . 0.1)))))
+    (aglobs/set 'tags '((0.9.1 . 0.1)
+			(0.9.2 . 0.2)))))
 
 
 #!

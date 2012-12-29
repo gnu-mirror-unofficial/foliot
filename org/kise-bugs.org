@@ -85,9 +85,9 @@ row reselected, but content added and/or modified was lost.
 kise/on-tv-row-change added on all filter-* button 'clicked signals
 as already the case for printing, nav buttons ...
 
-*** OPEN [[22] 3] connect: database's schema incomplete, cancel
+*** OPEN [[22] 3] connect: database schema incomplete, cancel
 
-When the user try to connect another database, or if the schema needs to be
+When the user tries to connect to another database, or if the schema needs to be
 upgraded [version upgrades] and if he cancels, we should leave kise
 
 *** CLOSED [[21] 3] gui - filter-clear not restoring gui-callback
