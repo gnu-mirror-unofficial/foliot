@@ -32,6 +32,7 @@
   :use-module (gnome gnome) ;; could use the system help
   :use-module (gnome gobject)
   :use-module (gnome gtk)
+  :use-module (gnome gtk gdk-event)
   :use-module (gnome glade)
 
   ;; common
@@ -152,6 +153,8 @@
 	   status-bar-2 ;; app messages
 	   status-bar-3 ;; total time
 	   status-bar-4 ;; charged time
+
+	   ktlw/write-config
 
 	   ktlw/create-db-checks
 	   ktlw/open-db-checks
@@ -727,6 +730,27 @@
 
 
 ;;;
+;;; Config
+;;;
+
+(define (ktlw/write-config tl-widget . rests)
+  (receive (win-x win-y)
+      (get-position (dialog tl-widget))
+    (sys/write-config "kise"
+		      (if (null? rests)
+			  (list (cons 'db-file (kcfg/get 'db-file))
+				(cons 'open-at-startup (kcfg/get 'open-at-startup))
+				(cons 'ulogo (kcfg/get 'ulogo))
+				(cons 'win-x win-x)
+				(cons 'win-y win-y))
+			  (list (cons 'db-file (car rests))
+				(cons 'open-at-startup (cadr rests))
+				(cons 'ulogo (caddr rests))
+				(cons 'win-x win-x)
+				(cons 'win-y win-y))))))
+
+
+;;;
 ;;; Open DB
 ;;;
 
@@ -767,11 +791,7 @@
   (ktlw/filter-clear tl-widget 'fillcombos))
 
 (define (ktlw/open-db tl-widget db-file from-gui? mode open-at-startup? checks-result)
-  (when from-gui?
-    (sys/write-config "kise"
-		      (list (cons 'db-file db-file)
-			    (cons 'open-at-startup open-at-startup?)
-			    (cons 'ulogo (kcfg/get 'ulogo)))))
+  (when from-gui? (ktlw/write-config tl-widget db-file open-at-startup? (kcfg/get 'ulogo)))
   (case mode
     ((open)
      (case checks-result

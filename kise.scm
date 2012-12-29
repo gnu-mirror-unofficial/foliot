@@ -31,6 +31,7 @@
   :use-module (gnome gnome) ;; could [later] use the help system
   :use-module (gnome gobject)
   :use-module (gnome gtk)
+  :use-module (gnome gtk gdk-event)
 
   ;; common
   :use-module (macros reexport)
@@ -220,6 +221,7 @@
 		   (_ "Exit Kisê ?")
 		   (lambda () 
 		     (kise/on-tv-row-change tl-widget)
+		     (ktlw/write-config tl-widget)
 		     (exit 0))
 		   (lambda () 'nothing)))
 
@@ -229,11 +231,19 @@
     ;; necessary or (kcgf/get 'reload) [if you manually change the
     ;; file for example for testing purposes]
     (set! *tl-widget* tl-widget)
+    (when (kcfg/get 'win-x) (move (dialog tl-widget) (kcfg/get 'win-x) (kcfg/get 'win-y)))
     (connect (dialog tl-widget)
 	     'delete-event
 	     (lambda (. args)
 	       (kise/exit tl-widget)
-	       #t)) ;; stops the event to be propagated
+	       #t)) ;; stop the event propagation
+    #;(connect (dialog tl-widget)
+	     'configure-event
+	     (lambda (widget event)
+	       (receive (win-coord? win-x win-y)
+		   (gdk-event-get-coords event)
+		 (dimfi win-x win-y))
+	       #f)) ;; do not stop the event propagation
     (connect (con-bt tl-widget)
 	     'clicked
 	     (lambda (button)
@@ -277,12 +287,10 @@
 	     'clicked
 	     (lambda (button)
 	       (ktlw/select-row tl-widget (- (length (db-tuples tl-widget)) 1))))
-    #!
-    (connect (help-bt tl-widget)
+    #;(connect (help-bt tl-widget)
 	     'clicked
 	     (lambda (button)
 	       (format #t (_ "this will call the online help~%"))))
-    !#
 
     (connect (date-entry tl-widget)
 	     'focus-out-event
@@ -342,10 +350,8 @@
 		 (ktlw/entry-std-cb entry
 				    tl-widget
 				    'description
-				    #f ; column position if used in the list-store
-				    #f ; msg to display if empty and not allowed to be
-				    ))))
-
+				    #f      ; column position if used in the list-store
+				    #f))))  ; msg to display if empty and not allowed to be
     ;;
     ;; filters
     ;;
@@ -355,22 +361,17 @@
 	       (kise/on-tv-row-change tl-widget)
 	       (gtk2/status-pop (status-bar-2 tl-widget) "")
 	       (ktlw/filter-apply tl-widget 'force)))
-
     (connect (filter-clear-bt tl-widget)
 	     'clicked
 	     (lambda (button)
 	       (kise/on-tv-row-change tl-widget)
 	       (gtk2/status-pop (status-bar-2 tl-widget) "")
 	       (ktlw/filter-clear tl-widget)))
-
     (connect (filter-select-bt tl-widget)
 	     'clicked
 	     (lambda (button)
 	       (kise/on-tv-row-change tl-widget)
-	       (gtk2/status-pop (status-bar-2 tl-widget) "")
-	       ;; 
-	       ))
-
+	       (gtk2/status-pop (status-bar-2 tl-widget) "")))
     (connect (filter-date-entry tl-widget)
 	     'focus-out-event
 	     (lambda (entry event)
@@ -391,35 +392,30 @@
 		 ;; we still have to call filter-apply of course
 		 (ktlw/filter-apply tl-widget)
 		 #f)))
-
     (connect (filter-who-entry tl-widget)
 	     'focus-out-event
 	     (lambda (entry event)
 	       (gtk2/status-pop (status-bar-2 tl-widget) "")
 	       (ktlw/filter-apply tl-widget)
 	       #f))
-
     (connect (filter-for-whom-entry tl-widget)
 	     'focus-out-event
 	     (lambda (entry event)
 	       (gtk2/status-pop (status-bar-2 tl-widget) "")
 	       (ktlw/filter-apply tl-widget)
 	       #f))
-
     (connect (filter-what-entry tl-widget)
 	     'focus-out-event
 	     (lambda (entry event)
 	       (gtk2/status-pop (status-bar-2 tl-widget) "")
 	       (ktlw/filter-apply tl-widget)
 	       #f))
-
     (connect (filter-description-entry tl-widget)
 	     'focus-out-event
 	     (lambda (entry event)
 	       (gtk2/status-pop (status-bar-2 tl-widget) "")
 	       (ktlw/filter-apply tl-widget)
 	       #f))
-
     (connect (filter-to-be-charged-combo tl-widget)
 	     'changed
 	     (lambda (combo)
@@ -437,7 +433,6 @@
 		      (iter  (get-iter model path)))
 		 ;; (format #t "  ~S row activated~%" (car path))
 		 #f)))
-
     (connect (tv-sel tl-widget)
 	     'changed
 	     (lambda (selection)
@@ -458,7 +453,6 @@
 			 (set! (gui-callback? tl-widget) guicbpv?)
 			 (ktlw/check-nav-tb-sensitive-needs tl-widget (1+ row))
 			 (ktlw/update-status-bar-1 tl-widget)))))))
-
     (connect (tv tl-widget)
 	     'cursor-changed
 	     (lambda (tview)
