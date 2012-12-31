@@ -92,7 +92,7 @@
 	    (list date ;; will check but should use the locale
 		  (basename (pdf tex-files) ".pdf")
 		  (_ "Page")
-		  (_ "Time tracking Report")
+		  (_ "Time Keeping Report")
 		  (_ "reference")
 		  ;; left header
 		  (if ulogo
