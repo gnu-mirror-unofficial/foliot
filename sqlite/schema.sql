@@ -64,7 +64,7 @@ create table kise_printing_templates (
 --- Import
 ---
 
-drop table kise_imported_db;
+drop table if exists kise_imported_db;
 
 create table kise_imported_db (
   id               integer primary key not null,

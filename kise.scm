@@ -209,7 +209,7 @@
 			      (format #f "~?" (kise/open-db-cant-open-str) (list db-file))
 			      (lambda () (ktlw/no-db-mode tl-widget))))
 	    ((opened opened-partial-schema opened-no-schema)
-	     (ktlw/open-db tl-widget db-file #f 'open #f open-db-checks-result))))
+	     (ktlw/open-db tl-widget db-file #f 'open open-at-startup open-db-checks-result))))
 	(begin
 	  (ktlw/no-db-mode tl-widget)
 	  (emit (con-bt tl-widget) 'clicked)))))
@@ -226,12 +226,20 @@
 		   (lambda () 'nothing)))
 
 (define (kise/animate-ui uname gfile version debug-mode)
-  (let ((tl-widget (ktlw/make-tl-widget uname gfile)))
+  (let ((tl-widget (ktlw/make-tl-widget uname gfile))
+	(win-x (kcfg/get 'win-x))
+	(win-y (kcfg/get 'win-y))
+	(win-w (kcfg/get 'win-w))
+	(win-h (kcfg/get 'win-h)))
     ;; the config has already been red, now just call kcfg/get when
     ;; necessary or (kcgf/get 'reload) [if you manually change the
     ;; file for example for testing purposes]
     (set! *tl-widget* tl-widget)
-    (when (kcfg/get 'win-x) (move (dialog tl-widget) (kcfg/get 'win-x) (kcfg/get 'win-y)))
+    (when win-x
+      (move (dialog tl-widget) win-x win-y)
+      ;; earlier version just stored the positon
+      (if win-w
+	  (resize (dialog tl-widget) win-w win-h)))
     (connect (dialog tl-widget)
 	     'delete-event
 	     (lambda (. args)

@@ -68,6 +68,10 @@
 (kcfg/get 'db-file)
 (kcfg/get 'open-at-startup)
 (kcfg/get 'ulogo)
+(kcfg/get 'win-x)
+(kcfg/get 'win-y)
+(kcfg/get 'win-w)
+(kcfg/get 'win-h)
 
 
 ;;;
