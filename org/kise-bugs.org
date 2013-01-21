@@ -6,6 +6,61 @@
 
 ** Bugs
 
+
+*** CLOSED [[36] 4] config - not reloaded when it should
+CLOSED: [2013-01-18 Fri 19:40]
+- State "CLOSED"     from "OPEN"       [2013-01-18 Fri 19:40]
+
+~/.config/kise.conf is written when there is no such file, when the user
+opens/creates another database and when he quits, to store the window's
+position. this last case revealed a weird bug: while the actual writting of the
+kise.conf file was correct, ktlw/write-config missed to reload the config in
+memory, and since that these are the values used by ktlw/write-config, it was
+actually writting back the values loaded at startup time!
+
+*** CLOSED [[35] 2] gui - incorrect filter icon in some cases
+CLOSED: [2013-01-18 Fri 18:37]
+- State "CLOSED"     from "DONE"       [2013-01-18 Fri 19:14]
+- State "DONE"       from "OPEN"       [2013-01-18 Fri 18:37]
+
+the glade file still has a [trial purposes] filter icon = gtk-apply. it is now
+set to the full-pie-24x24-grey-2.png at dialog creation, so there is no more
+cases where it would display this [trial purposes] gtk-apply icon. one of the
+cases were when it is the very first time kise is launched and the user would
+cancel the creation/open database dialog.
+
+*** CLOSED [[34] 2] gui - incorrect database name in some cases
+CLOSED: [2013-01-18 Fri 18:37]
+- State "CLOSED"     from "DONE"       [2013-01-18 Fri 19:14]
+- State "DONE"       from "OPEN"       [2013-01-18 Fri 18:37]
+
+the glade file still has a [trial purposes] value in the label widget used to
+display the user's database name. it is now set to an empty string at dialog
+creation, so there is no more cases where it would display this [trial purposes]
+value. one of the cases were when it is the very first time kise is launched and
+the user would cancel the creation/open database dialog.
+
+*** CLOSED [[33] 4] filters: wrong selection, in some cases
+CLOSED: [2013-01-20 Sun 23:05]
+- State "CLOSED"     from "OPEN"       [2013-01-20 Sun 23:05]
+
+when several fields are involved and one uses 'or', such as in:
+
+		date > 01.10.2012
+		who = lpdi|dema
+
+the date is not correctly applied to the dema records. presumably because the
+select clause looks like
+
+		where date > 01.10.2012
+		  and who = lpdi
+		   or who = dema
+
+instead of
+
+		where date > 01.10.2012 
+		  and (who = lpdi or who = dema)
+
 *** CLOSED [[32] 3] to-be-charged now implies sorting the database
 CLOSED: [2012-06-17 Sun 14:48]
 - State "CLOSED"     from "OPEN"       [2012-06-17 Sun 14:48]

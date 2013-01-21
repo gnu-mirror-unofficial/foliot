@@ -238,7 +238,7 @@
 (use-modules (kise db-imported-db))
 (reload-module (resolve-module '(kise db-imported-db)))
 
-(db-con/open "/usr/alto/db/sqlite.alto.db")
+(db-con/open "/usr/alto/db/sqlite.alto.david.db")
 (db-idb/select-all)
 
 (db-idb/add "sqlite.alto.christian.db" "2011-06-14" "david")

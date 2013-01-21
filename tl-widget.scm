@@ -736,18 +736,25 @@
 (define (ktlw/write-config tl-widget . rests)
   (receive (win-x win-y)
       (get-position (dialog tl-widget))
-    (sys/write-config "kise"
-		      (if (null? rests)
-			  (list (cons 'db-file (kcfg/get 'db-file))
-				(cons 'open-at-startup (kcfg/get 'open-at-startup))
-				(cons 'ulogo (kcfg/get 'ulogo))
-				(cons 'win-x win-x)
-				(cons 'win-y win-y))
-			  (list (cons 'db-file (car rests))
-				(cons 'open-at-startup (cadr rests))
-				(cons 'ulogo (caddr rests))
-				(cons 'win-x win-x)
-				(cons 'win-y win-y))))))
+    (receive (win-w win-h)
+	(get-size (dialog tl-widget))
+      (sys/write-config "kise"
+			(if (null? rests)
+			    (list (cons 'db-file (kcfg/get 'db-file))
+				  (cons 'open-at-startup (kcfg/get 'open-at-startup))
+				  (cons 'ulogo (kcfg/get 'ulogo))
+				  (cons 'win-x win-x)
+				  (cons 'win-y win-y)
+				  (cons 'win-w win-w)
+				  (cons 'win-h win-h))
+			    (list (cons 'db-file (car rests))
+				  (cons 'open-at-startup (cadr rests))
+				  (cons 'ulogo (caddr rests))
+				  (cons 'win-x win-x)
+				  (cons 'win-y win-y)
+				  (cons 'win-w win-w)
+				  (cons 'win-h win-h))))))
+    (kcfg/get 'reload))
 
 
 ;;;
@@ -780,22 +787,22 @@
 	     ((partial) 'opened-partial-schema)
 	     ((none) 'opened-no-schema))))))
 
-(define (ktlw/post-open-db-ops tl-widget db-fname) 
+(define (ktlw/post-open-db-ops tl-widget db-fname open-at-startup? ulogo)
   ;; the list-store related operations that needs to be done @
   ;; connection time is exactly what needs to be done when clearing a
   ;; filter + filling the combos [obviously].
   (set! (active-filter tl-widget) #t)
   (set! (db-file tl-widget) db-fname)
+  (ktlw/write-config tl-widget db-fname open-at-startup? ulogo)
   (set-markup (db-name-lb1 tl-widget)
 	      (format #f "<span foreground=\"#777777\"><b>[ ~A ]</b></span>" (basename db-fname)))
   (ktlw/filter-clear tl-widget 'fillcombos))
 
 (define (ktlw/open-db tl-widget db-file from-gui? mode open-at-startup? checks-result)
-  (when from-gui? (ktlw/write-config tl-widget db-file open-at-startup? (kcfg/get 'ulogo)))
   (case mode
     ((open)
      (case checks-result
-       ((opened) (ktlw/post-open-db-ops tl-widget db-file))
+       ((opened) (ktlw/post-open-db-ops tl-widget db-file open-at-startup? (kcfg/get 'ulogo)))
        ((opened-partial-schema)
 	(md2b/select-gui (dialog tl-widget)
 			 "Confirm dialog"
@@ -803,7 +810,7 @@
 			 (_ "This database has an incomplete Kisê schema, would you like to complete it now?")
 			 (lambda ()
 			   (db/complete-schema)
-			   (ktlw/post-open-db-ops tl-widget db-file))
+			   (ktlw/post-open-db-ops tl-widget db-file open-at-startup? (kcfg/get 'ulogo)))
 			 (lambda () 'nothing)))
        ((opened-no-schema)
 	(md2b/select-gui (dialog tl-widget)
@@ -812,13 +819,13 @@
 			 (_ "This database does not contain the Kisê schema, would you like to add it now?")
 			 (lambda ()
 			   (db/add-schema)
-			   (ktlw/post-open-db-ops tl-widget db-file))
+			   (ktlw/post-open-db-ops tl-widget db-file open-at-startup? (kcfg/get 'ulogo)))
 			 (lambda () 'nothing)))))
     ((create)
      ;; (format #t "ktlw/open-db: ~S ~S~%" mode db-file)
      (db-con/open db-file)
      (db/add-schema)
-     (ktlw/post-open-db-ops tl-widget db-file))))
+     (ktlw/post-open-db-ops tl-widget db-file open-at-startup? (kcfg/get 'ulogo)))))
 
 
 ;;;
@@ -1061,6 +1068,8 @@ filter date: ~S~%"
     (ktlw/apply-xft-dpi-ratio tl-widget)
     ;; not doing anything yet but soon will have to
     (ktlw/translate tl-widget)
+    (set-markup (db-name-lb1 tl-widget) "<span foreground=\"#777777\"><b>[ ]</b></span>")
+    (ktlw/set-filter-icon tl-widget 'off)
     tl-widget))
 
 
@@ -1182,6 +1191,7 @@ filter date: ~S~%"
 				       (last-bt tl-widget)
 				       (list))))
 
+
 ;;;
 ;;; Filter related
 ;;;
@@ -1272,8 +1282,8 @@ filter date: ~S~%"
 
 (define (ktlw/-display-filter-apply-infos filter tuple-set-length new-pos)
   (format #t "Filter is: ~S~%" filter)
-  (format #t "  -] nb of filtered tuples: ~S~%" tuple-set-length)
-  (format #t "  -] prev. active row new pos [or 0 if not in the set]: ~S~%" new-pos)
+  (format #t "  nb of filtered tuples: ~S~%" tuple-set-length)
+  (format #t "  previous active row new pos [or 0 if not in the set]: ~S~%" new-pos)
   #t)
 
 (define (ktlw/set-filter-icon tl-widget mode)
@@ -1317,10 +1327,8 @@ filter date: ~S~%"
 			  (ktlw/select-row tl-widget 0)))))))
 	(begin
 	  (ktlw/set-filter-icon tl-widget 'off)
-	  (when prev-filter
-	    (ktlw/filter-clear tl-widget))
-	  (format #t "filter is empty~%")
-	  ))))
+	  (when prev-filter (ktlw/filter-clear tl-widget))
+	  (format #t "filter is empty~%")))))
 
 (define (ktlw/filter-clear tl-widget . fillcombos?)
   ;; (format #t "clearing filter: ~S~%" fillcombos?)
