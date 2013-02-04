@@ -28,6 +28,7 @@
   :use-module (srfi srfi-1)
   :use-module (srfi srfi-17)
   :use-module (ice-9 receive)
+  :use-module (ice-9 format)
   :use-module (oop goops)
   :use-module (gnome gobject)
   :use-module (gnome gtk)
@@ -124,6 +125,33 @@
 	  (if (null? tsepdsig) "," (caar tsepdsig))
 	  (if (null? tsepdsig) "." (cdar tsepdsig))
 	  ))
+
+(define (kp/write-logo-spec-code ostream ulogo)
+  (if ulogo
+      (format ostream "
+  \\newlength\\logowidth
+  \\newlength\\logoheight
+
+  \\setlength{\\logowidth}{\\widthof{\\klheaderlogo}}
+  \\setlength{\\logoheight}{\\totalheightof{\\klheaderlogo}}
+
+  \\ifdim\\logoheight<42pt
+    \\newlength\\diffheight
+    \\setlength{\\diffheight}{42pt-\\logoheight}
+    \\def\\klheader{\\klheaderlogo \\\\[\\diffheight]}
+  \\else
+    \\def\\klheader{\\klheaderlogo}
+  \\fi
+
+  %logo width: \\the\\logowidth\\\\
+  %logo height: \\the\\logoheight\\\\
+")))
+
+#;(define (kp/write-logo-spec-code ostream ulogo)
+  (if ulogo
+      (format ostream "
+    \\def\\klheader{\\klheaderlogo}
+")))
 
 (define (kp/write-draft-end-document ostream)
   (format ostream "
@@ -478,7 +506,7 @@ Core fields: ~S
     (kp/write-ltx-offset ostream ltx-offset)
     (receive (preamble rowfmt nb-cols description?)
 	(kp/get-ltx-preamble-rowfmt-nb-cols core-fields)
-      (kp/display-ltx-preamble-debug-info groups core-fields preamble rowfmt nb-cols description?)
+      (if (aglobs/get 'debug) (kp/display-ltx-preamble-debug-info groups core-fields preamble rowfmt nb-cols description?))
       (if (null? groups)
 	  (begin
 	    (format ostream "\\bigskip~%")
@@ -532,6 +560,7 @@ Core fields: ~S
 (define (kp/write-draft-content ostream kp-widget tl-widget draftLT-file-object)
   (let* ((db-name (basename (db-file tl-widget)))
 	 (filter (active-filter tl-widget))
+	 (ulogo (kcfg/get 'ulogo))
 	 (tpl-pos (get-active (template-combo kp-widget)))
 	 (tpl-tuple (db-pt/get-tuple (tpl-tuples kp-widget) tpl-pos))
 	 (tpl-name (db-pt/get tpl-tuple 'name))
@@ -554,6 +583,7 @@ Core fields: ~S
 	;;   (list (cons "where" where) (cons "group by" group-by) (cons "order by" order-by)))
 	;; (format #t "core-fields: ~S~%" core-fields)
 	(kp/write-nptsepdsig ostream '("," . "."))
+	(kp/write-logo-spec-code ostream ulogo)
 	(kp/write-draft-abstract ostream tl-widget db-name where group-by order-by core-fields)
 	(kp/write-draft-core-content ostream tuples groups core-fields kp-widget tl-widget draftLT-file-object)))))
 
