@@ -1,0 +1,17 @@
+@c -*-texinfo-*-
+@c This is part of the Kisê User Manual.
+@c Copyright (C)  2011, 2012, 2013 Free Software Foundation, Inc.
+@c See the file kise.texi for copying conditions.
+
+
+@set UGUILE http://www.gnu.org/@/software/guile
+@set UGUILE-GNOME http://www.gnu.org/software/guile-gnome
+@set USQLITE http://www.sqlite.org
+@set USQLITE3-PCRE https://github.com/oojah/sqlite3-pcre
+@set ULATEX http://www.latex-project.org
+@set UIWONA http://www.tug.dk/FontCatalogue/iwona/
+@set USCHEME http://schemers.org
+@set UALTO http://altosw.be
+@set UKISE http://altosw.be/kise/
+@set UKISE-RELEASES http://www.altosw.be/kise/@/releases.html
+@set UKISE-LATEST http://www.altosw.be/kise/@/releases/kise-@value{VERSION}.tar.gz

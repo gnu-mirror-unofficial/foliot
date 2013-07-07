@@ -1,0 +1,47 @@
+@c -*-texinfo-*-
+@c This is part of the Kisê User Manual.
+@c Copyright (C)  2011, 2012, 2013 Free Software Foundation, Inc.
+@c See the file kise.texi for copying conditions.
+
+@node Preface
+@unnumbered Preface
+
+This manual describes how to use Kisê.  It relates particularly to 
+Kisê version @value{VERSION}.
+
+@menu
+* Contributors::                
+* Kisê License::               
+@end menu
+
+@node Contributors
+@unnumberedsec Contributors to this Manual
+
+Like Kisê itself, the Kisê user manual is a living entity. Right now, the
+contributors to this manual are Christian @sc{Lalune} and David @sc{Pirotte}, the authors
+and maintainers of Kisê.
+
+You, reader, are most welcome to join and help.  Visit Kisê's web site at
+@uref{http://www.altosw.be/kise/} to find out how to get involved.
+
+
+@node Kisê License
+@unnumberedsec The Kisê License
+@cindex copying
+@cindex GPL
+@cindex license
+
+Kisê is Free Software.  Kisê is copyrighted, not public domain, and there are
+restrictions on its distribution or redistribution, but these restrictions are
+designed to permit everything a cooperating person would want to do.
+
+This manual is published under the terms of the GNU Free Documentation License
+(@pxref{GNU Free Documentation License}).
+
+You must be aware there is no warranty whatsoever for Kisê.  This is described
+in full in the license.
+
+
+@c Local Variables:
+@c TeX-master: "kise.texi"
+@c End:
