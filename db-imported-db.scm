@@ -1,6 +1,6 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012
+;;;; Copyright (C) 2011, 2012, 2013
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -51,7 +51,6 @@
 	   db-idb/find-pos
 	   db-idb/get-next-id
 	   db-idb/add
-	   db-idb/duplicate
 	   db-idb/delete))
 
 
@@ -65,6 +64,46 @@
 			      (kise db-con))
   (textdomain "db-imported-db")
   (bindtextdomain "db-imported-db" (aglobs/get 'pofdir)))
+
+
+;;;
+;;; Globals
+;;;
+
+(define (db-idb/fields)
+  (let ((sep "."))
+    (format #f "id,
+   name,
+   strftime('%d~A%m~A%Y', imported_the, 'unixepoch'),
+   imported_by"
+	    sep sep)))
+
+
+;;;
+;;; Attr pos, get, set
+;;;
+
+(define (db-idb/fields-offsets)
+  '((id . 0)
+    (name . 1) ;; it actually is the filename
+    (filename . 1)
+    (imported_the . 2)
+    (imported_by . 3)))
+
+(define (db-idb/get-pos what)
+  (assq-ref (db-idb/fields-offsets) what))
+
+(define (db-idb/get db-tuple what)
+  ;; db-tuple is a vector
+  (vector-ref db-tuple (db-idb/get-pos what)))
+
+(define (db-idb/set db-tuple what value)
+  ;; db-tuple is a vector
+  (vector-set! db-tuple (db-idb/get-pos what) value))
+
+(define (db-idb/get-tuple tuples offset)
+  ;; so far, tuples is a list
+  (list-ref tuples offset))
 
 
 ;;;
@@ -108,8 +147,16 @@
      from kise_imported_db
  order by name;")
 
-(define (db-idb/select-all)
-  (sqlite/query (db-con) (db-idb/select-all-str)))
+(define (db-idb/select-all-for-display-str)
+  "select ~A
+     from kise_imported_db
+ order by name;")
+
+(define* (db-idb/select-all #:optional (display? #f))
+  (if display?
+      (sqlite/query (db-con) (format #f "~?" (db-idb/select-all-for-display-str)
+				     (list (db-idb/fields))))
+      (sqlite/query (db-con) (db-idb/select-all-str))))
 
 (define (db-idb/select-some-str)
   "select *
@@ -122,40 +169,15 @@
 		(format #f "~?" (db-idb/select-some-str)
 			(list where))))
 
-;;;
-;;; Attr pos
-;;;
-
-(define (db-idb/fields-offsets)
-  '((id . 0)
-    (name . 1)
-    (imported_the . 2)
-    (imported_by . 3)))
-
-(define (db-idb/get-pos what)
-  (cdr (assoc what (db-idb/fields-offsets))))
-
-
-;;;
-;;; Later a global API
-;;;
-
-(define (db-idb/get db-tuple what)
-  ;; db-tuple is a vector
-  (vector-ref db-tuple (db-idb/get-pos what)))
-
-(define (db-idb/set db-tuple what value)
-  ;; db-tuple is a vector
-  (vector-set! db-tuple (db-idb/get-pos what) value))
-
-(define (db-idb/get-tuple tuples offset)
-  ;; so far, tuples is a list
-  (list-ref tuples offset))
-
 
 ;;;
 ;;; Updates
 ;;;
+
+(define (db-idb/set-date-str)
+  "update kise_imported_db
+      set ~A = strftime('%s','~A')
+    where id = '~A';")
 
 (define (db-idb/set-str)
   "update kise_imported_db
@@ -165,11 +187,15 @@
 (define (db-idb/update db-tuple what value . displayed-value)
   (let* ((id (db-idb/get db-tuple 'id))
 	 (sql-value (case what
-		      ((name) (str/prep-str-for-sql value))
+		      ((filename) (str/prep-str-for-sql value))
 		      (else
 		       value)))
-	 (cmd (format #f "~?" (db-idb/set-str) (list what sql-value id))))
-    ;; (format #t "~S~%Displayed value: ~S~%" cmd displayed-value)
+	 (sql-str (case what
+		    ((imported_the) (db-idb/set-date-str))
+		    (else
+		     (db-idb/set-str))))
+
+	 (cmd (format #f "~?" sql-str (list what sql-value id))))
     (sqlite/command (db-con) cmd)
     (if (null? displayed-value)
 	(db-idb/set db-tuple what value)
@@ -193,7 +219,7 @@
 
 
 ;;;
-;;; Add / Dupplcate
+;;; Add
 ;;;
 
 (define (db-idb/get-next-id-str)
@@ -207,14 +233,20 @@
     (if value (1+ value) 0)))
 
 (define (db-idb/add-str)
-  "insert into kise_imported_db (id, name, imported_the, imported_by)
-   values ('~A', '~A', strftime('%s','~A'), '~A');")
+  "insert into kise_imported_db (id,
+                                 name,
+                                 imported_the,
+                                 imported_by)
+   values ('~A',
+           '~A',
+           strftime('%s', '~A'),
+           '~A');")
 
-(define (db-idb/add name date who)
+(define (db-idb/add filename date who)
   (let* ((next-id (db-idb/get-next-id))
 	 (insert (format #f "~?" (db-idb/add-str)
-			 (list next-id name date who))))
-    ;; (format #t "~S~%" insert)
+			 (list next-id filename date who))))
+    ;; (dimfi insert)
     (sqlite/command (db-con) insert)
     next-id))
 
@@ -238,11 +270,10 @@
 (use-modules (kise db-imported-db))
 (reload-module (resolve-module '(kise db-imported-db)))
 
-(db-con/open "/usr/alto/db/sqlite.alto.david.db")
+(db-con/open "/usr/alto/db/sqlite.alto.tests.db")
 (db-idb/select-all)
 
-(db-idb/add "sqlite.alto.christian.db" "2011-06-14" "david")
-
-(db-idb/select-some "name = 'sqlite.alto.christian.db'")
+(db-idb/add "/usr/alto/db/sqlite.alto.christian.db" "2011-06-14" "david")
+(db-idb/select-some "name like '%sqlite.alto.christian.db'")
 
 !#

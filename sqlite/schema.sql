@@ -1,6 +1,6 @@
 -- -*- mode: sql; coding: utf-8 -*-
 
----- Copyright (C) 2011, 2012
+---- Copyright (C) 2011, 2012, 2013
 ---- Free Software Foundation, Inc.
 
 ---- This file is part of Kisê.
@@ -68,7 +68,7 @@ drop table if exists kise_imported_db;
 
 create table kise_imported_db (
   id               integer primary key not null,
-  name             text,
+  name             text, -- actually it is the filename
   imported_the     integer,
   imported_by      text
 );

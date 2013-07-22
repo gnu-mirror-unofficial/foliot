@@ -1,6 +1,6 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012
+;;;; Copyright (C) 2011, 2012, 2013
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -43,9 +43,11 @@
     (aglobs/set 'gtkrcfile (string-append kisedir "/gtkrc.kise"))
     (aglobs/set 'latexdir (string-append kisedir "/latex"))
     (aglobs/set 'printdir "/tmp")
+    (aglobs/set 'per-db-imported-ids-delta 1000000)
     ;; release: kisê to common git tag alist
-    (aglobs/set 'tags '((0.9.1 . 0.1)
-			(0.9.2 . 0.2)))))
+    (aglobs/set 'tags '(("0.9.1" . "0.1")
+			("0.9.2" . "0.2")
+			("0.9.3" . "0.3")))))
 
 
 #!
@@ -60,5 +62,6 @@
 (aglobs/get 'gtkrcfile)
 (aglobs/get 'latexdir)
 (aglobs/get 'printdir)
+(aglobs/get 'per-db-imported-ids-delta)
 (aglobs/get 'tags)
 !#

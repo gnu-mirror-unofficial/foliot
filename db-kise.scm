@@ -1,6 +1,6 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012
+;;;; Copyright (C) 2011, 2012, 2013
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -66,7 +66,8 @@
 	   db-kise/duplicate
 	   db-kise/delete
 	   db-kise/delete-some
-	   db-kise/import))
+	   db-kise/import
+	   db-kise/delete-imported-tuples))
 
 
 (eval-when (compile load eval)
@@ -105,6 +106,46 @@
    imported_id,
    imported_db"
 	    sep sep sep sep sep sep)))
+
+;;;
+;;; Attr pos, get, set
+;;;
+
+(define (db-kise/fields-offsets)
+  '((id . 0)
+    (date_ . 1)
+    (who . 2)
+    (for_whom . 3)
+    (duration . 4)
+    (to_be_charged . 5)
+    (charging_type . 6)
+    (what . 7)
+    (description . 8)
+    (created_the . 9)
+    (created_by . 10)
+    (modified_the . 11)
+    (modified_by . 12)
+    (imported_id . 13)
+    (imported_db . 14)))
+
+(define (db-kise/get-pos what)
+  (assq-ref (db-kise/fields-offsets) what))
+
+(define (db-kise/get db-tuple what)
+  ;; db-tuple is a vector. NULL values are returned as #f by sqlite.scm
+  ;; which is a problem if the field is used in _text_ widget
+  (let ((value (vector-ref db-tuple (db-kise/get-pos what))))
+    (case what
+      ((date date_) (if value value ""))
+      (else value))))
+
+(define (db-kise/set db-tuple what value)
+  ;; db-tuple is a vector
+  (vector-set! db-tuple (db-kise/get-pos what) value))
+
+(define (db-kise/get-tuple tuples offset)
+  ;; so far, tuples is a list
+  (list-ref tuples offset))
 
 
 ;;;
@@ -291,52 +332,6 @@
 
 
 ;;;
-;;; Attr pos
-;;;
-
-(define (db-kise/fields-offsets)
-  '((id . 0)
-    (date_ . 1)
-    (who . 2)
-    (for_whom . 3)
-    (duration . 4)
-    (to_be_charged . 5)
-    (charging_type . 6)
-    (what . 7)
-    (description . 8)
-    (created_the . 9)
-    (created_by . 10)
-    (modified_the . 11)
-    (modified_by . 12)
-    (imported_id . 13)
-    (imported_db . 14)))
-
-(define (db-kise/get-pos what)
-  (assq-ref (db-kise/fields-offsets) what))
-
-
-;;;
-;;; Later a global API
-;;;
-
-(define (db-kise/get db-tuple what)
-  ;; db-tuple is a vector. NULL values are returned as #f by sqlite.scm
-  ;; which is a problem if the field is used in _text_ widget
-  (let ((value (vector-ref db-tuple (db-kise/get-pos what))))
-    (case what
-      ((date date_) (if value value ""))
-      (else value))))
-
-(define (db-kise/set db-tuple what value)
-  ;; db-tuple is a vector
-  (vector-set! db-tuple (db-kise/get-pos what) value))
-
-(define (db-kise/get-tuple tuples offset)
-  ;; so far, tuples is a list
-  (list-ref tuples offset))
-
-
-;;;
 ;;; Updates
 ;;;
 
@@ -389,7 +384,7 @@
 ;;;
 
 (define (db-kise/get-next-id-str)
-  "select max(id) from kise;")
+  "select max(id) from kise where id < '~A';")
 
 (define (db-kise/get-next-id)
   (let* ((next (sqlite/query (db-con)
@@ -397,6 +392,17 @@
 	 (value (vector-ref (car next) 0)))
     ;; (format #t "db-kise/get-next-id: ~S. value: ~S~%" next value)
     (if value (1+ value) 0)))
+
+(define (db-kise/get-next-id)
+  (let* ((delta (aglobs/get 'per-db-imported-ids-delta))
+	 (query (format #f "~?" (db-kise/get-next-id-str) (list delta)))
+	 (tuple (car (sqlite/query (db-con) query)))
+	 (max-id (vector-ref tuple 0)))
+    ;; if the database is empty, sqlite returns NULL, which in
+    ;; guile-sqlite is #f
+    (if max-id
+	(1+ max-id)
+	0)))
 
 (define (db-kise/add-str)
   ;; imported_id has its default set to -1
@@ -504,28 +510,27 @@
                      imported_db)
    values ('~A','~A','~A','~A','~A','~A','~A','~A','~A','~A','~A','~A','~A','~A')")
 
-(define (db-kise/add-from-other-db date who for-whom what duration to-be-charged description
+(define (db-kise/add-from-other-db id date who for-whom what duration to-be-charged description
 				   created-the created-by modified-the modified-by
-				   imported-id imported-db)				   
-  (let* ((next-id (db-kise/get-next-id))
-	 (insert (format #f "~?" (db-kise/add-from-other-db-str)
-			 (list next-id
-			       date
-			       who
-			       for-whom
-			       what
-			       duration
-			       to-be-charged
-			       description
-			       created-the
-			       created-by
-			       modified-the
-			       modified-by
-			       imported-id
-			       imported-db))))
+				   imported-id imported-db-id)
+  (let ((insert (format #f "~?" (db-kise/add-from-other-db-str)
+			(list id
+			      date
+			      who
+			      for-whom
+			      what
+			      duration
+			      to-be-charged
+			      description
+			      created-the
+			      created-by
+			      modified-the
+			      modified-by
+			      imported-id
+			      imported-db-id))))
     ;; (format #t "~S~%" insert)
     (sqlite/command (db-con) insert)
-    next-id))
+    id))
 
 
 ;;;
@@ -545,58 +550,88 @@
   "delete from kise
     where ~A")
 
-(define (db-kise/delete-some where)
-  (let ((db (db-con)))
-    (sqlite/begin-transaction db)
-    (sqlite/command (db-con)
-		    (format #f "~?" (db-kise/delete-some-str)
-			    (list where)))
-    (sqlite/commit db)))
+(define* (db-kise/delete-some-1 where)
+  (sqlite/command (db-con)
+		  (format #f "~?" (db-kise/delete-some-str)
+			  (list where))))
+
+(define* (db-kise/delete-some where #:optional (in-transaction? #f))
+  (if in-transaction?
+      (db-kise/delete-some-1 where)
+      (let ((db (db-con)))
+	(sqlite/begin-transaction db)
+	(db-kise/delete-some-1 where)
+	(sqlite/commit db))))
 
 
 ;;;
-;;; Import another db
+;;; Import db related stuff
 ;;;
 
-(define (db-kise/import-1 tuples imported-db)
-  ;; (dimfi imported-db (car tuples))
-  (let ((db (db-con)))
-    (sqlite/begin-transaction db)
+(define* (db-kise/delete-imported-tuples-1 idb-id delete-imported-db-tuple?)
+  (db-kise/delete-some (format #f "imported_db = '~A'" idb-id) #t)
+  (when delete-imported-db-tuple? (db-idb/delete idb-id)))
+
+(define* (db-kise/delete-imported-tuples idb-id #:optional (in-transaction? #f) (delete-imported-db-tuple? #f))
+  (if in-transaction?
+      (db-kise/delete-imported-tuples-1 idb-id delete-imported-db-tuple?)
+      (let ((db (db-con)))
+	(sqlite/begin-transaction db)
+	(db-kise/delete-imported-tuples-1 idb-id delete-imported-db-tuple?)
+	(sqlite/commit db))))
+
+(define (db-kise/import-2 tuples idb-id)
+  ;; sql transaction must be started by the caller
+  (let ((ids-delta (* (1+ idb-id) (aglobs/get 'per-db-imported-ids-delta))))
     (for-each (lambda (tuple)
-		(db-kise/add-from-other-db (db-kise/get tuple 'date_)
-					   (str/prep-str-for-sql (db-kise/get tuple 'who))
-					   (str/prep-str-for-sql (db-kise/get tuple 'for_whom))
-					   (str/prep-str-for-sql (db-kise/get tuple 'what))
-					   (db-kise/get tuple 'duration)
-					   (db-kise/get tuple 'to_be_charged)
-					   (str/prep-str-for-sql (db-kise/get tuple 'description))
-					   (db-kise/get tuple 'created_the)
-					   (str/prep-str-for-sql (db-kise/get tuple 'created_by))
-					   (db-kise/get tuple 'modified_the)
-					   (str/prep-str-for-sql (db-kise/get tuple 'modified_by))
-					   (db-kise/get tuple 'id) ;; imported-id
-					   imported-db))
-	tuples)
-    (sqlite/commit db)))
+		(let ((imported-id (db-kise/get tuple 'id)))
+		  (db-kise/add-from-other-db (+ imported-id ids-delta)
+					     (db-kise/get tuple 'date_)
+					     (str/prep-str-for-sql (db-kise/get tuple 'who))
+					     (str/prep-str-for-sql (db-kise/get tuple 'for_whom))
+					     (str/prep-str-for-sql (db-kise/get tuple 'what))
+					     (db-kise/get tuple 'duration)
+					     (db-kise/get tuple 'to_be_charged)
+					     (str/prep-str-for-sql (db-kise/get tuple 'description))
+					     (db-kise/get tuple 'created_the)
+					     (str/prep-str-for-sql (db-kise/get tuple 'created_by))
+					     (db-kise/get tuple 'modified_the)
+					     (str/prep-str-for-sql (db-kise/get tuple 'modified_by))
+					     imported-id
+					     idb-id)))
+		tuples)))
+
+(define* (db-kise/import-1 tuples idb-id #:optional (in-transaction? #f))
+  (let ((db (db-con)))
+    (if in-transaction?
+	(db-kise/import-2 tuples idb-id)
+	(begin
+	  (sqlite/begin-transaction db)
+	  (db-kise/import-2 tuples idb-id)
+	  (sqlite/commit db)))))
 
 (define (db-kise/import filename)
   (let* ((uname (sys/get 'uname))
 	 (today (date/system-date))
 	 (iso-today (date/iso-date today))
-	 (db-name (basename filename))
 	 (idb-tuples (db-idb/select-all))
-	 (idb-tuple-pos (db-idb/find-pos idb-tuples 'name db-name string=?))
+	 (idb-tuple-pos (db-idb/find-pos idb-tuples 'filename filename string=?))
 	 (db (db-con/open filename #f))
 	 (tuples (db-kise/select-all-other-db db)))
     (db-con/close db #f)
-    (if idb-tuple-pos
-	(let* ((idb-tuple (list-ref idb-tuples idb-tuple-pos))
-	       (idb-id (db-idb/get idb-tuple 'id)))
-	  ;; (dimfi "deleting last import..." idb-tuple)
-	  (db-kise/delete-some (format #f "imported_db = '~A'" idb-id))
-	  (db-kise/import-1 tuples idb-id))
-	(let ((imported-db (db-idb/add db-name iso-today uname)))
-	  (db-kise/import-1 tuples imported-db)))))
+    (let ((db (db-con)))
+      (sqlite/begin-transaction db)
+      (if idb-tuple-pos
+	  (let* ((idb-tuple (list-ref idb-tuples idb-tuple-pos))
+		 (idb-id (db-idb/get idb-tuple 'id)))
+	    ;; (dimfi "deleting last import..." idb-tuple)
+	    (db-kise/delete-imported-tuples idb-id #t #f)
+	    (db-kise/import-1 tuples idb-id #t)
+	    (db-idb/update idb-tuple 'imported_the iso-today)
+	    (db-idb/update idb-tuple 'imported_by uname))
+	  (let ((idb-id (db-idb/add filename iso-today uname)))
+	    (db-kise/import-1 tuples idb-id #t)))
+      (sqlite/commit db))))
 
 
 #!
@@ -606,6 +641,7 @@
 
 (db-con/open "/tmp/new.db")
 (db-con/open "/usr/alto/db/sqlite.alto.tests.db")
+(db-con/open "/usr/alto/db/sqlite.alto.christian.db")
 (sqlite-close (db-con))
 
 (db-kise/get-next-id)
@@ -634,9 +670,11 @@
 	     "")	;; description
 
 (db-kise/delete "44")
-(db-kise/select-some "who = 'bibi'" #f "sum(duration)")
+(db-kise/select-some "who = 'david'" #f "sum(duration)")
 
 (db-kise/import "/usr/alto/db/sqlite.alto.christian.db")
+(db-kise/delete-imported-tuples 0 #f #t)
+
 
 ;;;
 ;;; SQL examples/tests

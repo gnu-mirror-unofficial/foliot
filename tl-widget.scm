@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 
-;;;; Copyright (C) 2011, 2012
+;;;; Copyright (C) 2011, 2012, 2013
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -34,6 +34,7 @@
   :use-module (gnome gtk)
   :use-module (gnome gtk gdk-event)
   :use-module (gnome glade)
+  :use-module (gnome gnome-ui)
 
   ;; common
   :use-module (macros reexport)
@@ -77,6 +78,7 @@
 	   ;; sorting-combo
 
 	   con-bt
+	   import-bt
 	   quit-bt
 	   dup-bt
 	   add-bt
@@ -95,6 +97,7 @@
 	   date-lb
 	   date-entry
 	   date-icon ;; exported because currently hidden in kise.scm
+	   date-edit ;; exported because currently hidden in kise.scm
 
 	   who-lb
 	   who-entry
@@ -183,6 +186,7 @@
 
 	   ktlw/add-id ;; filter additional 'or' id set
 	   ktlw/del-id
+	   ktlw/import
 	   ktlw/add
 	   ktlw/duplicate
 	   ktlw/delete
@@ -231,6 +235,7 @@
   (sorting-combo :accessor sorting-combo :init-keyword :sorting-combo :init-value #f)
 
   (con-bt :accessor con-bt :init-keyword :con-bt :init-value #f)
+  (import-bt :accessor import-bt :init-keyword :import-bt :init-value #f)
   (quit-bt :accessor quit-bt :init-keyword :quit-bt :init-value #f)
   (dup-bt :accessor dup-bt :init-keyword :dup-bt :init-value #f)
   (add-bt :accessor add-bt :init-keyword :add-bt :init-value #f)
@@ -248,6 +253,7 @@
   (date-lb :accessor date-lb :init-keyword :date-lb :init-value #f)
   (date-entry :accessor date-entry :init-keyword :date-entry :init-value #f)
   (date-icon :accessor date-icon :init-keyword :date-icon :init-value #f)
+  (date-edit :accessor date-edit :init-keyword :date-edit :init-value #f)
   (who-lb :accessor who-lb :init-keyword :who-lb :init-value #f)
   (who-entry :accessor who-entry :init-keyword :who-entry :init-value #f)
   (who-combo :accessor who-combo :init-keyword :who-combo :init-value #f)
@@ -377,7 +383,7 @@
 (define (ktlw/add-columns tl-widget treeview)
   (let* ((dpi-ratio (aglobs/get 'Xft.dpi.ratio))
 	 (apply-ratio? (aglobs/get 'apply-dpi-ratio?))
-	 (model     (get-model treeview))
+	 (model (get-model treeview))
 	 ;; DATE
 	 (renderer1 (make <gtk-cell-renderer-text>))
 	 (column1   (make <gtk-tree-view-column>
@@ -588,17 +594,19 @@
   (if (or (fp/<? nb 1) (fp/=? nb 1)) (_ "day") (_ "days")))
 
 (define (ktlw/get-totals tl-widget)
+  ;; tresult, returned by guile-sqlite, is a list of 1 vector
+  ;; of 1 value. the value is a float or #f [when the db or the
+  ;; subset upon which the query is performed is empty].
   (let* ((tresult (db-kise/select-some (active-filter tl-widget) (id-set tl-widget) "sum(duration)"))
-	 ;; guile-sqlite returns a list of vectors
-	 (ttime (vector-ref (car tresult) 0))
+	 (tduration (vector-ref (car tresult) 0))
+	 (ttime (and tduration (fp/round tduration 1)))
 	 (tdays (and ttime (fp/round (/ ttime 8) 1)))
 	 (cresult (ktlw/select-ctime tl-widget))
-	 ;; guile-sqlite will return a list of 1 vector of 1
-	 ;; value, which might be #f [aggregate of an empty set]
-	 (ctime (vector-ref (car cresult) 0))
+	 (cduration (vector-ref (car cresult) 0))
+	 (ctime (and cduration (fp/round cduration 1)))
 	 (cdays (and ctime (fp/round (/ ctime 8) 1))))
-    (values (if ttime ttime 0) (if tdays tdays 0.0)
-	    (if ctime ctime 0) (if cdays cdays 0.0))))
+    (values (if ttime ttime 0.0) (if tdays tdays 0.0)
+	    (if ctime ctime 0.0) (if cdays cdays 0.0))))
 
 (define (ktlw/update-totals-status-bars tl-widget)
   (let ((ttime-sbar (status-bar-3 tl-widget)) ;; totals ...
@@ -607,12 +615,8 @@
     (gtk2/status-pop ctime-sbar "")
     (if (null? (db-tuples tl-widget))
 	(begin
-	  (gtk2/status-push ttime-sbar
-			    (format #f "~A: n/a" (_ "Total"))
-			    "")
-	  (gtk2/status-push ctime-sbar 
-			    (format #f "~A: n/a" (_ "Charged"))
-			    ""))
+	  (gtk2/status-push ttime-sbar (format #f "~A: n/a" (_ "Total")) "")
+	  (gtk2/status-push ctime-sbar (format #f "~A: n/a" (_ "Charged")) ""))
 	(receive (ttime tdays ctime cdays)
 	    (ktlw/get-totals tl-widget)
 	  ;; here we will use ngettext
@@ -844,9 +848,12 @@
 	(,for-whoms ,for-whom-combo for_whom)
 	(,whats ,what-combo what))))
 
-(define (ktlw/trace-combo-callback combo entry db-fname in-store? signal . row)
+(define (ktlw/trace-combo-callback tl-widget combo entry db-fname in-store? signal)
   (when (aglobs/get 'debug)
-    (dimfi db-fname (unless (null? row) (car row)) signal (get-active combo) (get-text entry) in-store?)))
+    (let* ((row (current-row tl-widget))
+	   (db-tuple (ktlw/get-tuple tl-widget row))
+	   (id (db-kise/get db-tuple 'id)))
+      (dimfi (format #f "id ~A" id) db-fname signal (get-active combo) (get-text entry) in-store?))))
 
 (define (ktlw/connect-combos-1 combos-defs)
   (for-each (lambda (combo-def)
@@ -867,7 +874,7 @@
 				    (tuple (ktlw/get-tuple tl-widget row))
 				    (id (db-kise/get tuple 'id))
 				    (value (get-text entry)))
-			       (ktlw/trace-combo-callback combo entry db-fname in-store? 'changed row)
+			       (ktlw/trace-combo-callback tl-widget combo entry db-fname in-store? 'changed)
 			       (ktlw/set db-fname tl-widget value row)
 			       ;; if active-filter, we add the id to the set, even if we are not
 			       ;; certain this is absolutely necessary, since the cost of checking would
@@ -877,24 +884,23 @@
 		(connect combo
 			 'move-active
 			 (lambda (combo scroll-type)
-			   (ktlw/trace-combo-callback combo entry db-fname in-store? 'move-active)))
+			   (ktlw/trace-combo-callback tl-widget combo entry db-fname in-store? 'move-active)))
 		(connect combo
 			 'popup
 			 (lambda (combo)
-			   (ktlw/trace-combo-callback combo entry db-fname in-store? 'popup)))
+			   (ktlw/trace-combo-callback tl-widget combo entry db-fname in-store? 'popup)))
 		(connect entry
 			 'focus-in-event
 			 (lambda (entry event)
-			   (ktlw/trace-combo-callback combo entry db-fname in-store? 'focus-in)
+			   (ktlw/trace-combo-callback tl-widget combo entry db-fname in-store? 'focus-in)
 			   #f)) ;; do not stop - proceed with internal methods
 		(connect entry
 			 'focus-out-event
 			 (lambda (entry event)
-			   (let ((row (current-row tl-widget))
-				 (active (get-active combo))
+			   (let ((active (get-active combo))
 				 (value (get-text entry))
 				 (new-values (db-get-values-func)))
-			     (ktlw/trace-combo-callback combo entry db-fname in-store? 'focus-out row)
+			     (ktlw/trace-combo-callback tl-widget combo entry db-fname in-store? 'focus-out)
 			     (set! (gui-callback? tl-widget) #f)
 			     (set! (kw-acc tl-widget) new-values)
 			     (gtk2/fill-combo combo new-values)
@@ -917,7 +923,11 @@
 ;;;
 
 (define (ktlw/get-tuple tl-widget row)
-  (list-ref (db-tuples tl-widget) row))
+  (let ((tuples (db-tuples tl-widget)))
+    (if (and (not (null? tuples))
+	     (>= row 0))
+	(list-ref tuples row)
+	#f)))
 
 (define (ktlw/get what tl-widget . row)
   (let* ((which-row (if (null? row) (current-row tl-widget) (car row)))
@@ -951,10 +961,12 @@
   (when (aglobs/get 'apply-dpi-ratio?)
     (let* ((dpi-ratio (aglobs/get 'Xft.dpi.ratio))
 	   (widget-size-dates (inexact->exact (round (* dpi-ratio (get (date-entry tl-widget) 'width-request)))))
-	   (widget-size-whos (inexact->exact (round (* dpi-ratio (get (who-combo tl-widget) 'width-request)))))
-	   )
+	   (widget-size-whos (inexact->exact (round (* dpi-ratio (get (who-combo tl-widget) 'width-request))))))
       (set (reference-entry tl-widget) 'width-request widget-size-dates)
       (set (date-entry tl-widget) 'width-request widget-size-dates)
+      (set (date-edit tl-widget) 'width-request 
+	   (+ 20 ;; the size of the popup button
+	      (inexact->exact (round (* dpi-ratio (get (date-edit tl-widget) 'width-request))))))
       (set (who-combo tl-widget) 'width-request widget-size-whos)
       (set (for-whom-combo tl-widget) 'width-request widget-size-whos)
       (set (duration-sb tl-widget) 'width-request (inexact->exact (round (* dpi-ratio (get (duration-sb tl-widget) 'width-request)))))
@@ -990,6 +1002,7 @@ filter date: ~S~%"
 		      :sorting-combo (get-widget xmlc "kise/sorting_combo")
 
 		      :con-bt (get-widget xmlc "kise/con_bt")
+		      :import-bt (get-widget xmlc "kise/import_bt")
 		      :quit-bt (get-widget xmlc "kise/quit_bt")
 		      :dup-bt (get-widget xmlc "kise/dup_bt")
 		      :add-bt (get-widget xmlc "kise/add_bt")
@@ -1006,6 +1019,7 @@ filter date: ~S~%"
 		      :date-lb (get-widget xmlc "kise/date_lb")
 		      :date-entry (get-widget xmlc "kise/date_entry")
 		      :date-icon (get-widget xmlc "kise/date_icon")
+		      :date-edit (get-widget xmlc "kise/date_edit")
 
 		      :who-lb (get-widget xmlc "kise/who_lb")
 		      :who-combo (get-widget xmlc "kise/who_combo")
@@ -1074,7 +1088,7 @@ filter date: ~S~%"
 
 
 ;;;
-;;; Adding rows
+;;; Add, duplicate, delete
 ;;;
 
 (define (ktlw/add tl-widget)
@@ -1090,8 +1104,7 @@ filter date: ~S~%"
 			      "" 	;; what 
 			      0		;; duration
 			      "f"	;; to-be-charged
-			      ""	;; description
-			      ))
+			      ""))	;; description
 	 (ids? (if filter? (ktlw/add-id new-id tl-widget) (id-set tl-widget)))
 	 (new-iter (kiseiter/prepend-fill model today uname "" 0 #f ""))
 	 (tuples (db-kise/select-some filter? ids?))
@@ -1215,7 +1228,8 @@ filter date: ~S~%"
     (set! (gui-callback? tl-widget) prev-gui-cb?)
     (for-each (lambda (acc)
 		(set-sensitive (acc tl-widget) #t))
-	`(,add-bt))
+	`(,import-bt
+	  ,add-bt))
     (for-each (lambda (acc)
 		;; (format #t "empty-mode: ~S~%" acc)
 		(set-sensitive (acc tl-widget) #f))
@@ -1236,7 +1250,8 @@ filter date: ~S~%"
   (ktlw/empty-subset-or-db-mode tl-widget)
   (for-each (lambda (acc)
 	      (set-sensitive (acc tl-widget) #f))
-      `(,add-bt
+      `(,import-bt
+	,add-bt
 	,filter-apply-bt
 	,filter-clear-bt
 	,filter-select-bt
@@ -1250,7 +1265,8 @@ filter date: ~S~%"
 (define (ktlw/normal-mode tl-widget)
   (for-each (lambda (acc)
 	      (set-sensitive (acc tl-widget) #t))
-      `(,print-bt
+      `(,import-bt
+	,print-bt
 	;; ,first-bt ,prev-bt ,next-bt ,last-bt: checked by select-row callback
 	,dup-bt ,del-bt
 	,date-entry
@@ -1385,7 +1401,7 @@ The date must be a valid date between the 01.01.1970 and 31.12.2037.
 	<, <=, =, >= or > a date
 	a date..another date [*]
 
-[*] the range will include the specified dates]"))
+[*] the range will include the specified dates"))
 
 (define (ktlw/filter-text-tooltip-str)
   (_ "Text filters:
@@ -1405,11 +1421,15 @@ The date must be a valid date between the 01.01.1970 and 31.12.2037.
 
 
 (define (ktlw/translate tl-widget)
-  (let ((t-tip (tooltip tl-widget)))
+  (let ((tb-tip (gtk-tooltips-new))
+	(t-tip (tooltip tl-widget)))
+    (gtk-tooltips-enable tb-tip)
     #;(set-icon-from-stock (date-entry tl-widget)
 			 GTK_ENTRY_ICON_SECONDARY
 			 GTK_STOCK_ABOUT)
     #;(set-markup (date-lb tl-widget) "<a href=\"www.fsf.org\">Date:</a>")
+    (set-tooltip (import-bt tl-widget) tb-tip (_ "Import/Unimport...") "")
+
     (set-tip t-tip (date-lb tl-widget) (ktlw/dates-tooltip-str))
     ;;(set-label (what-lb tl-widget) (format #f "<u>~A:</u>" (_ "What")))
     ;;(set-tip t-tip (what-lb tl-widget) (ktlw/what-tooltip-str))

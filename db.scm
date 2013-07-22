@@ -1,6 +1,6 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012
+;;;; Copyright (C) 2011, 2012, 2013
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -35,8 +35,8 @@
   ;; kise
   :use-module (kise db-con)
   :use-module (kise db-kise)
-  :use-module (kise db-printing-templates)
   :use-module (kise db-imported-db)
+  :use-module (kise db-printing-templates)
 
   :export (db/add-schema
 	   db/check-schema
@@ -46,8 +46,8 @@
 (eval-when (compile load eval)
   (re-export-public-interface (kise db-con)
 			      (kise db-kise)
-			      (kise db-printing-templates)
-			      (kise db-imported-db)))
+			      (kise db-imported-db)
+			      (kise db-printing-templates)))
 
 
 ;;;

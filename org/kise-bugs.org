@@ -6,6 +6,17 @@
 
 ** Bugs
 
+*** CLOSED [[39] 3] reimporting db: the date is coded in clear
+CLOSED: [2013-07-10 Mon 07:21]
+- State "CLOSED"     from "TODO"       [2013-07-10 Mon 07:21]
+
+and it shouldn't: the scheme update function code was missing to treat this as a
+special sql update case [set ~A = strftime('%s','~A')]
+
+*** TODO [[38] 2] db connect: when the user connects to another db
+
+the selected row after connection is wrong [it's one of the last row, don't why
+yet], it should be the first row.
 
 *** CLOSED [[36] 4] config - not reloaded when it should
 CLOSED: [2013-01-18 Fri 19:40]

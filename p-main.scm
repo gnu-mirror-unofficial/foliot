@@ -1,6 +1,6 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012
+;;;; Copyright (C) 2011, 2012, 2013
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -43,12 +43,6 @@
   :use-module (kise p-lvars)
   :use-module (kise p-draft)
   :use-module (kise p-commercial)
-
-  :duplicates (merge-generics 
-	       replace
-	       warn-override-core
-	       warn
-	       last)
 
   :export (kp/print))
 

@@ -4,9 +4,26 @@
 
 * GUI
 
-** Important stuff
+** Work in progress
 
-*** DONE memorize the last window pos
+*** import/unimport
+
+**** TODO reimporting -> the imported date must be updated
+
+this is not done yet.
+
+**** TODO the imported ids should display the original value
+**** TODO imported tuples should have a small colored column
+
+a few pixels on the left side for example
+
+**** TODO
+
+
+** Other important stuff
+
+*** TODO adding a license header to kise.glade
+*** DONE memorize the last window pos and size
 CLOSED: [2012-12-29 Sat 15:47]
 - State "DONE"       from "TODO"       [2012-12-29 Sat 15:47]
 
@@ -149,7 +166,6 @@ CLOSED: [2011-08-24 Wed 19:43]
 *** DONE str/prep-str-for-pg
 CLOSED: [2011-06-21 Tue 20:04]
 - State "DONE"       from "STARTED"    [2011-06-21 Tue 20:04]
-
 
 
 ** Secondary stuff

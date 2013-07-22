@@ -1,6 +1,6 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012
+;;;; Copyright (C) 2011, 2012, 2013
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -32,6 +32,7 @@
   :use-module (gnome gobject)
   :use-module (gnome gtk)
   :use-module (gnome gtk gdk-event)
+  :use-module (gnome gnome-ui)
 
   ;; common
   :use-module (macros reexport)
@@ -51,23 +52,19 @@
   :use-module (kise iter)
   :use-module (kise tl-widget)
   :use-module (kise connect)
+  :use-module (kise import)
   :use-module (kise print)
-
-  :duplicates (merge-generics 
-	       replace
-	       warn-override-core
-	       warn
-	       last)
 
   :export (*tl-widget*
 	   kise/animate-ui
 	   kise/set-debug-variables ;; debug mode
-	   tl-widget
+	   tl-widget ;; debug
 	   model
 	   treeview
 	   selection
 	   row
 	   iter
+	   gdedit
 	   tuple))
 
 
@@ -75,6 +72,8 @@
   (re-export-public-interface (oop goops)
 			      (gnome gobject)
 			      (gnome gtk)
+			      (gnome gtk gdk-event)
+			      (gnome gnome-ui)
 			      ;; common
 			      (system dates)
 			      (system i18n)
@@ -89,6 +88,7 @@
 			      (kise iter)
 			      (kise tl-widget)
 			      (kise connect)
+			      (kise import)
 			      (kise print))
   (textdomain "kise")
   (bindtextdomain "kise" (aglobs/get 'pofdir)))
@@ -107,6 +107,7 @@
 (define selection #f)
 (define row #f)
 (define iter #f)
+(define gdedit #f)
 (define tuple #f)
 
 (define (kise/set-debug-variables)
@@ -116,7 +117,9 @@
   (set! selection (tv-sel tl-widget))
   (set! row (current-row tl-widget))
   (set! iter (current-iter tl-widget))
+  (set! gdedit (date-edit tl-widget))
   (set! tuple (ktlw/get-tuple tl-widget row)))
+;; (kise/set-debug-variables)
 
 #!
 
@@ -257,6 +260,11 @@
 	     (lambda (button)
 	       (kise/on-tv-row-change tl-widget)
 	       (kc/select-gui tl-widget)))
+    (connect (import-bt tl-widget)
+	     'clicked
+	     (lambda (button)
+	       (kise/on-tv-row-change tl-widget)
+	       (ki/select-gui tl-widget)))
     (connect (quit-bt tl-widget)
 	     'clicked
 	     (lambda (button) (kise/exit tl-widget)))
@@ -477,10 +485,14 @@
 
     (gtk2/set-sensitive `(,(reference-entry tl-widget)) #f)
     (show-all (dialog tl-widget))
+    (set-flags (date-edit tl-widget) '(show-time))
+    (set-flags (date-edit tl-widget) '())
+    (set-time (date-edit tl-widget) 0)
     (gtk2/hide `(,(menubar tl-widget)
 		 ,(date-icon tl-widget)
-		 ,(get-widget (xml-code tl-widget) "kise/order_tb")
-		 ,(get-widget (xml-code tl-widget) "kise/db_name_bt")
+		 ;;,(date-edit tl-widget) ;; experimental stuff
+		 ,(get-widget (xml-code tl-widget) "kise/idb_tb2")
+		 ,(get-widget (xml-code tl-widget) "kise/idb_bt2")
 		 ,(get-widget (xml-code tl-widget) "kise/nav_tb_2")
 		 ,(db-name-lb2 tl-widget)
 		 ,(db-name-lb3 tl-widget)))
@@ -552,5 +564,20 @@
 	     (set-model completion completion-model))
 	   ;; gtk2 requirement ...
 	   #f))
+
+
+;;;
+;;; Gnome date edit tests
+;;;
+
+(define g2 (gnome-date-edit-new 0 #f #f))
+(get-flags g2)
+(set-flags g2 '(show-time))
+
+(let ((flags (get-flags gdedit))
+      (g2 (gnome-date-edit-new 0 #f #f)))
+  (dimfi "flags" flags)
+  (dimfi "g2 flags" (get-flags g2))
+  )
 
 !#
