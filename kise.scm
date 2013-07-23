@@ -493,6 +493,7 @@
 		 ;;,(date-edit tl-widget) ;; experimental stuff
 		 ,(get-widget (xml-code tl-widget) "kise/idb_tb2")
 		 ,(get-widget (xml-code tl-widget) "kise/idb_bt2")
+		 ,(get-widget (xml-code tl-widget) "kise/nav_tb_1")
 		 ,(get-widget (xml-code tl-widget) "kise/nav_tb_2")
 		 ,(db-name-lb2 tl-widget)
 		 ,(db-name-lb3 tl-widget)))
