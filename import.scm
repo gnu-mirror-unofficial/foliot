@@ -50,16 +50,19 @@
   ;; (dimfi "ktlw/import callback called")
   (let ((model (tv-model ki-widget))
 	(selection (tv-sel ki-widget))
-	(prev-gui-cb? (gui-callback? tl-widget)))
+	(prev-gui-cb? (gui-callback? tl-widget))
+	(prev-active-filter (active-filter tl-widget)))
     (dotimes (i (gtk-tree-model-iter-n-children model #f))
       (when (iter-is-selected selection (get-iter model i))
 	(let* ((iter (get-iter model i))
 	       (filename (kiiter/get 'filename model iter)))
-	  (db-kise/import filename))))
+	  (db-kise/import filename)
+	  (kiiter/set 'date model iter (date/system-date)))))
     (set! (gui-callback? tl-widget) #f)
     (set! (active-filter tl-widget) #t)
     (ktlw/filter-clear tl-widget 'fillcombos)
-    (set! (gui-callback? tl-widget) prev-gui-cb?)))
+    (set! (gui-callback? tl-widget) prev-gui-cb?)
+    (set! (active-filter tl-widget) prev-active-filter)))
 
 
 ;;;
