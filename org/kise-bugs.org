@@ -6,6 +6,14 @@
 
 ** Bugs
 
+*** TODO [[40] 2] write-config: when not permitted, it is not possible to quit Kisê
+
+that's it, you can't quit Kisê, haha!  i set the sererity level of this bug to 2
+because it highly improbable.  indeed, someone with permission to do so should
+deliberately withdraw the user's one on this/his kise.conf [hidden] file.  i
+could 'not raise' an error, but i think it's better, of course now i need to
+catch it in order to let the user quit Kisê not writing his config file ...
+
 *** CLOSED [[39] 3] reimporting db: the date is coded in clear
 CLOSED: [2013-07-10 Mon 07:21]
 - State "CLOSED"     from "TODO"       [2013-07-10 Mon 07:21]

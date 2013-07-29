@@ -109,6 +109,7 @@
 (define iter #f)
 (define gdedit #f)
 (define tuple #f)
+(define duration #f)
 
 (define (kise/set-debug-variables)
   (set! tl-widget *tl-widget*)
@@ -118,8 +119,9 @@
   (set! row (current-row tl-widget))
   (set! iter (current-iter tl-widget))
   (set! gdedit (date-edit tl-widget))
-  (set! tuple (ktlw/get-tuple tl-widget row)))
-;; (kise/set-debug-variables)
+  (set! tuple (ktlw/get-tuple tl-widget row))
+  (set! duration (duration-sb tl-widget)))
+#;(kise/set-debug-variables)
 
 #!
 
@@ -141,7 +143,7 @@
 	(model (tv-model tl-widget)))
     ;; (format #t "~S~%" tuple)
     (set-text (reference-entry tl-widget) (number->string (ktlw/get 'id tl-widget row)))
-    (set-text (date-entry tl-widget) (kiseiter/get 'date model iter))
+    (set-text (date-entry tl-widget) (kiter/get 'date model iter))
     (let ((who? (gtk2/combo-find-row (who-combo tl-widget) (db-kise/get tuple 'who))))
       (if who?
 	  (set-active (who-combo tl-widget) who?)
@@ -154,7 +156,7 @@
 	  (begin
 	    ;; (gtk2/set-text (for-whom-entry tl-widget) "")
 	    (set-active (for-whom-combo tl-widget) -1))))
-    (set-value (duration-sb tl-widget) (kiseiter/get 'duration model iter))
+    (set-value (duration-sb tl-widget) (kiter/get 'duration model iter))
     (let ((what? (gtk2/combo-find-row (what-combo tl-widget) (db-kise/get tuple 'what))))
       (if what?
 	  (set-active (what-combo tl-widget) what?)
@@ -162,7 +164,7 @@
 	    ;; (gtk2/set-text (what-entry tl-widget) "")
 	    (set-active (what-combo tl-widget) -1))))
     (gtk2/set-text (description-entry tl-widget) (ktlw/get 'description tl-widget row))
-    (set-active (to-be-charged-cb tl-widget) (kiseiter/get 'to-be-charged model iter))))
+    (set-active (to-be-charged-cb tl-widget) (kiter/get 'to-be-charged model iter))))
 
 
 ;;;
@@ -210,7 +212,8 @@
 			      (_ "Warning!")
 			      (_ "DB connection problem:")
 			      (format #f "~?" (kise/open-db-cant-open-str) (list db-file))
-			      (lambda () (ktlw/no-db-mode tl-widget))))
+			      (lambda () (ktlw/no-db-mode tl-widget))
+			      'dialog-warning))
 	    ((opened opened-partial-schema opened-no-schema)
 	     (ktlw/open-db tl-widget db-file #f 'open open-at-startup open-db-checks-result))))
 	(begin
@@ -332,7 +335,7 @@
 		       (iter (current-iter tl-widget))
 		       (value (get-value widget)))
 		   ;; (dimfi row iter value)
-		   (kiseiter/set 'duration model iter value)
+		   (kiter/set 'duration model iter value)
 		   ;; update-db
 		   (ktlw/set 'duration tl-widget value row)
 		   (ktlw/update-totals-status-bars tl-widget)))))
@@ -351,7 +354,7 @@
 		   ;; do it on the toggle in the list store too ...
 		   (when (active-filter tl-widget) (ktlw/add-id id tl-widget))
 		   (set! (gui-callback? tl-widget) #f)
-		   (kiseiter/set 'to-be-charged model iter new-value)
+		   (kiter/set 'to-be-charged model iter new-value)
 		   (set! (gui-callback? tl-widget) #t)
 		   ;; update-db
 		   (ktlw/set 'to_be_charged tl-widget (sqlite/boolean new-value) row)
@@ -490,7 +493,7 @@
     (set-time (date-edit tl-widget) 0)
     (gtk2/hide `(,(menubar tl-widget)
 		 ,(date-icon tl-widget)
-		 ;;,(date-edit tl-widget) ;; experimental stuff
+		 ;; ,(date-edit tl-widget) ;; experimental stuff
 		 ,(get-widget (xml-code tl-widget) "kise/idb_tb2")
 		 ,(get-widget (xml-code tl-widget) "kise/idb_bt2")
 		 ,(get-widget (xml-code tl-widget) "kise/nav_tb_1")

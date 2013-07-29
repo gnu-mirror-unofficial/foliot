@@ -78,12 +78,11 @@
 				((commercial)
 				 (format #f "kise-~A-commercial.pdf" n-file)))))
 	  (unless (access? pdf-dir F_OK) (mkdir pdf-dir))
-	  (let ((pdf-filename (prompt-for-file-name (dialog kp/widget)
-						    (_ "Save as ...")
-						    'save
-						    pdf-dir
-						    proposed-name
-						    )))
+	  (let ((pdf-filename (prompt-for-filename (dialog kp/widget)
+						   (_ "Save as ...")
+						   'save
+						   pdf-dir
+						   proposed-name)))
 	    (unless (or (eq? pdf-filename 'cancel)
 			(eq? pdf-filename 'delete))
 	      (kp/print-1 kp/widget tl-widget pdf-filename))))

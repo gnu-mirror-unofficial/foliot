@@ -8,7 +8,9 @@
 
 *** import/unimport
 
-**** TODO reimporting -> the imported date must be updated
+**** DONE reimporting -> the imported date must be updated
+CLOSED: [2013-07-23 Tue 22:16]
+- State "DONE"       from "TODO"       [2013-07-23 Tue 22:16]
 
 this is not done yet.
 
@@ -147,15 +149,20 @@ see kise entry 702 for explanation
   - [ ] 
   - [ ] missing prep-string-for-sql for all text filters
 
-*** STARTED message dialogs [66%]
+*** STARTED mdialogs: message dialogs [66%]
 
 - [X] 1 button
 - [X] 2 buttons
 - [ ] 3 buttons
 
-*** TODO mdialogs: need to be able to change their image dynamically 
+*** DONE mdialogs: dynamically set their image
+CLOSED: [2013-07-28 Sun 23:51]
+- State "DONE"       from "TODO"       [2013-07-28 Sun 23:51]
+*** TODO mdialogs: code review
 
-*** DONE programming the connect dialog
+there should be one code only, buttons should be showned/hiddem on demand
+
+*** DONE programming the connect dialog    
 CLOSED: [2011-11-07 Mon 11:33]
 - State "DONE"       from "STARTED"    [2011-11-07 Mon 11:33]
 

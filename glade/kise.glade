@@ -325,7 +325,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">&#x2022;</property>
-                                <property name="adjustment">0 0 100 0.10000000000000001 0 0</property>
+                                <property name="adjustment">0 0 100 0.10000000000000001 1 0</property>
                                 <property name="climb_rate">0.10000000000000001</property>
                                 <property name="digits">1</property>
                                 <property name="snap_to_ticks">True</property>
@@ -651,7 +651,7 @@ christian
                     <property name="visible">True</property>
                     <property name="toolbar_style">icons</property>
                     <property name="show_arrow">False</property>
-                    <property name="icon_size">0</property>
+                    <property name="icon_size">1</property>
                     <property name="icon_size_set">True</property>
                     <child>
                       <widget class="GtkToolButton" id="kise/first_bt2">
@@ -699,7 +699,69 @@ christian
                   </packing>
                 </child>
                 <child>
-                  <placeholder/>
+                  <widget class="GtkToolbar" id="kise/nav_tb_2">
+                    <property name="visible">True</property>
+                    <property name="toolbar_style">icons</property>
+                    <property name="show_arrow">False</property>
+                    <property name="icon_size">1</property>
+                    <property name="icon_size_set">True</property>
+                    <child>
+                      <widget class="GtkToolButton" id="kise/first_bt1">
+                        <property name="visible">True</property>
+                        <property name="has_tooltip">True</property>
+                        <property name="tooltip" translatable="yes">First</property>
+                        <property name="label" translatable="yes">First</property>
+                        <property name="stock_id">gtk-goto-first</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkToolButton" id="kise/prev_bt1">
+                        <property name="visible">True</property>
+                        <property name="has_tooltip">True</property>
+                        <property name="tooltip" translatable="yes">Previous</property>
+                        <property name="label" translatable="yes">Previous</property>
+                        <property name="stock_id">gtk-go-back</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkToolButton" id="kise/next_bt1">
+                        <property name="visible">True</property>
+                        <property name="has_tooltip">True</property>
+                        <property name="tooltip" translatable="yes">Next</property>
+                        <property name="label" translatable="yes">Next</property>
+                        <property name="stock_id">gtk-go-forward</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkToolButton" id="kise/last_bt1">
+                        <property name="visible">True</property>
+                        <property name="has_tooltip">True</property>
+                        <property name="tooltip" translatable="yes">Last</property>
+                        <property name="label" translatable="yes">Last</property>
+                        <property name="stock_id">gtk-goto-last</property>
+                      </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="homogeneous">True</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="position">2</property>
+                  </packing>
                 </child>
               </widget>
               <packing>
@@ -1090,69 +1152,7 @@ no
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkToolbar" id="kise/nav_tb_2">
-                    <property name="visible">True</property>
-                    <property name="toolbar_style">icons</property>
-                    <property name="show_arrow">False</property>
-                    <property name="icon_size">1</property>
-                    <property name="icon_size_set">True</property>
-                    <child>
-                      <widget class="GtkToolButton" id="kise/first_bt1">
-                        <property name="visible">True</property>
-                        <property name="has_tooltip">True</property>
-                        <property name="tooltip" translatable="yes">First</property>
-                        <property name="label" translatable="yes">First</property>
-                        <property name="stock_id">gtk-goto-first</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="homogeneous">True</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkToolButton" id="kise/prev_bt1">
-                        <property name="visible">True</property>
-                        <property name="has_tooltip">True</property>
-                        <property name="tooltip" translatable="yes">Previous</property>
-                        <property name="label" translatable="yes">Previous</property>
-                        <property name="stock_id">gtk-go-back</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="homogeneous">True</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkToolButton" id="kise/next_bt1">
-                        <property name="visible">True</property>
-                        <property name="has_tooltip">True</property>
-                        <property name="tooltip" translatable="yes">Next</property>
-                        <property name="label" translatable="yes">Next</property>
-                        <property name="stock_id">gtk-go-forward</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="homogeneous">True</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkToolButton" id="kise/last_bt1">
-                        <property name="visible">True</property>
-                        <property name="has_tooltip">True</property>
-                        <property name="tooltip" translatable="yes">Last</property>
-                        <property name="label" translatable="yes">Last</property>
-                        <property name="stock_id">gtk-goto-last</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="homogeneous">True</property>
-                      </packing>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="position">1</property>
-                  </packing>
+                  <placeholder/>
                 </child>
                 <child>
                   <widget class="GtkLabel" id="kise/db_name_lb1">
@@ -2255,6 +2255,7 @@ no
                                             </child>
                                           </widget>
                                           <packing>
+                                            <property name="expand">False</property>
                                             <property name="position">0</property>
                                           </packing>
                                         </child>

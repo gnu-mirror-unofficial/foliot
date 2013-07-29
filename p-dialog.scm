@@ -285,7 +285,8 @@
 				    (_ "Warning!")
 				    (_ "Grouping:")
 				    (_ "You may not select more then 4 items to be grouped.")
-				    (lambda () 'nothing)))
+				    (lambda () 'nothing)
+				    'dialog-warning))
 	       (begin
 		 (gtk2/fixed-toggled model iter giter-get giter-set)
 		 (kp/on-g-tv-row-change kp-widget) ;; <- making sure focus-out-event tpl-entry ...

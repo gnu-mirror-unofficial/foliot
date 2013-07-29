@@ -478,7 +478,8 @@ reactivated within the table via the \showrowcolors command.
 		     (_ "Warning")
 		     (_ "No grouping no printing:")
 		     (_ "There is nothing to print. You must select at least one field to print and/or group.")
-		     (lambda () 'nothing)))
+		     (lambda () 'nothing)
+		     'dialog-warning))
 !#
 
 (define (kp/display-ltx-preamble-debug-info groups core-fields preamble rowfmt nb-cols description?)
