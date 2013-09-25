@@ -24,52 +24,21 @@
 ;;; Code:
 
 (define-module (kise colours)
-  :use-module (gnome gtk)
+  :use-module (macros reexport)
+  :use-module (gtk colours)
 
-  :export (*kc/filters-fg*
-	   *kc/filters-bg*
-	   *kc/dialog-title-eb-bg*))
+  :export (*filters-fg*
+	   *filters-border*
+	   *filters-bg*
+	   *dialog-title-eb-bg*))
 
+(eval-when (compile load eval)
+  (re-export-public-interface (gtk colours)))
 
-;;;
-;;; Palette
-;;;
-
-;; Persistance of memory [S. Dali]
-
-(define *pom/dirt* "#784800") ;; maron
-(define *pom/dirt-border* "#6b4100")
-
-(define *pom/retroflowers* "#d8d860") ;; jaune 'sale'
-(define *pom/retroflowers-border* "#c6c352")
-
-(define *pom/sobe* "#60a8a8") ;; bleu 'turquoise'
-(define *pom/sobe-border* "#529694")
-
-(define *pom/bittersweet* "#483000") ;; brun
-(define *pom/bittersweet-border* "#422800")
-
-(define *pom/aquanight* "#90c0a8") ;; bleu 'pale' 'gris/vert'
-(define *pom/aquanight-border* "#84ae94")
-
-
-;;;
-;;; Kise globals
-;;;
-
-;; (define *kc/filters-fg* "#91571c") ;; light brown
-(define *kc/filters-fg* "#2f4f2f") ;; dark green
-(define *kc/filters-bg* "#aabbaa") ;; pale green
-
-;; (define *kc/dialog-title-eb-bg* "#e1eee1")
-;; (define *kc/dialog-title-eb-bg* "LightYellow2")
-(define *kc/dialog-title-eb-bg* "LightYellow3")
-;; (define *kc/dialog-title-eb-bg* "Aquamarine3")
-;; (define *kc/dialog-title-eb-bg* "LightSalmon1")
-;; (define *kc/dialog-title-eb-bg* "DarkKhaki")
-;; (define *kc/dialog-title-eb-bg* "MediumPurple")
-;; (define *kc/dialog-title-eb-bg* "LightSteelBlue")
-
+(define *filters-bg* (colour-set-bg 6))
+(define *filters-border* (colour-set-border 6))
+(define *filters-fg* (colour-set-fg 6))
+(define *dialog-title-eb-bg* (colour-set-bg 5))
 
 
 #!
