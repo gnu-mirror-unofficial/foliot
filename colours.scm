@@ -35,10 +35,10 @@
 (eval-when (compile load eval)
   (re-export-public-interface (gtk colours)))
 
-(define *filters-bg* (colour-set-bg 6))
-(define *filters-border* (colour-set-border 6))
-(define *filters-fg* (colour-set-fg 6))
-(define *dialog-title-eb-bg* (colour-set-bg 5))
+(define *filters-bg* (colour-set-bg 60))
+(define *filters-border* (colour-set-border 60))
+(define *filters-fg* (colour-set-fg 60))
+(define *dialog-title-eb-bg* (colour-set-bg 50))
 
 
 #!
