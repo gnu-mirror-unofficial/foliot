@@ -93,6 +93,7 @@
 
 	   reference-lb
 	   reference-entry
+	   reference-eb
 
 	   date-lb
 	   date-entry
@@ -250,6 +251,7 @@
 
   (reference-lb :accessor reference-lb :init-keyword :reference-lb :init-value #f)
   (reference-entry :accessor reference-entry :init-keyword :reference-entry :init-value #f)
+  (reference-eb :accessor reference-eb :init-keyword :reference-eb :init-value #f)
   (date-lb :accessor date-lb :init-keyword :date-lb :init-value #f)
   (date-entry :accessor date-entry :init-keyword :date-entry :init-value #f)
   (date-icon :accessor date-icon :init-keyword :date-icon :init-value #f)
@@ -351,8 +353,8 @@
 	 (tuple (ktlw/get-tuple tl-widget row))
 	 (id (db-kise/get tuple 'id))
 	 (iter (get-iter model path))
-	 (iter-get (lambda (model iter) (kiseiter/get 'to-be-charged model iter)))
-	 (iter-set (lambda (model iter value) (kiseiter/set 'to-be-charged model iter value)))
+	 (iter-get (lambda (model iter) (kiter/get 'to-be-charged model iter)))
+	 (iter-set (lambda (model iter value) (kiter/set 'to-be-charged model iter value)))
 	 ;; (old-value (iter-get model iter))
 	 (new-value (gtk2/fixed-toggled model iter iter-get iter-set))
 	 (guicbpv? (gui-callback? tl-widget)))
@@ -372,9 +374,13 @@
   (let* ((column-types (list <gchararray>
 			     <gchararray>
 			     <gchararray>
+			     <gchararray>
 			     <gfloat> ;; duration
-			     ;; <gchararray>
 			     <gboolean>
+			     <gchararray>
+			     <gchararray>
+			     <gchararray>
+			     <gchararray>
 			     <gchararray>))
 	 (model (gtk-list-store-new column-types)))
     (set-model treeview model)
@@ -384,6 +390,15 @@
   (let* ((dpi-ratio (aglobs/get 'Xft.dpi.ratio))
 	 (apply-ratio? (aglobs/get 'apply-dpi-ratio?))
 	 (model (get-model treeview))
+	 ;; IMPORTED ROW COLOUR
+	 (renderer0 (make <gtk-cell-renderer-text>))
+	 (column0   (make <gtk-tree-view-column>
+		       :sizing      'fixed
+		       :fixed-width 5
+		       :clickable   #f
+		       :resizable   #f
+		       :reorderable #f
+		       :alignment   .5))
 	 ;; DATE
 	 (renderer1 (make <gtk-cell-renderer-text>))
 	 (column1   (make <gtk-tree-view-column>
@@ -416,10 +431,18 @@
 		      :reorderable #f
 		      :alignment   .5))
 	 ;; DURATION
+	 (adjustment4 (make <gtk-adjustment>
+			:value 0
+			:lower 0
+			:upper 100
+			:step-increment .1
+			:page-increment 1
+			:page-size 0))
 	 (renderer4 (make <gtk-cell-renderer-spin>
-		      :family      "Monospace"
-		      :climb-rate  0.1
-		      :digits      1))
+		      ;; :family "Monospace"
+		      :adjustment adjustment4
+		      :climb-rate 0.1
+		      :digits 1))
 	 (column4   (make <gtk-tree-view-column>
 		      :title       (_ "Dur.")
 		      :sizing      'fixed
@@ -443,14 +466,56 @@
 		      :resizable   #f
 		      :reorderable #f
 		      :alignment   .5))
-	 (to-pack   `((date ,column1 ,renderer1 "text")
+	 ;; ROW BACKGROUND COLOUR
+	 (renderer7 (make <gtk-cell-renderer-text>
+		      :xalign      1))
+	 (column7   (make <gtk-tree-view-column>
+		      :visible     #f))
+	 ;; ROW FOREGROUND COLOUR
+	 (renderer8 (make <gtk-cell-renderer-text>
+		      :xalign      1))
+	 (column8   (make <gtk-tree-view-column>
+		      :visible     #f))
+	 ;; ICOLOUR BACKGROUND
+	 (renderer9 (make <gtk-cell-renderer-text>
+		      :xalign      1))
+	 (column9   (make <gtk-tree-view-column>
+		      :visible     #f))
+	 ;; ICOLOUR FOREGROUND
+	 (renderer10 (make <gtk-cell-renderer-text>
+		      :xalign      1))
+	 (column10   (make <gtk-tree-view-column>
+		      :visible     #f))
+	 (to-pack   `((icolour ,column0 ,renderer0 "text")
+		      (date ,column1 ,renderer1 "text")
 		      (who ,column2 ,renderer2 "text")
 		      (for-whom ,column3 ,renderer3 "text")
 		      (duration ,column4 ,renderer4 "text")
 		      (a-facturer ,column5 ,renderer5 "active")
-		      (what ,column6 ,renderer6 "text"))))
+		      (what ,column6 ,renderer6 "text")
+		      (bg ,column7 ,renderer7 "text")
+		      (fg ,column8 ,renderer8 "text")
+		      (ibg ,column9 ,renderer9 "text")
+		      (ifg ,column10 ,renderer10 "text"))))
     (gtk2/pack-tv-cols treeview to-pack)
     (set renderer4 'digits 1)
+    ;; background colour
+    (add-attribute column0 renderer0 "cell-background" 9)
+    (add-attribute column1 renderer1 "cell-background" 7)
+    (add-attribute column2 renderer2 "cell-background" 7)
+    (add-attribute column3 renderer3 "cell-background" 7)
+    (add-attribute column4 renderer4 "cell-background" 7)
+    (add-attribute column5 renderer5 "cell-background" 7)
+    (add-attribute column6 renderer6 "cell-background" 7)
+    ;; foreground colour
+    (add-attribute column0 renderer0 "foreground" 10)
+    (add-attribute column1 renderer1 "foreground" 8)
+    (add-attribute column2 renderer2 "foreground" 8)
+    (add-attribute column3 renderer3 "foreground" 8)
+    (add-attribute column4 renderer4 "foreground" 8)
+    ;; (add-attribute column5 renderer5 "foreground" 8) ;; no foreground attribute for toggles
+    (add-attribute column6 renderer6 "foreground" 8)
+    (set-search-column treeview 1)
     (connect renderer5 ;; a-facturer
 	     'toggled
 	     (lambda (widget path)
@@ -669,7 +734,7 @@
 	 (reordered? (not (= old-pos new-pos)))
 	 (prev-gui-cb? (gui-callback? tl-widget)))
     ;; (dimfi "old / new pos / current-row: " old-pos new-pos (current-row tl-widget))
-    (when set-iter? (kiseiter/set what model old-iter new-value))
+    (when set-iter? (kiter/set what model old-iter new-value))
     (when reordered?
       ;; we still need to solve things related 'filters'
       ;; if there is an active filter off course
@@ -794,13 +859,17 @@
 (define (ktlw/post-open-db-ops tl-widget db-fname open-at-startup? ulogo)
   ;; the list-store related operations that needs to be done @
   ;; connection time is exactly what needs to be done when clearing a
-  ;; filter + filling the combos [obviously].
+  ;; filter _but_ (1) filling the combos _and_ (2) selecting the first
+  ;; row [this is because filter-clear will try to (re)select the
+  ;; row that was active before it's been called.
   (set! (active-filter tl-widget) #t)
   (set! (db-file tl-widget) db-fname)
   (ktlw/write-config tl-widget db-fname open-at-startup? ulogo)
   (set-markup (db-name-lb1 tl-widget)
 	      (format #f "<span foreground=\"#777777\"><b>[ ~A ]</b></span>" (basename db-fname)))
-  (ktlw/filter-clear tl-widget 'fillcombos))
+
+  (ktlw/filter-clear tl-widget 'fillcombos)
+  (unless (= (current-row tl-widget) 0) (ktlw/select-row tl-widget 0)))
 
 (define (ktlw/open-db tl-widget db-file from-gui? mode open-at-startup? checks-result)
   (case mode
@@ -809,8 +878,8 @@
        ((opened) (ktlw/post-open-db-ops tl-widget db-file open-at-startup? (kcfg/get 'ulogo)))
        ((opened-partial-schema)
 	(md2b/select-gui (dialog tl-widget)
-			 "Confirm dialog"
-			 "Complete schema"
+			 (_ "Confirm dialog")
+			 (_ "Complete schema")
 			 (_ "This database has an incomplete Kisê schema, would you like to complete it now?")
 			 (lambda ()
 			   (db/complete-schema)
@@ -818,8 +887,8 @@
 			 (lambda () 'nothing)))
        ((opened-no-schema)
 	(md2b/select-gui (dialog tl-widget)
-			 "Confirm dialog"
-			 "Add schema"
+			 (_ "Confirm dialog")
+			 (_ "Add schema")
 			 (_ "This database does not contain the Kisê schema, would you like to add it now?")
 			 (lambda ()
 			   (db/add-schema)
@@ -942,19 +1011,33 @@
     (db-kise/update db-tuple what value)))
 
 (define (ktlw/fill-tv tl-widget)
-  ;; (format #t "ktlw/fill-tv is been executed...~%")
-  (let ((model (tv-model tl-widget)))
+  (let ((model (tv-model tl-widget))
+	(icolours (db-idb/get-colour-alist)))
     (gtk-list-store-clear model)
     (for-each (lambda (tuple)
-		;; (format #t "~S~%" tuple)
-		(kiseiter/append-fill model
-				      (db-kise/get tuple 'date_)
-				      (db-kise/get tuple 'who)
-				      (db-kise/get tuple 'for_whom)
-				      ;; (commify (vector-ref tuple 4) 1) ;; duration
-				      (db-kise/get tuple 'duration)
-				      (sqlite/true? (db-kise/get tuple 'to_be_charged))
-				      (db-kise/get tuple 'what)))
+		(let ((idb (db-kise/get tuple 'imported_db)))
+		  (if (= idb -1)
+		      (kiter/append-fill model
+					 (db-kise/get tuple 'date_)
+					 (db-kise/get tuple 'who)
+					 (db-kise/get tuple 'for_whom)
+					 (db-kise/get tuple 'duration)
+					 (sqlite/true? (db-kise/get tuple 'to_be_charged))
+					 (db-kise/get tuple 'what)
+					 #f
+					 #f)
+		      (kiter/append-fill model
+					 (db-kise/get tuple 'date_)
+					 (db-kise/get tuple 'who)
+					 (db-kise/get tuple 'for_whom)
+					 (db-kise/get tuple 'duration)
+					 (sqlite/true? (db-kise/get tuple 'to_be_charged))
+					 (db-kise/get tuple 'what)
+					 ;; "#60a8a8" ;; sobe
+					 ;; "#784800" ;; dirt
+					 ;; "#000000"
+					 (car (assoc-ref icolours idb))
+					 (cdr (assoc-ref icolours idb))))))
 	(db-tuples tl-widget))))
 
 (define (ktlw/apply-xft-dpi-ratio tl-widget)
@@ -1016,6 +1099,7 @@ filter date: ~S~%"
 		      ;; :help-bt (get-widget xmlc "kise/help_bt")
 		      :reference-lb (get-widget xmlc "kise/reference_lb")
 		      :reference-entry (get-widget xmlc "kise/reference_entry")
+		      :reference-eb (get-widget xmlc "kise/reference_eb")
 		      :date-lb (get-widget xmlc "kise/date_lb")
 		      :date-entry (get-widget xmlc "kise/date_entry")
 		      :date-icon (get-widget xmlc "kise/date_icon")
@@ -1106,7 +1190,7 @@ filter date: ~S~%"
 			      "f"	;; to-be-charged
 			      ""))	;; description
 	 (ids? (if filter? (ktlw/add-id new-id tl-widget) (id-set tl-widget)))
-	 (new-iter (kiseiter/prepend-fill model today uname "" 0 #f ""))
+	 (new-iter (kiter/prepend-fill model today uname "" 0 #f "" #f #f))
 	 (tuples (db-kise/select-some filter? ids?))
 	 (new-pos (db-kise/find-pos tuples 'id new-id =)))
     (set! (db-tuples tl-widget) tuples)
@@ -1131,19 +1215,26 @@ filter date: ~S~%"
 	 (row (current-row tl-widget))
 	 (iter (current-iter tl-widget))
 	 (tuple (ktlw/get-tuple tl-widget row))
+	 (filter? (active-filter tl-widget))
 	 (new-id (db-kise/duplicate (db-kise/get tuple 'id) tuple))
-	 (tuples (db-kise/select-some (active-filter tl-widget) (id-set tl-widget)))
-	 (new-pos (db-kise/find-pos tuples 'id new-id =))
-	 (new-iter (kiseiter/prepend-fill model
-					  (kiseiter/get 'date model iter)
-					  (kiseiter/get 'who model iter)
-					  (kiseiter/get 'for-whom model iter)
-					  (kiseiter/get 'duration model iter)
-					  (kiseiter/get 'to-be-charged model iter)
-					  (kiseiter/get 'what model iter))))
-    ;; (format #t "ktlw/duplicate - new-pos: ~S~%" new-pos)
+	 (ids? (if filter? (ktlw/add-id new-id tl-widget) (id-set tl-widget)))
+	 (new-iter (kiter/prepend-fill model
+				       (kiter/get 'date model iter)
+				       (kiter/get 'who model iter)
+				       (kiter/get 'for-whom model iter)
+				       (kiter/get 'duration model iter)
+				       (kiter/get 'to-be-charged model iter)
+				       (kiter/get 'what model iter)
+				       #f
+				       #f))
+	 (tuples (db-kise/select-some filter? ids?))
+	 (new-pos (db-kise/find-pos tuples 'id new-id =)))
+    (dimfi row new-id new-pos)
     (set! (db-tuples tl-widget) tuples)
-    (move-before model new-iter iter)
+    (unselect-all (tv-sel tl-widget))
+    (if (< new-pos row)
+	(move-before model new-iter (get-iter model (list new-pos)))
+	(move-after model new-iter (get-iter model (list new-pos))))
     (ktlw/select-row tl-widget new-pos)
     (ktlw/update-totals-status-bars tl-widget)))
 
@@ -1166,8 +1257,8 @@ filter date: ~S~%"
 	 (tuple (ktlw/get-tuple tl-widget row))
 	 (reference (db-kise/get tuple 'id)))
     (md2b/select-gui (dialog tl-widget)
-		     "Confirm dialog"
-		     "Deletion"
+		     (_ "Confirm dialog")
+		     (_ "Deletion")
 		     (format #f "~?" (ktlw/delete-msg-str)
 			     (list "Reference" reference
 				   "Date" (db-kise/get tuple 'date_)
@@ -1187,7 +1278,8 @@ filter date: ~S~%"
 				 (ktlw/select-row tl-widget row 'noscroll))
 			     (ktlw/empty-subset-or-db-mode tl-widget))
 			 (ktlw/update-totals-status-bars tl-widget)))
-		     (lambda () 'nothing))))
+		     (lambda () 'nothing)
+		     'dialog-warning)))
 
 
 ;;;
@@ -1213,6 +1305,10 @@ filter date: ~S~%"
   (let ((prev-gui-cb? (gui-callback? tl-widget)))
     (set! (gui-callback? tl-widget) #f)
     (set! (current-row tl-widget) -1)
+    (set! (current-iter tl-widget) -1)
+    (set-markup (reference-lb tl-widget)
+		(format #f "<span foreground=\"~A\"><i>~A</i></span>" "#000000" (_ "Reference")))
+    (hide (reference-eb tl-widget))
     (for-each (lambda (acc)
 		(gtk2/set-text (acc tl-widget) ""))
 	`(,reference-entry
@@ -1244,6 +1340,19 @@ filter date: ~S~%"
 	  ,duration-sb
 	  ,to-be-charged-cb
 	  ,tv))
+    (unless (active-filter tl-widget)
+      (for-each (lambda (acc)
+		  ;; (format #t "empty-mode: ~S~%" acc)
+		  (set-sensitive (acc tl-widget) #f))
+	  `(,filter-apply-bt
+	    ,filter-clear-bt
+	    ,filter-select-bt
+	    ,filter-date-entry
+	    ,filter-who-entry
+	    ,filter-for-whom-entry
+	    ,filter-what-entry
+	    ,filter-description-entry
+	    ,filter-to-be-charged-combo)))
     (ktlw/update-status-bar-1 tl-widget)))
 
 (define (ktlw/no-db-mode tl-widget)
@@ -1315,10 +1424,12 @@ filter date: ~S~%"
 
 (define (ktlw/filter-apply tl-widget . force?)
   ;; (format #t "applying filter: ~S~%" force?)
-  (let* ((prev-filter (active-filter tl-widget))
+  (let* ((prev-gui-cb? (gui-callback? tl-widget))
+	 (prev-filter (active-filter tl-widget))
 	 (filter-conditions? (ktlw/build-filter-conditions-sepxr tl-widget))
 	 (filter? (and filter-conditions? (dbf/get-filter filter-conditions?))))
     ;; being invalid, the date only may lead to filter? being #f
+    (set! (gui-callback? tl-widget) #f)
     (if filter?
 	(if (or (not prev-filter)
 		(not (null? force?))
@@ -1330,6 +1441,7 @@ filter date: ~S~%"
 	      (set! (id-set tl-widget) #f)
 	      (let* ((new-tuple-set (db-kise/select-some filter? #f))
 		     (new-pos (ktlw/filter-get-row-new-pos-if-any tl-widget new-tuple-set)))
+		(dimfi "New pos" new-pos)
 		(ktlw/-display-filter-apply-infos filter? (length new-tuple-set) new-pos)
 		(set! (db-tuples tl-widget) new-tuple-set)
 		(ktlw/fill-tv tl-widget)
@@ -1338,43 +1450,47 @@ filter date: ~S~%"
 		    (ktlw/empty-subset-or-db-mode tl-widget)
 		    (begin
 		      (ktlw/normal-mode tl-widget)
+		      (set! (gui-callback? tl-widget) #t)
 		      (if new-pos
 			  (ktlw/select-row tl-widget new-pos)
 			  (ktlw/select-row tl-widget 0)))))))
 	(begin
 	  (ktlw/set-filter-icon tl-widget 'off)
 	  (when prev-filter (ktlw/filter-clear tl-widget))
-	  (format #t "filter is empty~%")))))
+	  (format #t "filter is empty~%")))
+    (set! (gui-callback? tl-widget) prev-gui-cb?)))
 
 (define (ktlw/filter-clear tl-widget . fillcombos?)
   ;; (format #t "clearing filter: ~S~%" fillcombos?)
-  (ktlw/set-filter-icon tl-widget 'off)
-  (set! (gui-callback? tl-widget) #f)
-  (gtk2/set-text (filter-date-entry tl-widget) "")
-  (gtk2/set-text (filter-who-entry tl-widget) "")
-  (gtk2/set-text (filter-for-whom-entry tl-widget) "")
-  (gtk2/set-text (filter-what-entry tl-widget) "")
-  (gtk2/set-text (filter-description-entry tl-widget) "")
-  (set-active (filter-to-be-charged-combo tl-widget) 0)
-  (when (active-filter tl-widget)
-    (set! (active-filter tl-widget) #f)
-    (set! (id-set tl-widget) #f)
-    (let* ((new-tuple-set (db-kise/select-all))
-	   (new-pos (ktlw/filter-get-row-new-pos-if-any tl-widget new-tuple-set)))
-      (set! (db-tuples tl-widget) new-tuple-set)
-      (if (not (null? fillcombos?)) (ktlw/fill-combos tl-widget))
-      (ktlw/fill-tv tl-widget)
-      (if (null? new-tuple-set)
-	  (ktlw/empty-subset-or-db-mode tl-widget)
-	  (begin
-	    (ktlw/normal-mode tl-widget)
-	    (set! (gui-callback? tl-widget) #t)	    
-	    (if new-pos
-		(ktlw/select-row tl-widget new-pos)
-		(ktlw/select-row tl-widget 0))))))
-  (set! (gui-callback? tl-widget) #t)
-  ;; this has to be last
-  (ktlw/update-totals-status-bars tl-widget))
+  (let ((prev-gui-cb? (gui-callback? tl-widget)))
+    (ktlw/set-filter-icon tl-widget 'off)
+    (set! (gui-callback? tl-widget) #f)
+    (gtk2/set-text (filter-date-entry tl-widget) "")
+    (gtk2/set-text (filter-who-entry tl-widget) "")
+    (gtk2/set-text (filter-for-whom-entry tl-widget) "")
+    (gtk2/set-text (filter-what-entry tl-widget) "")
+    (gtk2/set-text (filter-description-entry tl-widget) "")
+    (set-active (filter-to-be-charged-combo tl-widget) 0)
+    (when (active-filter tl-widget)
+      (set! (active-filter tl-widget) #f)
+      (set! (id-set tl-widget) #f)
+      (let* ((new-tuple-set (db-kise/select-all))
+	     (new-pos (ktlw/filter-get-row-new-pos-if-any tl-widget new-tuple-set)))
+	(set! (db-tuples tl-widget) new-tuple-set)
+	(if (not (null? fillcombos?)) (ktlw/fill-combos tl-widget))
+	(ktlw/fill-tv tl-widget)
+	(if (null? new-tuple-set)
+	    (ktlw/empty-subset-or-db-mode tl-widget)
+	    (begin
+	      (ktlw/normal-mode tl-widget)
+	      (set! (gui-callback? tl-widget) #t)
+	      (if new-pos
+		  (ktlw/select-row tl-widget new-pos)
+		  (ktlw/select-row tl-widget 0))))))
+    (set! (gui-callback? tl-widget) #t)
+    ;; this has to be last
+    (ktlw/update-totals-status-bars tl-widget)
+    (set! (gui-callback? tl-widget) prev-gui-cb?)))
 
 
 ;;;
@@ -1435,21 +1551,21 @@ The date must be a valid date between the 01.01.1970 and 31.12.2037.
     ;;(set-tip t-tip (what-lb tl-widget) (ktlw/what-tooltip-str))
     (set-tip t-tip (filter-criteria-lb tl-widget) (ktlw/filter-criteria-tooltip-str))
     (set-label (filter-date-lb tl-widget)
-	       (format #f "<u><span foreground=\"~A\">~A:</span></u>" *kc/filters-fg* (_ "Date")))
+	       (format #f "<u><span foreground=\"~A\">~A:</span></u>" *filters-border* (_ "Date")))
     (set-tip t-tip (filter-date-lb tl-widget) (ktlw/filter-date-tooltip-str))
     (set-label (filter-who-lb tl-widget)
-	       (format #f "<u><span foreground=\"~A\">~A:</span></u>" *kc/filters-fg* (_ "Who")))
+	       (format #f "<u><span foreground=\"~A\">~A:</span></u>" *filters-border* (_ "Who")))
     (set-tip t-tip (filter-who-lb tl-widget) (ktlw/filter-text-tooltip-str))
     (set-label (filter-for-whom-lb tl-widget)
-	       (format #f "<span foreground=\"~A\">~A:</span>" *kc/filters-fg* (_ "For whom")))
+	       (format #f "<span foreground=\"~A\">~A:</span>" *filters-border* (_ "For whom")))
     ;; (set-tip t-tip (filter-for-whom-lb tl-widget) (ktlw/filter-text-tooltip-str))
     (set-label (filter-what-lb tl-widget)
-	       (format #f "<span foreground=\"~A\">~A:</span>" *kc/filters-fg* (_ "What")))
+	       (format #f "<span foreground=\"~A\">~A:</span>" *filters-border* (_ "What")))
     ;; (set-tip t-tip (filter-what-lb tl-widget) (ktlw/filter-text-tooltip-str))
     (set-label (filter-to-be-charged-lb tl-widget)
-	       (format #f "<span foreground=\"~A\">~A:</span>" *kc/filters-fg* (_ "To be charged")))
+	       (format #f "<span foreground=\"~A\">~A:</span>" *filters-border* (_ "To be charged")))
     (set-label (filter-description-lb tl-widget)
-	       (format #f "<span foreground=\"~A\">~A:</span>" *kc/filters-fg* (_ "Description")))
+	       (format #f "<span foreground=\"~A\">~A:</span>" *filters-border* (_ "Description")))
     #;(set-tip t-tip (filter-description-lb tl-widget) (ktlw/filter-text-tooltip-str))))
 
 

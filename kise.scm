@@ -109,6 +109,7 @@
 (define iter #f)
 (define gdedit #f)
 (define tuple #f)
+(define ref-lb #f)
 (define duration #f)
 
 (define (kise/set-debug-variables)
@@ -120,7 +121,8 @@
   (set! iter (current-iter tl-widget))
   (set! gdedit (date-edit tl-widget))
   (set! tuple (ktlw/get-tuple tl-widget row))
-  (set! duration (duration-sb tl-widget)))
+  (set! duration (duration-sb tl-widget))
+  (set! ref-lb (reference-lb tl-widget)))
 #;(kise/set-debug-variables)
 
 #!
@@ -133,16 +135,28 @@
 
 !#
 
+
 ;;;
 ;;; row selection related stuff
 ;;;
 
-
 (define (kise/set-gtk-entries tl-widget row iter)
-  (let ((tuple (ktlw/get-tuple tl-widget row))
-	(model (tv-model tl-widget)))
+  (let* ((tuple (ktlw/get-tuple tl-widget row))
+	 (idb (db-kise/get tuple 'imported_db))
+	 (model (tv-model tl-widget)))
     ;; (format #t "~S~%" tuple)
-    (set-text (reference-entry tl-widget) (number->string (ktlw/get 'id tl-widget row)))
+    (if (= idb -1)
+	(begin
+	  (set-markup (reference-lb tl-widget)
+		      (format #f "<span foreground=\"~A\"><i>~A</i></span>" "#000000" (_ "Reference")))
+	  (set-text (reference-entry tl-widget) (number->string (ktlw/get 'id tl-widget row)))
+	  (hide (reference-eb tl-widget)))
+	(begin
+	  (set-markup (reference-lb tl-widget)
+		      (format #f "<span foreground=\"~A\"><i>~A</i></span>" (kiter/get 'ibg model iter) (_ "Reference")))
+	  (set-text (reference-entry tl-widget) (number->string (ktlw/get 'imported_id tl-widget row)))
+	  (show (reference-eb tl-widget))
+	  (modify-bg (reference-eb tl-widget) 'normal (kiter/get 'ibg model iter))))
     (set-text (date-entry tl-widget) (kiter/get 'date model iter))
     (let ((who? (gtk2/combo-find-row (who-combo tl-widget) (db-kise/get tuple 'who))))
       (if who?
