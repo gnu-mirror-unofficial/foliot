@@ -46,25 +46,31 @@
   :export (*ki-widget*
 
 	   <ki-widget>
+	   gui-callback?
 	   dialog
 	   tv-model
 	   tv-sel
+	   add-bt
+	   remove-bt
 	   reimport-bt
 
 	   kiiter/get
 	   kiiter/set
-	   ki/make-dialog))
+	   ki/make-dialog
+	   ki/fill-treeview))
 
 (define kiiter/get-pos #f)
 (define kiiter/get #f)
 (define kiiter/set #f)
 
 (eval-when (compile load eval)
-  (let ((offsets '((id . 0)
+  (let ((offsets '((icolour . 0)
 		   (name . 1)
 		   (date . 2)
 		   (by . 3)
-		   (filename . 4))))
+		   (id . 4)
+		   (filename . 5)
+		   (ibg . 6))))
     (set! kiiter/get-pos
 	  (lambda (what) (cdr (assoc what offsets))))
     (set! kiiter/get
@@ -132,7 +138,9 @@
 			     <gchararray>
 			     <gchararray>
 			     <gchararray>
-			     <gboolean>))
+			     <gchararray>
+			     <gchararray>
+			     #;<gboolean>))
 	 (model (gtk-list-store-new column-types)))
     (set-model treeview model)
     (values model
@@ -142,25 +150,30 @@
   (let* ((dpi-ratio (aglobs/get 'Xft.dpi.ratio))
 	 (apply-ratio? (aglobs/get 'apply-dpi-ratio?))
 	 (model (get-model treeview))
+	 ;; IMPORTED ROW COLOUR
+	 (renderer0 (make <gtk-cell-renderer-text>))
+	 (column0   (make <gtk-tree-view-column>
+		       :sizing      'fixed
+		       :fixed-width 5
+		       :clickable   #f
+		       :resizable   #f
+		       :reorderable #f
+		       :alignment   .5))
 	 ;; ID
 	 (renderer1 (make <gtk-cell-renderer-text>))
 	 (column1   (make <gtk-tree-view-column>
-		      :title       (_ "Id")
-		      :sizing      'fixed
-		      :fixed-width 30
-		      :expand      #f
-		      :alignment   .5))
+		      :visible     #f))
 	 ;; DB NAME
 	 (renderer2 (make <gtk-cell-renderer-text>))
 	 (column2   (make <gtk-tree-view-column>
 		      :title       (_ "Name")
 		      :sizing      'autosize
 		      :expand      #t
-		      ;:sizing      'grow-only
-		      ;:min-width   134
-		      ;:clickable   #f
-		      ;:resizable   #f
-		      ;:reorderable #f
+					;:sizing      'grow-only
+					;:min-width   134
+					;:clickable   #f
+					;:resizable   #f
+					;:reorderable #f
 		      :alignment   .5))
 	 ;; DATE
 	 (renderer3 (make <gtk-cell-renderer-text>))
@@ -188,19 +201,28 @@
 	 (column5   (make <gtk-tree-view-column>
 		      :visible     #f))
 	 ;; IMPORT
-	 (renderer9 (make <gtk-cell-renderer-toggle>))
-	 (column9   (make <gtk-tree-view-column>
+	 #;(renderer9 (make <gtk-cell-renderer-toggle>))
+	 #;(column9   (make <gtk-tree-view-column>
 		      :title       (_ "Imp.")
 		      :sizing      'fixed
 		      :fixed-width 40
 		      :expand      #f
 		      :alignment   .5))
-	 (to-pack   `((id ,column1 ,renderer1 "text")
+	 ;; ICOLOUR BACKGROUND
+	 (renderer6 (make <gtk-cell-renderer-text>))
+	 (column6   (make <gtk-tree-view-column>
+		      :visible     #f))
+
+	 (to-pack   `((icolour ,column0 ,renderer0 "text")
 		      (name ,column2 ,renderer2 "text")
 		      (date ,column3 ,renderer3 "text")
 		      (by ,column4 ,renderer4 "text")
+		      (id ,column1 ,renderer1 "text")
+		      (fn ,column5 ,renderer5 "text")
+		      (ibg ,column6 ,renderer6 "text")
 		      #;(import ,column9 ,renderer9 "active"))))
     (gtk2/pack-tv-cols treeview to-pack)
+    (add-attribute column0 renderer0 "cell-background" 6)
     #;(connect renderer9 ;; import
 	     'toggled
 	     (lambda (widget path)
@@ -218,19 +240,26 @@
     ki-widget))
 
 (define (ki/fill-treeview ki-widget idb-tuples)
-  (let ((model (tv-model ki-widget)))
+  (let ((model (tv-model ki-widget))
+	(rem-bt (remove-bt ki-widget))
+	(reimp-bt (reimport-bt ki-widget)))
     (gtk-list-store-clear model)
-    (for-each (lambda (idb-tuple)
-		;; (dimfi idb-tuple)
-		(let ((iter (gtk-list-store-append model))
-		      (filename (db-idb/get idb-tuple 'filename)))
+    (if (null? idb-tuples)
+	(gtk2/set-sensitive (list rem-bt reimp-bt) #f)
+	(begin
+	  (gtk2/set-sensitive (list rem-bt reimp-bt) #t)
+	  (for-each (lambda (idb-tuple)
+		      ;; (dimfi idb-tuple)
+		      (let ((iter (gtk-list-store-append model))
+			    (filename (db-idb/get idb-tuple 'filename)))
 					; (ki/import-toggle-callback ki-widget model iter 'fill print?)
-		  (kiiter/set 'id model iter (number->string (db-idb/get idb-tuple 'id)))
-		  (kiiter/set 'name model iter (basename filename))
-		  (kiiter/set 'date model iter (db-idb/get idb-tuple 'imported_the))
-		  (kiiter/set 'by model iter (db-idb/get idb-tuple 'imported_by))
-		  (kiiter/set 'filename model iter filename)))
-	idb-tuples)))
+			(kiiter/set 'name model iter (basename filename))
+			(kiiter/set 'date model iter (db-idb/get idb-tuple 'imported_the))
+			(kiiter/set 'by model iter (db-idb/get idb-tuple 'imported_by))
+			(kiiter/set 'id model iter (number->string (db-idb/get idb-tuple 'id)))
+			(kiiter/set 'filename model iter filename)
+			(kiiter/set 'ibg model iter (colour-set-bg (db-idb/get idb-tuple 'colour_set)))))
+	      idb-tuples)))))
 
 
 ;;;
@@ -250,7 +279,7 @@
 			  :reimport-bt (get-widget xmlc "ki/reimport_bt")
 			  :cancel-bt (get-widget xmlc "ki/cancel_bt")
 			  :close-bt (get-widget xmlc "ki/close_bt"))))
-	(modify-bg (get-widget xmlc "ki/eventbox") 'normal *kc/dialog-title-eb-bg*)
+	(modify-bg (get-widget xmlc "ki/eventbox") 'normal *dialog-title-eb-bg*)
 	(when parent (set-transient-for (dialog ki-widget) parent))
 	(ki/translate ki-widget)
 	(ki/setup-treeview ki-widget)
@@ -274,14 +303,6 @@
 		 (lambda (button)
 		   ;; same as destroy-event
 		   (set! *ki-widget* #f)))
-	(connect (add-bt ki-widget)
-		 'clicked
-		 (lambda (button)
-		   (dimfi "import/add clicked")))
-	(connect (remove-bt ki-widget)
-		 'clicked
-		 (lambda (button)
-		   (dimfi "import/remove clicked")))
 
 	(set! (gui-callback? ki-widget) #f)
 	(gtk2/hide `(,(cancel-bt ki-widget)
