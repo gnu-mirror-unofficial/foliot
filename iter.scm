@@ -47,9 +47,9 @@
 		   (to_be_charged . 5)
 		   (what . 6)
 		   (rowbg . 7)
-		   (rowgg . 8)
+		   (rowfg . 8)
 		   (ibg . 9)
-		   (ibg . 10))))
+		   (ifg . 10))))
     (set! kiter/get-pos
 	  (lambda (what) (cdr (assoc what offsets))))
     (set! kiter/get
@@ -59,22 +59,26 @@
 	  (lambda (what model iter value)
 	    (set-value model iter (kiter/get-pos what) value)))))
 
-(define (kiter/fill-next model iter date who for-whom duration to-be-charged what)
+(define (kiter/fill-next model iter date who for-whom duration to-be-charged what ibg ifg)
   (kiter/set 'date model iter date)
   (kiter/set 'who model iter who)
   (kiter/set 'for-whom model iter for-whom)
   (kiter/set 'duration model iter duration)
   (kiter/set 'to-be-charged model iter to-be-charged)
   (kiter/set 'what model iter what)
+  (kiter/set 'rowbg model iter #f)
+  (kiter/set 'rowfg model iter #f)
+  (kiter/set 'ibg model iter ibg)
+  (kiter/set 'ifg model iter ifg)
   iter)
 
-(define (kiter/append-fill model date who for-whom duration to-be-charged what)
+(define (kiter/append-fill model date who for-whom duration to-be-charged what ibg ifg)
   (let ((iter (gtk-list-store-append model)))
-    (kiter/fill-next model iter date who for-whom duration to-be-charged what)))
+    (kiter/fill-next model iter date who for-whom duration to-be-charged what ibg ifg)))
 
-(define (kiter/prepend-fill model date who for-whom duration to-be-charged what)
+(define (kiter/prepend-fill model date who for-whom duration to-be-charged what ibg ifg)
   (let ((iter (gtk-list-store-prepend model)))
-    (kiter/fill-next model iter date who for-whom duration to-be-charged what)))
+    (kiter/fill-next model iter date who for-whom duration to-be-charged what ibg ifg)))
 
 
 #!
