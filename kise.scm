@@ -148,12 +148,12 @@
     (if (= idb -1)
 	(begin
 	  (set-markup (reference-lb tl-widget)
-		      (format #f "<span foreground=\"~A\"><i>~A</i></span>" "#000000" (_ "Reference")))
+		      (format #f "<span foreground=\"~A\"><i>~A:</i></span>" "#000000" (_ "Reference")))
 	  (set-text (reference-entry tl-widget) (number->string (ktlw/get 'id tl-widget row)))
 	  (hide (reference-eb tl-widget)))
 	(begin
 	  (set-markup (reference-lb tl-widget)
-		      (format #f "<span foreground=\"~A\"><i>~A</i></span>" (kiter/get 'ibg model iter) (_ "Reference")))
+		      (format #f "<span foreground=\"~A\"><i>~A:</i></span>" (kiter/get 'ibg model iter) (_ "Reference")))
 	  (set-text (reference-entry tl-widget) (number->string (ktlw/get 'imported_id tl-widget row)))
 	  (show (reference-eb tl-widget))
 	  (modify-bg (reference-eb tl-widget) 'normal (kiter/get 'ibg model iter))))
