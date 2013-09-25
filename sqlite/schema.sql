@@ -70,5 +70,9 @@ create table kise_imported_db (
   id               integer primary key not null,
   name             text, -- actually it is the filename
   imported_the     integer,
-  imported_by      text
+  imported_by      text,
+  colour_set       integer
 );
+
+-- 2013/09/04
+-- alter table kise_imported_db add column colour_set text;

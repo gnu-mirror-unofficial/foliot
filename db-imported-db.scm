@@ -26,6 +26,7 @@
 (define-module (kise db-imported-db)
   ;; guile
   :use-module (ice-9 format)
+  :use-module (srfi srfi-1)
 
   ;; common
   :use-module (macros reexport)
@@ -35,12 +36,14 @@
   :use-module (system i18n)
   :use-module (system aglobs)
   :use-module (strings strings)
+  :use-module (gtk colours)
 
   ;; kise
   :use-module (kise globals)
   :use-module (kise db-con)
 
   :export (db-idb/add-imported-db-table
+	   db-idb/check-schema
 	   db-idb/create-complete-table
 	   db-idb/select-all
 	   db-idb/select-some
@@ -51,7 +54,10 @@
 	   db-idb/find-pos
 	   db-idb/get-next-id
 	   db-idb/add
-	   db-idb/delete))
+	   db-idb/delete
+	   db-idb/get-used-colour-set-ids
+	   db-idb/get-unused-colour-set-ids
+	   db-idb/get-colour-alist))
 
 
 (eval-when (compile load eval)
@@ -75,7 +81,8 @@
     (format #f "id,
    name,
    strftime('%d~A%m~A%Y', imported_the, 'unixepoch'),
-   imported_by"
+   imported_by,
+   colour_set"
 	    sep sep)))
 
 
@@ -88,7 +95,8 @@
     (name . 1) ;; it actually is the filename
     (filename . 1)
     (imported_the . 2)
-    (imported_by . 3)))
+    (imported_by . 3)
+    (colour_set . 4)))
 
 (define (db-idb/get-pos what)
   (assq-ref (db-idb/fields-offsets) what))
@@ -115,17 +123,38 @@
      id               integer primary key not null,
      name             text,
      imported_the     integer,
-     imported_by      text
+     imported_by      text,
+     colour_set       integer
 );")
 
 (define (db-idb/add-imported-db-table)
-  (sqlite/command (db-con) 
+  (sqlite/command (db-con)
 		  (db-idb/add-imported-db-table-str)))
+
+(define (db-idb/check-schema)
+  ;; 'none, 'partial, 'complete
+  (let* ((db (db-con))
+	 (exists? (sqlite/table-exists? db "kise_imported_db")))
+   (if exists?
+       (let* ((table-info (sqlite/table-info db "kise_imported_db"))
+	      (cols-nb (length table-info)))
+	 (cond ((= cols-nb 4) ;; colour_set column added - 2013/07/29
+		'partial)
+	       ((= cols-nb 5)
+		'complete)))
+       'none)))
 
 (define (db-idb/create-complete-table)
   (let* ((db (db-con))
 	 (exists? (sqlite/table-exists? db "kise_imported_db")))
-   (unless exists? (db-idb/add-imported-db-table))))
+    (if exists?
+	;; colour_set columns added - 2013/07/29
+	(let* ((table-info (sqlite/table-info db "kise_imported_db"))
+	       (cols-nb (length table-info)))
+	  (if (= cols-nb 4)
+	      (begin
+		(sqlite/add-column db "kise_imported_db" "colour_set integer"))))
+	(db-idb/add-imported-db-table))))
 
 
 ;;;
@@ -194,7 +223,6 @@
 		    ((imported_the) (db-idb/set-date-str))
 		    (else
 		     (db-idb/set-str))))
-
 	 (cmd (format #f "~?" sql-str (list what sql-value id))))
     (sqlite/command (db-con) cmd)
     (if (null? displayed-value)
@@ -236,16 +264,18 @@
   "insert into kise_imported_db (id,
                                  name,
                                  imported_the,
-                                 imported_by)
+                                 imported_by,
+                                 colour_set)
    values ('~A',
            '~A',
            strftime('%s', '~A'),
+           '~A',
            '~A');")
 
-(define (db-idb/add filename date who)
-  (let* ((next-id (db-idb/get-next-id))
+(define* (db-idb/add filename date who cs-id #:optional (id #f))
+  (let* ((next-id (or id (db-idb/get-next-id)))
 	 (insert (format #f "~?" (db-idb/add-str)
-			 (list next-id filename date who))))
+			 (list next-id filename date who cs-id))))
     ;; (dimfi insert)
     (sqlite/command (db-con) insert)
     next-id))
@@ -263,6 +293,28 @@
   (sqlite/command (db-con)
 		  (format #f "~?" (db-idb/delete-str)
 			  (list reference))))
+
+
+;;;
+;;; Other
+;;;
+
+(define (db-idb/get-used-colour-set-ids)
+  (filter-map (lambda (tuple) (db-idb/get tuple 'colour_set)) (db-idb/select-all)))
+
+(define (db-idb/get-unused-colour-set-ids)
+  (lset-difference = (colour-set-ids) (db-idb/get-used-colour-set-ids)))
+
+(define (db-idb/get-colour-alist)
+  (let ((alist (list)))
+    (for-each (lambda (tuple)
+		(let* ((id (db-idb/get tuple 'id))
+		       (ics (db-idb/get tuple 'colour_set))
+		       (ibg (colour-set-bg ics))
+		       (ifg (colour-set-fg ics)))
+		  (set! alist (assoc-set! alist id (cons ibg ifg)))))
+	(db-idb/select-all))
+    alist))
 
 
 #!

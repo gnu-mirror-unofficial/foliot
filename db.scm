@@ -63,11 +63,15 @@
   (let* ((db (db-con))
 	 (kise? (sqlite/table-exists? db "kise"))
 	 (kise-printing-templates? (sqlite/table-exists? db "kise_printing_templates"))
-	 (kise-imported-db? (sqlite/table-exists? db "kise_imported_db")))
-    (cond ((and kise? kise-printing-templates? kise-imported-db?)
-	   ;; 'complete but we should still check the defs, todo.
+	 (kise-imported-db? (db-idb/check-schema)))
+    (cond ((and kise? ;; not good yet we should still check the defs
+		kise-printing-templates? ;; not good yet we should still check the defs
+		(eq? kise-imported-db? 'complete))
 	   'complete)
-	  ((or kise? kise-printing-templates? kise-imported-db?) 'partial)
+	  ((or kise?
+	       kise-printing-templates?
+	       (eq? kise-imported-db? 'partial))
+	   'partial)
 	  (else
 	   'none))))
 

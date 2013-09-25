@@ -38,6 +38,7 @@
   :use-module (system passwd)
   :use-module (strings strings)
   :use-module (db sqlite)
+  :use-module (gtk colours)
 
   ;; kise
   :use-module (kise globals)
@@ -394,7 +395,7 @@
     (if value (1+ value) 0)))
 
 (define (db-kise/get-next-id)
-  (let* ((delta (aglobs/get 'per-db-imported-ids-delta))
+  (let* ((delta (aglobs/get 'imported-ids-delta))
 	 (query (format #f "~?" (db-kise/get-next-id-str) (list delta)))
 	 (tuple (car (sqlite/query (db-con) query)))
 	 (max-id (vector-ref tuple 0)))
@@ -582,7 +583,7 @@
 
 (define (db-kise/import-2 tuples idb-id)
   ;; sql transaction must be started by the caller
-  (let ((ids-delta (* (1+ idb-id) (aglobs/get 'per-db-imported-ids-delta))))
+  (let ((ids-delta (* (1+ idb-id) (aglobs/get 'imported-ids-delta))))
     (for-each (lambda (tuple)
 		(let ((imported-id (db-kise/get tuple 'id)))
 		  (db-kise/add-from-other-db (+ imported-id ids-delta)
@@ -610,7 +611,7 @@
 	  (db-kise/import-2 tuples idb-id)
 	  (sqlite/commit db)))))
 
-(define (db-kise/import filename)
+(define* (db-kise/import filename cs-id #:optional (id #f))
   (let* ((uname (sys/get 'uname))
 	 (today (date/system-date))
 	 (iso-today (date/iso-date today))
@@ -620,18 +621,22 @@
 	 (tuples (db-kise/select-all-other-db db)))
     (db-con/close db #f)
     (let ((db (db-con)))
-      (sqlite/begin-transaction db)
       (if idb-tuple-pos
 	  (let* ((idb-tuple (list-ref idb-tuples idb-tuple-pos))
 		 (idb-id (db-idb/get idb-tuple 'id)))
 	    ;; (dimfi "deleting last import..." idb-tuple)
+	    (sqlite/begin-transaction db)
 	    (db-kise/delete-imported-tuples idb-id #t #f)
 	    (db-kise/import-1 tuples idb-id #t)
 	    (db-idb/update idb-tuple 'imported_the iso-today)
-	    (db-idb/update idb-tuple 'imported_by uname))
-	  (let ((idb-id (db-idb/add filename iso-today uname)))
-	    (db-kise/import-1 tuples idb-id #t)))
-      (sqlite/commit db))))
+	    (db-idb/update idb-tuple 'imported_by uname)
+	    (sqlite/commit db)
+	    idb-id)
+	  (let ((idb-id (db-idb/add filename iso-today uname cs-id id)))
+	    (sqlite/begin-transaction db)
+	    (db-kise/import-1 tuples idb-id #t)
+	    (sqlite/commit db)
+	    idb-id)))))
 
 
 #!
@@ -672,7 +677,8 @@
 (db-kise/delete "44")
 (db-kise/select-some "who = 'david'" #f "sum(duration)")
 
-(db-kise/import "/usr/alto/db/sqlite.alto.christian.db")
+(db-kise/import "/usr/alto/db/sqlite.alto.christian.db" "#60a8a8" "#000000")
+(db-kise/import "/usr/alto/db/sqlite.alto.david.db" "#784800"  "#d8d860")
 (db-kise/delete-imported-tuples 0 #f #t)
 
 

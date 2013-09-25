@@ -43,7 +43,7 @@
     (aglobs/set 'gtkrcfile (string-append kisedir "/gtkrc.kise"))
     (aglobs/set 'latexdir (string-append kisedir "/latex"))
     (aglobs/set 'printdir "/tmp")
-    (aglobs/set 'per-db-imported-ids-delta 1000000)
+    (aglobs/set 'imported-ids-delta 1000000)
     ;; release: kisê to common git tag alist
     (aglobs/set 'tags '(("0.9.1" . "0.1")
 			("0.9.2" . "0.2")
@@ -62,6 +62,6 @@
 (aglobs/get 'gtkrcfile)
 (aglobs/get 'latexdir)
 (aglobs/get 'printdir)
-(aglobs/get 'per-db-imported-ids-delta)
+(aglobs/get 'imported-ids-delta)
 (aglobs/get 'tags)
 !#
