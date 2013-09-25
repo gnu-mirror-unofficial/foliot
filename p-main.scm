@@ -60,8 +60,7 @@
       ((draft)
        (kp/print-draft kp/widget tl-widget tex-files))
       ((commercial)
-       (kp/print-commercial kp/widget tl-widget tex-files))
-      )))
+       (kp/print-commercial kp/widget tl-widget tex-files)))))
 
 
 ;;;
@@ -83,9 +82,7 @@
 						   'save
 						   pdf-dir
 						   proposed-name)))
-	    (unless (or (eq? pdf-filename 'cancel)
-			(eq? pdf-filename 'delete))
-	      (kp/print-1 kp/widget tl-widget pdf-filename))))
+	    (if pdf-filename (kp/print-1 kp/widget tl-widget pdf-filename))))
      (kp/print-1 kp/widget tl-widget #f))))
 
 

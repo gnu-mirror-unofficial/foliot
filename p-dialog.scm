@@ -716,7 +716,7 @@
 			  :g-down-bt (get-widget xmlc "kp/grouping_down_bt")
 			  :cancel-bt (get-widget xmlc "kp/cancel_bt")
 			  :print-bt (get-widget xmlc "kp/print_bt"))))
-	(modify-bg (get-widget xmlc "kp/eventbox") 'normal *kc/dialog-title-eb-bg*)
+	(modify-bg (get-widget xmlc "kp/eventbox") 'normal *dialog-title-eb-bg*)
 	(when parent (set-transient-for (dialog kp-widget) parent))
 	(kp/translate kp-widget)
 	

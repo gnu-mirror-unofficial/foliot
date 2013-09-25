@@ -81,7 +81,7 @@
 			  :reuse-db-cb (get-widget xmlc "kc/reuse_db_cb")
 			  :ok-bt (get-widget xmlc "kc/ok_bt")
 			  :cancel-bt (get-widget xmlc "kc/cancel_bt"))))
-	(modify-bg (get-widget xmlc "kc/eventbox") 'normal *kc/dialog-title-eb-bg*)
+	(modify-bg (get-widget xmlc "kc/eventbox") 'normal *dialog-title-eb-bg*)
 	(when parent (set-transient-for widget parent))
 	(kc/translate kc-widget)
 
