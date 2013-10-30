@@ -106,7 +106,7 @@ details.")
 	      '((debug (single-char #\d) (value #f))
 		(version (value #f))
 		(help (value #f))))
-  (aglobs/set 'version "0.9.3")
+  (aglobs/set 'version "0.9.4")
   (textdomain "main")
   (bindtextdomain "main" (aglobs/get 'pofdir))
 
