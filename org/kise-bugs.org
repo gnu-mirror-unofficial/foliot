@@ -6,7 +6,16 @@
 
 ** Bugs
 
-*** TODO [[40] 2] write-config: when not permitted, it is not possible to quit Kisê
+*** CLOSED [[41] 4] sqlite/table-names, sqlite/table-exists?
+CLOSED: [2013-10-28 Mon 10:28]
+- State "CLOSED"     from "OPEN"       [2013-10-28 Mon 10:28]
+
+table names are _not_ properly cached: although the db copnector is passed as an
+argument, I managed to forget to use it while cashing.  this will always trigger
+an error, if you import a db which is an sqlite file but does not contain a kise
+table.
+
+*** OPEN [[40] 2] write-config: when not permitted, it is not possible to quit Kisê
 
 that's it, you can't quit Kisê, haha!  i set the sererity level of this bug to 2
 because it highly improbable.  indeed, someone with permission to do so should
