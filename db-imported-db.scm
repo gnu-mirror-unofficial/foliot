@@ -127,34 +127,29 @@
      colour_set       integer
 );")
 
-(define (db-idb/add-imported-db-table)
-  (sqlite/command (db-con)
-		  (db-idb/add-imported-db-table-str)))
+(define (db-idb/add-imported-db-table db)
+  (sqlite/command db (db-idb/add-imported-db-table-str)))
 
-(define (db-idb/check-schema)
+(define (db-idb/check-schema db)
   ;; 'none, 'partial, 'complete
-  (let* ((db (db-con))
-	 (exists? (sqlite/table-exists? db "kise_imported_db")))
-   (if exists?
-       (let* ((table-info (sqlite/table-info db "kise_imported_db"))
-	      (cols-nb (length table-info)))
-	 (cond ((= cols-nb 4) ;; colour_set column added - 2013/07/29
-		'partial)
-	       ((= cols-nb 5)
-		'complete)))
-       'none)))
+  (if (sqlite/table-exists? db "kise_imported_db")
+      (let* ((table-info (sqlite/table-info db "kise_imported_db"))
+	     (cols-nb (length table-info)))
+	(cond ((= cols-nb 4) ;; colour_set column added - 2013/07/29
+	       'partial)
+	      ((= cols-nb 5)
+	       'complete)))
+      'none))
 
-(define (db-idb/create-complete-table)
-  (let* ((db (db-con))
-	 (exists? (sqlite/table-exists? db "kise_imported_db")))
-    (if exists?
-	;; colour_set columns added - 2013/07/29
-	(let* ((table-info (sqlite/table-info db "kise_imported_db"))
-	       (cols-nb (length table-info)))
-	  (if (= cols-nb 4)
-	      (begin
-		(sqlite/add-column db "kise_imported_db" "colour_set integer"))))
-	(db-idb/add-imported-db-table))))
+(define (db-idb/create-complete-table db)
+  (if (sqlite/table-exists? db "kise_imported_db")
+      ;; colour_set columns added - 2013/07/29
+      (let* ((table-info (sqlite/table-info db "kise_imported_db"))
+	     (cols-nb (length table-info)))
+	(if (= cols-nb 4)
+	    (begin
+	      (sqlite/add-column db "kise_imported_db" "colour_set integer"))))
+      (db-idb/add-imported-db-table db)))
 
 
 ;;;

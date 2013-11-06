@@ -54,16 +54,15 @@
 ;;; Schema
 ;;;
 
-(define (db/add-schema)
-  (db-kise/add-kise-table)
-  (db-pt/add-printing-templates-table)
-  (db-idb/add-imported-db-table))
+(define (db/add-schema db)
+  (db-kise/add-kise-table db)
+  (db-pt/add-printing-templates-table db)
+  (db-idb/add-imported-db-table db))
 
-(define (db/check-schema)
-  (let* ((db (db-con))
-	 (kise? (sqlite/table-exists? db "kise"))
-	 (kise-printing-templates? (sqlite/table-exists? db "kise_printing_templates"))
-	 (kise-imported-db? (db-idb/check-schema)))
+(define (db/check-schema db)
+  (let ((kise? (sqlite/table-exists? db "kise"))
+	(kise-printing-templates? (sqlite/table-exists? db "kise_printing_templates"))
+	(kise-imported-db? (db-idb/check-schema db)))
     (cond ((and kise? ;; not good yet we should still check the defs
 		kise-printing-templates? ;; not good yet we should still check the defs
 		(eq? kise-imported-db? 'complete))
@@ -75,11 +74,10 @@
 	  (else
 	   'none))))
 
-(define (db/complete-schema)
-  (let ((db (db-con)))
-    (db-kise/create-complete-table)
-    (db-pt/create-complete-table)
-    (db-idb/create-complete-table)))
+(define (db/complete-schema db)
+  (db-kise/create-complete-table db)
+  (db-pt/create-complete-table db)
+  (db-idb/create-complete-table db))
 
 
 #!

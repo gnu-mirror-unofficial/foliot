@@ -86,14 +86,11 @@
      group_and_sort   text
 );")
 
-(define (db-pt/add-printing-templates-table)
-  (sqlite/command (db-con) 
-		  (db-pt/add-printing-templates-table-str)))
+(define (db-pt/add-printing-templates-table db)
+  (sqlite/command db (db-pt/add-printing-templates-table-str)))
 
-(define (db-pt/create-complete-table)
-  (let* ((db (db-con))
-	 (exists? (sqlite/table-exists? db "kise_printing_templates")))
-   (unless exists? (db-pt/add-printing-templates-table))))
+(define (db-pt/create-complete-table db)
+  (unless (sqlite/table-exists? db "kise_printing_templates") (db-pt/add-printing-templates-table db)))
 
 
 ;;;

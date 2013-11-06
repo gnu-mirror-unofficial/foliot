@@ -191,23 +191,20 @@
      imported_db    integer
    );")
 
-(define (db-kise/add-kise-table)
-  (sqlite/command (db-con) (db-kise/add-kise-table-str)))
+(define (db-kise/add-kise-table db)
+  (sqlite/command db (db-kise/add-kise-table-str)))
 
-(define (db-kise/complete-table)
-  (let* ((db (db-con))
-	 (table-info (sqlite/table-info db "kise")))
+(define (db-kise/complete-table db)
+  (let ((table-info (sqlite/table-info db "kise")))
     (unless (sqlite/tuple-pos "imported_id" table-info string=? 1)
       ;; upgrading from 0.9.1 to 0.9.2
       (sqlite/add-column db "kise" "imported_id integer default '-1' not null")
       (sqlite/add-column db "kise" "imported_db integer default '-1' not null"))))
 
-(define (db-kise/create-complete-table)
-  (let* ((db (db-con))
-	 (exists? (sqlite/table-exists? db "kise")))
-   (if exists?
-       (db-kise/complete-table)
-       (db-kise/add-kise-table))))
+(define (db-kise/create-complete-table db)
+  (if (sqlite/table-exists? db "kise")
+      (db-kise/complete-table db)
+      (db-kise/add-kise-table db)))
 
 
 ;;;
