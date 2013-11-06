@@ -49,8 +49,17 @@
 (define *no-available-colour-set-msg*
   (_ "All available colour-set are already in use. For this import, we will reuse the '~A' [id '~A'] colour-set."))
 
-#;(define *import-db-pre-checks-failed-msg*
-  (_ "~A: ~A"))
+(define *importing-the-active-db-is-not-allowed-msg*
+  (_ "importing the active db is not allowed"))
+
+(define *no-read-perm-msg*
+  (_ "no read permission upon this file"))
+
+(define *not-an-sqlite-file-msg*
+  (_ "not an sqlite file"))
+
+(define *not-kise-table-msg*
+  (_ "no kise table"))
 
 (define (ki/add tl-widget ki-widget)
   (let ((model (tv-model ki-widget))
@@ -63,14 +72,15 @@
 					      (dirname (kcfg/get 'db-file))
 					      #f)))
     (if import-filename
-	(let ((pre-checks-failed? (cond ((not (access? import-filename R_OK)) 'no-read-perm)
-					((not (sqlite/sqlite-db-file? import-filename)) 'not-an-sqlite-file)
+	(let ((pre-checks-failed? (cond ((string=? import-filename (kcfg/get 'db-file)) *importing-the-active-db-is-not-allowed-msg*)
+					((not (access? import-filename R_OK)) *no-read-perm-msg*)
+					((not (sqlite/sqlite-db-file? import-filename)) *not-an-sqlite-file-msg*)
 					(else #f))))
 	  (if pre-checks-failed?
 	      (begin
 		(md1b/select-gui (dialog ki-widget)
 				 (_ "Warning!")
-				 (_ "Import db pre-checks failed:")
+				 (_ "Import db pre checks failed:")
 				 (format #f "~A: ~A" import-filename pre-checks-failed?)
 				 (lambda () 'nothing)
 				 'dialog-warning)
@@ -81,8 +91,8 @@
 		    (begin
 		      (md1b/select-gui (dialog ki-widget)
 				       (_ "Warning!")
-				       (_ "Import db pre-checks failed:")
-				       (format #f "~A: kise table not found" import-filename)
+				       (_ "Import db pre checks failed:")
+				       (format #f "~A: ~A" import-filename *not-kise-table-msg*)
 				       (lambda () 'nothing)
 				       'dialog-warning)
 		      #f)
