@@ -38,7 +38,8 @@
   ;; kise
   :use-module (kise colours) ;; <- later use aglobs/set/get and delete this file
 
-  :export (kc/make-dialog
+  :export (kc/close-dialog
+	   kc/make-dialog
 	   <kc/widget>
 	   dialog
 	   mode
@@ -47,11 +48,16 @@
 	   cancel-bt))
 
 
-;;;
-;;; Globals
-;;;
-
 (define *kc-widget* #f)
+
+(define (kc/close-dialog kc-dialog)
+  (destroy kc-dialog)
+  (set! *kc-widget* #f))
+
+#!
+(set-modal kc-dialog #f)
+(hide kc-dialog)
+!#
 
 
 ;;;
@@ -89,14 +95,12 @@
 		 'destroy-event
 		 (lambda (widget event)
 		   (set! *kc-widget* #f)
-		   #f
-		   ))
+		   #f))
 	(connect (dialog kc-widget)
 		 'delete-event
 		 (lambda (widget event)
 		   (set! *kc-widget* #f)
-		   #f
-		   ))
+		   #f))
 	(connect (select-rb kc-widget)
 		 'toggled
 		 (lambda (widget)
