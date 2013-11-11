@@ -68,6 +68,9 @@
 ;;; API
 ;;;
 
+(define *db-already-in-use-msg*
+  (_ "is the active database."))
+
 (define (kc/connect-cant-connect-str)
   (_ "I can not open ~A: or it is not a Kisê database file, or you don't have writing permissions over it."))
 
@@ -87,50 +90,56 @@ create/connect to another Kisê database.
 (define (kc/connect tl-widget kc-widget)
   (let* ((kc-dialog (dialog kc-widget))
 	 (filename (get-filename kc-dialog))
-	 (reuse-db? (get-active (reuse-db-cb kc-widget))))
-    ;; (format #t "kc/connect: ~S ~S ~S~%" (mode kc-widget) filename reuse-db?)
-    (case (mode kc-widget)
-      ((open)
-       ;; the user could select a 'wrong file'. all checks must be
-       ;; done but 'exists
-       (let ((checks-result (ktlw/open-db-checks filename)))
-	 (case checks-result
-	   ((wrong-perm not-an-sqlite-file)
-	    (md1b/select-gui (dialog tl-widget)
-			     (_ "Warning!")
-			     (_ "DB connection problem:")
-			     (format #f "~?" (kc/connect-cant-connect-str) (list filename))
-			     (lambda () 'nothing)
-			     'dialog-warning))
-	   ((opened opened-partial-schema opened-no-schema)
-	    (ktlw/open-db tl-widget filename 'from-gui 'open reuse-db? checks-result)
-	    (set-modal kc-dialog #f)
-	    (hide kc-dialog)))))
-      ((create)
-       ;; for some very obscure reasons, when in 'create' mode,
-       ;; kc/connect is called 2x ... see kise-bugs for details.
-       ;; (format #t "modal?: ~S // New db for kise in ~A~%" (get-modal kc-dialog) filename)
-       (when (get-modal kc-dialog)
-	 (let ((checks-result (ktlw/create-db-checks filename)))
-	   (case checks-result
-	     ((exists)
-	      (md1b/select-gui (dialog tl-widget)
-			       (_ "Warning!")
-			       (_ "DB creation problem:")
-			       (format #f "~?" (kc/connect-create-exists-str) (list (basename filename)))
-			       (lambda () 'nothing)
-			       'dialog-warning))
-	     ((wrong-perm)
-	      (md1b/select-gui (dialog tl-widget)
-			       (_ "Warning!")
-			       (_ "DB creation problem:")
-			       (format #f "~?" (kc/connect-cant-create-str) (list (dirname filename)))
-			       (lambda () 'nothing)
-			       'dialog-warning))
-	     ((ok opened)
-	      (ktlw/open-db tl-widget filename 'from-gui 'create reuse-db? checks-result)
-	      (set-modal kc-dialog #f)
-	      (hide kc-dialog)))))))))
+	 (reuse-db? (get-active (reuse-db-cb kc-widget)))
+	 (active-db-file (kcfg/get 'db-file)))
+    (if (string=? filename active-db-file)
+	(md1b/select-gui (dialog kc-widget)
+			 (_ "Information")
+			 (_ "Db already in use:")
+			 (format #f "~A: ~A" filename *db-already-in-use-msg*)
+			 (lambda () 'nothing)
+			 'dialog-info)
+	(case (mode kc-widget)
+	  ((open)
+	   ;; the user could select a 'wrong file'. all checks must be
+	   ;; done but 'exists
+	   (receive (checks-result db)
+	       (ktlw/open-db-checks filename)
+	     (case checks-result
+	       ((wrong-perm not-an-sqlite-file)
+		(md1b/select-gui (dialog tl-widget)
+				 (_ "Warning!")
+				 (_ "DB connection problem:")
+				 (format #f "~?" (kc/connect-cant-connect-str) (list filename))
+				 (lambda () 'nothing)
+				 'dialog-warning))
+	       ((opened opened-partial-schema opened-no-schema)
+		(ktlw/open-db tl-widget filename 'from-gui 'open reuse-db? checks-result db)
+		(kc/close-dialog kc-dialog)))))
+	  ((create)
+	   ;; for some very obscure reasons, when in 'create' mode,
+	   ;; kc/connect is called 2x ... see kise-bugs for details.
+	   ;; (format #t "modal?: ~S // New db for kise in ~A~%" (get-modal kc-dialog) filename)
+	   (when (get-modal kc-dialog)
+	     (let ((checks-result (ktlw/create-db-checks filename)))
+	       (case checks-result
+		 ((exists)
+		  (md1b/select-gui (dialog tl-widget)
+				   (_ "Warning!")
+				   (_ "DB creation problem:")
+				   (format #f "~?" (kc/connect-create-exists-str) (list (basename filename)))
+				   (lambda () 'nothing)
+				   'dialog-warning))
+		 ((wrong-perm)
+		  (md1b/select-gui (dialog tl-widget)
+				   (_ "Warning!")
+				   (_ "DB creation problem:")
+				   (format #f "~?" (kc/connect-cant-create-str) (list (dirname filename)))
+				   (lambda () 'nothing)
+				   'dialog-warning))
+		 ((ok opened)
+		  (ktlw/open-db tl-widget filename 'from-gui 'create reuse-db? checks-result #f)
+		  (kc/close-dialog kc-dialog))))))))))
 
 (define (kc/select-gui tl-widget)
   (let* ((parent (dialog tl-widget))
@@ -156,8 +165,7 @@ create/connect to another Kisê database.
     (connect (cancel-bt kc-widget)
 	     'clicked
 	     (lambda (button) 
-	       (set-modal kc-dialog #f)
-	       (hide kc-dialog)))
+	       (kc/close-dialog kc-dialog)))
     (set-modal kc-dialog #t)
     (show kc-dialog)))
 
