@@ -219,8 +219,9 @@
     (if (and db-file open-at-startup)
 	;; we still need to proceed with all checks: it could have
 	;; been deleted, moved, chmod, delted schema ...
-	(let ((open-db-checks-result (ktlw/open-db-checks db-file)))
-	  (case (ktlw/open-db-checks db-file)
+	(receive (checks-result db)
+	    (ktlw/open-db-checks db-file)
+	  (case checks-result
 	    ((does-not-exist wrong-perm not-an-sqlite-file)
 	     (md1b/select-gui (dialog tl-widget)
 			      (_ "Warning!")
@@ -229,7 +230,7 @@
 			      (lambda () (ktlw/no-db-mode tl-widget))
 			      'dialog-warning))
 	    ((opened opened-partial-schema opened-no-schema)
-	     (ktlw/open-db tl-widget db-file #f 'open open-at-startup open-db-checks-result))))
+	     (ktlw/open-db tl-widget db-file #f 'open open-at-startup checks-result db))))
 	(begin
 	  (ktlw/no-db-mode tl-widget)
 	  (emit (con-bt tl-widget) 'clicked)))))
@@ -266,12 +267,12 @@
 	       (kise/exit tl-widget)
 	       #t)) ;; stop the event propagation
     #;(connect (dialog tl-widget)
-	     'configure-event
-	     (lambda (widget event)
-	       (receive (win-coord? win-x win-y)
-		   (gdk-event-get-coords event)
-		 (dimfi win-x win-y))
-	       #f)) ;; do not stop the event propagation
+    'configure-event
+    (lambda (widget event)
+    (receive (win-coord? win-x win-y)
+    (gdk-event-get-coords event)
+    (dimfi win-x win-y))
+    #f)) ;; do not stop the event propagation
     (connect (con-bt tl-widget)
 	     'clicked
 	     (lambda (button)
@@ -454,7 +455,6 @@
 	     (lambda (combo)
 	       (if (gui-callback? tl-widget)
 		   (ktlw/filter-apply tl-widget 'force))))
-
     ;;
     ;; treeview
     ;; 
@@ -502,9 +502,12 @@
 
     (gtk2/set-sensitive `(,(reference-entry tl-widget)) #f)
     (show-all (dialog tl-widget))
-    (set-flags (date-edit tl-widget) '(show-time))
-    (set-flags (date-edit tl-widget) '())
-    (set-time (date-edit tl-widget) 0)
+    (if (aglobs/get 'debug)
+	(begin
+	  (set-flags (date-edit tl-widget) '(show-time))
+	  (set-flags (date-edit tl-widget) '())
+	  (set-time (date-edit tl-widget) 0))
+	(gtk2/hide `(,(date-edit tl-widget)))) ;; experimental stuff
     (gtk2/hide `(,(menubar tl-widget)
 		 ,(date-icon tl-widget)
 		 ;; ,(date-edit tl-widget) ;; experimental stuff

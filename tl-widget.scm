@@ -845,60 +845,83 @@
   ;;   b. that it is W_OK;
   ;;   c. that it is an sqlite db;
   ;;   d. which does have the kise schema
-  (cond ((not (access? db-file F_OK)) 'does-not-exist)
-	((not (access? db-file W_OK)) 'wrong-perm)
-	((not (sqlite/sqlite-db-file? db-file)) 'not-an-sqlite-file)
-	(else
-	 (let* ((db (db-con/open db-file))
-		(schema? (db/check-schema)))
-	   (case schema?
-	     ((complete) 'opened)
-	     ((partial) 'opened-partial-schema)
-	     ((none) 'opened-no-schema))))))
+  (let ((db #f))
+    (values (cond ((not (access? db-file F_OK)) 'does-not-exist)
+		  ((not (access? db-file W_OK)) 'wrong-perm)
+		  ((not (sqlite/sqlite-db-file? db-file)) 'not-an-sqlite-file)
+		  (else
+		   (set! db (db-con/open db-file #f))
+		   (case (db/check-schema db)
+		     ((complete) 'opened)
+		     ((partial) 'opened-partial-schema)
+		     ((none) 'opened-no-schema))))
+	    db)))
 
-(define (ktlw/post-open-db-ops tl-widget db-fname open-at-startup? ulogo)
+(define (ktlw/post-open-db-ops tl-widget db-fname open-at-startup? ulogo db)
   ;; the list-store related operations that needs to be done @
   ;; connection time is exactly what needs to be done when clearing a
   ;; filter _but_ (1) filling the combos _and_ (2) selecting the first
   ;; row [this is because filter-clear will try to (re)select the
   ;; row that was active before it's been called.
+  (db-con/set-db-con db (basename db-fname))
   (set! (active-filter tl-widget) #t)
   (set! (db-file tl-widget) db-fname)
   (ktlw/write-config tl-widget db-fname open-at-startup? ulogo)
   (set-markup (db-name-lb1 tl-widget)
 	      (format #f "<span foreground=\"#777777\"><b>[ ~A ]</b></span>" (basename db-fname)))
-
   (ktlw/filter-clear tl-widget 'fillcombos)
   (unless (= (current-row tl-widget) 0) (ktlw/select-row tl-widget 0)))
 
-(define (ktlw/open-db tl-widget db-file from-gui? mode open-at-startup? checks-result)
+(define (ktlw/open-db tl-widget db-file from-gui? mode open-at-startup? checks-result db)
+  ;; when basic checks passed, the schema is tested and for this the
+  ;; db is opened already: -> db [the argument] is either #f or a db
+  ;; connector
   (case mode
     ((open)
      (case checks-result
-       ((opened) (ktlw/post-open-db-ops tl-widget db-file open-at-startup? (kcfg/get 'ulogo)))
+       ((opened) (ktlw/post-open-db-ops tl-widget db-file open-at-startup? (kcfg/get 'ulogo) db))
        ((opened-partial-schema)
 	(md2b/select-gui (dialog tl-widget)
 			 (_ "Confirm dialog")
 			 (_ "Complete schema")
 			 (_ "This database has an incomplete Kisê schema, would you like to complete it now?")
 			 (lambda ()
-			   (db/complete-schema)
-			   (ktlw/post-open-db-ops tl-widget db-file open-at-startup? (kcfg/get 'ulogo)))
-			 (lambda () 'nothing)))
+			   (db/complete-schema db)
+			   (ktlw/post-open-db-ops tl-widget db-file open-at-startup? (kcfg/get 'ulogo) db))
+			 (lambda ()
+			   ;; Notes: [a] an open at start-up
+			   ;; incomplete schema db cancel operation
+			   ;; must set kisê to its no db mode; [b] a
+			   ;; connect to an incomplete schema db
+			   ;; cancel is ok, [dialogs closed, prev
+			   ;; connected db in use].
+			   (if (db-con)
+			       'nothing
+			       (ktlw/no-db-mode tl-widget))))
+	#f) ;;
        ((opened-no-schema)
 	(md2b/select-gui (dialog tl-widget)
 			 (_ "Confirm dialog")
 			 (_ "Add schema")
 			 (_ "This database does not contain the Kisê schema, would you like to add it now?")
 			 (lambda ()
-			   (db/add-schema)
-			   (ktlw/post-open-db-ops tl-widget db-file open-at-startup? (kcfg/get 'ulogo)))
-			 (lambda () 'nothing)))))
+			   (db/add-schema db)
+			   (ktlw/post-open-db-ops tl-widget db-file open-at-startup? (kcfg/get 'ulogo) db))
+			 (lambda ()
+			   ;; Notes: [a] an open at start-up no-schema
+			   ;; db is not possible; [b] a connect to a
+			   ;; no schema db cancel is ok [dialogs
+			   ;; closed, prev connected db in use].
+			   (if (db-con)
+			       'nothing
+			       (ktlw/no-db-mode tl-widget))))
+
+	#f)))
     ((create)
      ;; (format #t "ktlw/open-db: ~S ~S~%" mode db-file)
-     (db-con/open db-file)
-     (db/add-schema)
-     (ktlw/post-open-db-ops tl-widget db-file open-at-startup? (kcfg/get 'ulogo)))))
+     (let ((db (db-con/open db-file #f)))
+       (db/add-schema db)
+       (ktlw/post-open-db-ops tl-widget db-file open-at-startup? (kcfg/get 'ulogo) db)))))
 
 
 ;;;

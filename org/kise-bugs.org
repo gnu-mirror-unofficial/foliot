@@ -6,6 +6,30 @@
 
 ** Bugs
 
+*** CLOSED [[43] 3] destroy with parent does _not_ call the destroy-event callback
+CLOSED: [2013-11-05 Mon 13:07]
+- State "CLOSED"     from "OPEN"       [2013-11-04 Mon 13:07]
+
+this actually is a guile-gnome problem, I think, and common/gtk related problem
+[rather then kisê related], but I don't have a common-bugs.org file [yet].
+
+the common/gtk/glade file had all message dialogs [1, 2 and 3 buttons]
+'destroy-with-parent option set to true, which works fine _but_ guile-gnome [or
+is it gtk2] does not trigger the expected destroy-event signal.  this causes a
+bug in our code which expects the signal to unset a couple of things, including
+<md1[2|3]b-widget> instance pointers|variables.
+
+*** CLOSED [[42] 4] ktlw/open-db-checks should not set the global active db-con
+CLOSED: [2013-11-04 Mon 12:25]
+- State "CLOSED"     from "OPEN"       [2013-11-04 Mon 12:25]
+
+ktlw/open-db-checks _should_ call (db-con/open db-file #f), which prevents the
+global active db connector to be set.  indeed it should only be set if all
+checks passed: if the user cancel its connect operation in the middle [this is
+possible when the db he's opening has an old schema, in which case kisê opens a
+dialog and asks him if he wants to update it or not], then having set db-con [and
+not restoring the previous ative one] -> ERROR...
+
 *** CLOSED [[41] 4] sqlite/table-names, sqlite/table-exists?
 CLOSED: [2013-10-28 Mon 10:28]
 - State "CLOSED"     from "OPEN"       [2013-10-28 Mon 10:28]
@@ -170,10 +194,12 @@ row reselected, but content added and/or modified was lost.
 kise/on-tv-row-change added on all filter-* button 'clicked signals
 as already the case for printing, nav buttons ...
 
-*** OPEN [[22] 3] connect: database schema incomplete, cancel
+*** CLOSED [[22] 3] connect: database schema incomplete, cancel
+CLOSED: [2013-11-01 Fri 19:09]
+- State "CLOSED"     from "OPEN"       [2013-11-01 Fri 19:09]
 
-When the user tries to connect to another database, or if the schema needs to be
-upgraded [version upgrades] and if he cancels, we should leave kise
+When the user tries to connect to another database, that its schema needs to be
+upgraded, but cancels, -> bug
 
 *** CLOSED [[21] 3] gui - filter-clear not restoring gui-callback
 CLOSED: [2011-11-16 Wed 11:34]
