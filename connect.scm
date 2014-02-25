@@ -92,7 +92,8 @@ create/connect to another Kisê database.
 	 (filename (get-filename kc-dialog))
 	 (reuse-db? (get-active (reuse-db-cb kc-widget)))
 	 (active-db-file (kcfg/get 'db-file)))
-    (if (string=? filename active-db-file)
+    (if (and active-db-file
+	     (string=? filename active-db-file))
 	(md1b/select-gui (dialog kc-widget)
 			 (_ "Information")
 			 (_ "Db already in use:")

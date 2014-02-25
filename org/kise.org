@@ -33,6 +33,7 @@ let the user select its perefered colour for each of his imported databases.
 
 ** Other important stuff
 
+*** TODO hidding the preferences button untill further developped
 *** TODO import.scm need to check multiple imported fields are all properly handled
 
 goops implementation is a nightmare.  it does not re-export accessor per

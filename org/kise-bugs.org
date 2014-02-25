@@ -6,6 +6,23 @@
 
 ** Bugs
 
+*** CLOSED [[45] 4] sys/write-config: creating kise.conf fails
+CLOSED: [2014-02-24 Mon 15:48]
+- State "CLOSED"     from "OPEN"       [2014-02-24 Mon 15:48]
+
+creating kise.conf [in ~user/.config] failed due to a wrong filename permission
+check.  now changed to 'if the file exists, it must be writable, otherwise the
+parent directory must be writable'.
+
+*** CLOSED [[44] 4] connect: no active-db [no .conf/kise.conf]
+CLOSED: [2014-02-24 Mon 15:38]
+- State "CLOSED"     from "OPEN"       [2014-02-24 Mon 15:38]
+
+when no active-db [no .config/kise.conf], creating opening a db raised a bug,
+recently 'introduced', while rewriting kc/connect [did miss to check
+active-db-file not being false before comparing it with other values, was tired
+i guess :)]
+
 *** CLOSED [[43] 3] destroy with parent does _not_ call the destroy-event callback
 CLOSED: [2013-11-05 Mon 13:07]
 - State "CLOSED"     from "OPEN"       [2013-11-04 Mon 13:07]
