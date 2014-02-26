@@ -470,6 +470,7 @@
   (let* ((today (date/system-date))
 	 (iso-today (date/iso-date today))
 	 (date (date/iso-date (db-kise/get tuple 'date_)))
+	 (username (sys/get 'uname))
 	 (who (str/prep-str-for-sql (db-kise/get tuple 'who))))
     (db-kise/add date
 		 who
@@ -479,9 +480,9 @@
 		 (db-kise/get tuple 'to_be_charged)
 		 (str/prep-str-for-sql (db-kise/get tuple 'description))
 		 iso-today
-		 who
+		 username
 		 iso-today
-		 who
+		 username
 		 -1
 		 -1)))
 

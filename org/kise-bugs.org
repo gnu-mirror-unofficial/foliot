@@ -6,6 +6,13 @@
 
 ** Bugs
 
+*** CLOSED [[46] 4] duplicate: ctreated_by, modified_by now correct
+CLOSED: [2014-02-26 Wed 19:34]
+- State "CLOSED"     from "OPEN"       [2014-02-26 Wed 19:34]
+
+until this fix, a duplicated record was setting the created_by, modified_by
+value as of 'who' instead of the username.
+
 *** CLOSED [[45] 4] sys/write-config: creating kise.conf fails
 CLOSED: [2014-02-24 Mon 15:48]
 - State "CLOSED"     from "OPEN"       [2014-02-24 Mon 15:48]
