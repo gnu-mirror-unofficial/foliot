@@ -108,6 +108,7 @@
 (define row #f)
 (define iter #f)
 (define gdedit #f)
+(define tuples #f)
 (define tuple #f)
 (define ref-lb #f)
 (define duration #f)
@@ -120,6 +121,7 @@
   (set! row (current-row tl-widget))
   (set! iter (current-iter tl-widget))
   (set! gdedit (date-edit tl-widget))
+  (set! tuples (db-tuples tl-widget))
   (set! tuple (ktlw/get-tuple tl-widget row))
   (set! duration (duration-sb tl-widget))
   (set! ref-lb (reference-lb tl-widget)))
@@ -205,6 +207,20 @@
 	    (set-focus main-window (date-entry tl-widget))
 	    (set-focus main-window (description-entry tl-widget)))))))
 
+(define (key-press-callback window event)
+  (format #t "Key press event:
+    Window: ~S
+     Event: ~S
+      Type: ~S
+ Key value: ~S
+  Key name: ~S~%"
+	  window 
+	  event
+	  (gdk-event:type event)
+	  (gdk-event-key:keyval event)
+	  (gdk-keyval-name (gdk-event-key:keyval event))
+	  ))
+
 
 ;;;
 ;;; Animate GUI
@@ -273,6 +289,17 @@
     (gdk-event-get-coords event)
     (dimfi win-x win-y))
     #f)) ;; do not stop the event propagation
+    (connect (dialog tl-widget)
+	     'key-press-event
+	     (lambda (window event)
+	       ;; (key-press-callback window event)
+	       (if (and (eq? (get-focus window) (tv tl-widget))
+			(string-ci=? (gdk-keyval-name (gdk-event-key:keyval event)) "delete"))
+		   (begin
+		     (ktlw/delete tl-widget)
+		     #t) ;; do not propagate the event further to inner widgets
+		   #f))) ;; do propagate the event to inner widgets
+
     (connect (con-bt tl-widget)
 	     'clicked
 	     (lambda (button)
@@ -510,7 +537,8 @@
 	(gtk2/hide `(,(date-edit tl-widget)))) ;; experimental stuff
     (gtk2/hide `(,(menubar tl-widget)
 		 ,(date-icon tl-widget)
-		 ;; ,(date-edit tl-widget) ;; experimental stuff
+		 ,(get-widget (xml-code tl-widget) "kise/mb_sep3")
+		 ,(prefs-bt tl-widget)
 		 ,(get-widget (xml-code tl-widget) "kise/idb_tb2")
 		 ,(get-widget (xml-code tl-widget) "kise/idb_bt2")
 		 ,(get-widget (xml-code tl-widget) "kise/nav_tb_1")

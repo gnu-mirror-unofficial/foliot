@@ -33,7 +33,10 @@ let the user select its perefered colour for each of his imported databases.
 
 ** Other important stuff
 
-*** TODO hidding the preferences button untill further developped
+*** TODO delete: binding the delete key to remove row
+*** DONE hidding the preferences button untill further developped
+CLOSED: [2014-02-25 Tue 17:03]
+- State "DONE"       from "TODO"       [2014-02-25 Tue 17:03]
 *** TODO import.scm need to check multiple imported fields are all properly handled
 
 goops implementation is a nightmare.  it does not re-export accessor per

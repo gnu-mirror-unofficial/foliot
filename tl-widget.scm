@@ -90,6 +90,7 @@
 	   next-bt
 	   last-bt
 	   ;; help-bt
+	   prefs-bt
 
 	   reference-lb
 	   reference-entry
@@ -248,6 +249,7 @@
   (next-bt :accessor next-bt :init-keyword :next-bt :init-value #f)
   (last-bt :accessor last-bt :init-keyword :last-bt :init-value #f)
   (help-bt :accessor help-bt :init-keyword :help-bt :init-value #f)
+  (prefs-bt :accessor prefs-bt :init-keyword :prefs-bt :init-value #f)
 
   (reference-lb :accessor reference-lb :init-keyword :reference-lb :init-value #f)
   (reference-entry :accessor reference-entry :init-keyword :reference-entry :init-value #f)
@@ -1120,6 +1122,7 @@ filter date: ~S~%"
 		      :next-bt (get-widget xmlc "kise/next_bt")
 		      :last-bt (get-widget xmlc "kise/last_bt")
 		      ;; :help-bt (get-widget xmlc "kise/help_bt")
+		      :prefs-bt (get-widget xmlc "kise/prefs_bt")
 		      :reference-lb (get-widget xmlc "kise/reference_lb")
 		      :reference-entry (get-widget xmlc "kise/reference_entry")
 		      :reference-eb (get-widget xmlc "kise/reference_eb")
