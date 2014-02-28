@@ -1,6 +1,6 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012, 2013
+;;;; Copyright (C) 2011, 2012, 2013, 2014
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -207,20 +207,6 @@
 	    (set-focus main-window (date-entry tl-widget))
 	    (set-focus main-window (description-entry tl-widget)))))))
 
-(define (key-press-callback window event)
-  (format #t "Key press event:
-    Window: ~S
-     Event: ~S
-      Type: ~S
- Key value: ~S
-  Key name: ~S~%"
-	  window 
-	  event
-	  (gdk-event:type event)
-	  (gdk-event-key:keyval event)
-	  (gdk-keyval-name (gdk-event-key:keyval event))
-	  ))
-
 
 ;;;
 ;;; Animate GUI
@@ -283,22 +269,24 @@
 	       (kise/exit tl-widget)
 	       #t)) ;; stop the event propagation
     #;(connect (dialog tl-widget)
-    'configure-event
-    (lambda (widget event)
-    (receive (win-coord? win-x win-y)
-    (gdk-event-get-coords event)
-    (dimfi win-x win-y))
-    #f)) ;; do not stop the event propagation
+	     'configure-event
+	     (lambda (widget event)
+	       (receive (win-coord? win-x win-y)
+		   (gdk-event-get-coords event)
+		 (dimfi win-x win-y))
+	       #f)) ;; do not stop the event propagation
     (connect (dialog tl-widget)
 	     'key-press-event
 	     (lambda (window event)
-	       ;; (key-press-callback window event)
-	       (if (and (eq? (get-focus window) (tv tl-widget))
-			(string-ci=? (gdk-keyval-name (gdk-event-key:keyval event)) "delete"))
-		   (begin
-		     (ktlw/delete tl-widget)
-		     #t) ;; do not propagate the event further to inner widgets
-		   #f))) ;; do propagate the event to inner widgets
+	       #;(display-key-press-infos window event)
+	       (receive (has-focus key-val key-name)
+		   (get-key-press-infos window event)
+		 (if (and (eq? has-focus (tv tl-widget))
+			  (string-ci=? key-name "delete"))
+		     (begin
+		       (ktlw/delete tl-widget)
+		       #t) ;; stops the event propagation
+		     #f)))) ;; do not stop the event propagation
 
     (connect (con-bt tl-widget)
 	     'clicked

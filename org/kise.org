@@ -33,7 +33,9 @@ let the user select its perefered colour for each of his imported databases.
 
 ** Other important stuff
 
-*** TODO delete: binding the delete key to remove row
+*** DONE delete: binding the delete key to remove row
+CLOSED: [2014-02-27 Thu 16:02]
+- State "DONE"       from "TODO"       [2014-02-27 Thu 16:02]
 *** DONE hidding the preferences button untill further developped
 CLOSED: [2014-02-25 Tue 17:03]
 - State "DONE"       from "TODO"       [2014-02-25 Tue 17:03]
@@ -140,8 +142,6 @@ CLOSED: [2011-12-23 Fri 15:36]
 - State "DONE"       from "TODO"       [2011-12-23 Fri 15:36]
 
 *** TODO setting G_FILENAME_ENCODING [see doc p 364]
-
-*** TODO programming a preferences dialog
 
 *** TODO programming an undo system
 

@@ -6,7 +6,7 @@
 
 ** Bugs
 
-*** CLOSED [[46] 4] duplicate: ctreated_by, modified_by now correct
+*** CLOSED [[46] 4] duplicate: created_by, modified_by now correct
 CLOSED: [2014-02-26 Wed 19:34]
 - State "CLOSED"     from "OPEN"       [2014-02-26 Wed 19:34]
 
