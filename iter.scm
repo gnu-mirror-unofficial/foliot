@@ -1,6 +1,6 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012
+;;;; Copyright (C) 2011, 2012, 2013
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -24,58 +24,61 @@
 ;;; Code:
 
 (define-module (kise iter)
-  ;; guile/guile-gnome
   :use-module (oop goops)
   :use-module (gnome gtk)
-  :export (kiseiter/get
-	   kiseiter/set
-	   kiseiter/append-fill
-	   kiseiter/prepend-fill))
+  :export (kiter/get
+	   kiter/set
+	   kiter/append-fill
+	   kiter/prepend-fill))
 
-(define kiseiter/get-pos #f)
-(define kiseiter/get #f)
-(define kiseiter/set #f)
+(define kiter/get-pos #f)
+(define kiter/get #f)
+(define kiter/set #f)
 
 (eval-when (compile load eval)
-  (let ((offsets '((date . 0)
-		   (date_ . 0)
-		   (who . 1)
-		   (for-whom . 2)
-		   (for_whom . 2)
-		   (duration . 3)
-		   (to-be-charged . 4)
-		   (to_be_charged . 4)
-		   (what . 5))))
-    (set! kiseiter/get-pos
+  (let ((offsets '((icolour . 0)
+		   (date . 1)
+		   (date_ . 1)
+		   (who . 2)
+		   (for-whom . 3)
+		   (for_whom . 3)
+		   (duration . 4)
+		   (to-be-charged . 5)
+		   (to_be_charged . 5)
+		   (what . 6)
+		   (rowbg . 7)
+		   (rowfg . 8)
+		   (ibg . 9)
+		   (ifg . 10))))
+    (set! kiter/get-pos
 	  (lambda (what) (cdr (assoc what offsets))))
-    (set! kiseiter/get
+    (set! kiter/get
 	  (lambda (what model iter)
-	    (get-value model iter (kiseiter/get-pos what))))
-    (set! kiseiter/set
+	    (get-value model iter (kiter/get-pos what))))
+    (set! kiter/set
 	  (lambda (what model iter value)
-	    ;; (format #t "offset: ~S~%" (cdr (assoc what offsets)))
-	    (set-value model iter (kiseiter/get-pos what) value)))
-    ))
+	    (set-value model iter (kiter/get-pos what) value)))))
 
-(define (kiseiter/append-fill model date who for-whom duration to-be-charged what)
+(define (kiter/fill-next model iter date who for-whom duration to-be-charged what ibg ifg)
+  (kiter/set 'date model iter date)
+  (kiter/set 'who model iter who)
+  (kiter/set 'for-whom model iter for-whom)
+  (kiter/set 'duration model iter duration)
+  (kiter/set 'to-be-charged model iter to-be-charged)
+  (kiter/set 'what model iter what)
+  (kiter/set 'rowbg model iter #f)
+  (kiter/set 'rowfg model iter #f)
+  (kiter/set 'ibg model iter ibg)
+  (kiter/set 'ifg model iter ifg)
+  iter)
+
+(define (kiter/append-fill model date who for-whom duration to-be-charged what ibg ifg)
   (let ((iter (gtk-list-store-append model)))
-    (kiseiter/set 'date model iter date)
-    (kiseiter/set 'who model iter who)
-    (kiseiter/set 'for-whom model iter for-whom)
-    (kiseiter/set 'duration model iter duration)
-    (kiseiter/set 'to-be-charged model iter to-be-charged)
-    (kiseiter/set 'what model iter what)
-    iter))
+    (kiter/fill-next model iter date who for-whom duration to-be-charged what ibg ifg)))
 
-(define (kiseiter/prepend-fill model date who for-whom duration to-be-charged what)
+(define (kiter/prepend-fill model date who for-whom duration to-be-charged what ibg ifg)
   (let ((iter (gtk-list-store-prepend model)))
-    (kiseiter/set 'date model iter date)
-    (kiseiter/set 'who model iter who)
-    (kiseiter/set 'for-whom model iter for-whom)
-    (kiseiter/set 'duration model iter duration)
-    (kiseiter/set 'to-be-charged model iter to-be-charged)
-    (kiseiter/set 'what model iter what)
-    iter))
+    (kiter/fill-next model iter date who for-whom duration to-be-charged what ibg ifg)))
 
 
 #!

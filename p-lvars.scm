@@ -1,6 +1,6 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012
+;;;; Copyright (C) 2011, 2012, 2013
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -42,12 +42,6 @@
   :use-module (kise p-common)
   :use-module (kise p-dialog)
 
-  :duplicates (merge-generics 
-	       replace
-	       warn-override-core
-	       warn
-	       last)
-
   :export (kp/write-local-variables))
 
 
@@ -71,7 +65,7 @@
   \\def\\tsreporttext{~A}
   \\def\\referencetext{~A}
 
-  \\def\\klheader{~A}
+  ~A
 
   \\def\\klfooter{~A}
   \\def\\krfooter{~A}
@@ -81,6 +75,12 @@
 ;;;
 ;;; API
 ;;;
+
+(define (kp/write-logo-tex-code ostream ulogo)
+  (if ulogo
+      (format #f "\\def\\klheaderlogo{\\includegraphics[keepaspectratio=true,height=26mm,width=65mm]{~A}}" ulogo)
+      ;; (format #f "\\def\\klheaderlogo{\\includegraphics[height=26mm]{~A}}" ulogo)
+      (format #f "\\def\\klheader{\\klabel{~A}\\\\~~\\\\~~\\\\}" (_ "Your logo here"))))
 
 (define (kp/write-local-variables tex-files)
   (let* ((date (sys/date)) ;; will check but should use the locale
@@ -95,9 +95,7 @@
 		  (_ "Time Keeping Report")
 		  (_ "reference")
 		  ;; left header
-		  (if ulogo
-		      (format #f "\\includegraphics[height=26mm]{~A}" ulogo)
-		      (format #f "\\klabel{~A}\\\\~~\\\\~~\\\\" (_ "Your logo here")))
+		  (kp/write-logo-tex-code ostream ulogo)
 		  ;; right header
 		  ;;   this field is defined in draft-command
 		  ;; footer

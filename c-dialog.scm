@@ -1,6 +1,6 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012
+;;;; Copyright (C) 2011, 2012, 2013
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -38,7 +38,8 @@
   ;; kise
   :use-module (kise colours) ;; <- later use aglobs/set/get and delete this file
 
-  :export (kc/make-dialog
+  :export (kc/close-dialog
+	   kc/make-dialog
 	   <kc/widget>
 	   dialog
 	   mode
@@ -47,11 +48,16 @@
 	   cancel-bt))
 
 
-;;;
-;;; Globals
-;;;
-
 (define *kc-widget* #f)
+
+(define (kc/close-dialog kc-dialog)
+  (destroy kc-dialog)
+  (set! *kc-widget* #f))
+
+#!
+(set-modal kc-dialog #f)
+(hide kc-dialog)
+!#
 
 
 ;;;
@@ -81,7 +87,7 @@
 			  :reuse-db-cb (get-widget xmlc "kc/reuse_db_cb")
 			  :ok-bt (get-widget xmlc "kc/ok_bt")
 			  :cancel-bt (get-widget xmlc "kc/cancel_bt"))))
-	(modify-bg (get-widget xmlc "kc/eventbox") 'normal *kc/dialog-title-eb-bg*)
+	(modify-bg (get-widget xmlc "kc/eventbox") 'normal *dialog-title-eb-bg*)
 	(when parent (set-transient-for widget parent))
 	(kc/translate kc-widget)
 
@@ -89,14 +95,12 @@
 		 'destroy-event
 		 (lambda (widget event)
 		   (set! *kc-widget* #f)
-		   #f
-		   ))
+		   #f))
 	(connect (dialog kc-widget)
 		 'delete-event
 		 (lambda (widget event)
 		   (set! *kc-widget* #f)
-		   #f
-		   ))
+		   #f))
 	(connect (select-rb kc-widget)
 		 'toggled
 		 (lambda (widget)

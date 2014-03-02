@@ -1,6 +1,6 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012
+;;;; Copyright (C) 2011, 2012, 2013
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -31,6 +31,7 @@
 
   :export (db-con
 	   db-name
+	   db-con/set-db-con
 	   db-con/open
 	   db-con/close
 	   
@@ -52,23 +53,25 @@
 (define (db-name)
   (aglobs/get 'db-name))
 
+(define (db-con/set-db-con db db-name)
+  (let ((pcre-lib-ext "/usr/lib/sqlite3/pcre.so"))
+    (aglobs/set 'db-con db)
+    (aglobs/set 'db-name db-name)
+    (when (access? pcre-lib-ext R_OK)
+      (sqlite-enable-load-extension db 1)
+      (sqlite/query db (format #f "~?" (db-con/load-pcre-ext-str) (list pcre-lib-ext)))
+      (sqlite-enable-load-extension db 0) ;; avoiding security holes
+      (aglobs/set 'db-pcre #t))))
+
 (define (db-con/load-pcre-ext-str)
   "select load_extension('~A')")
 
 (define* (db-con/open filename #:optional (set-db-con? #t))
   (let ((db-name (basename filename))
-	(db (sqlite-open filename)) ;; 6
-	(pcre-lib-ext "/usr/lib/sqlite3/pcre.so"))
+	(db (sqlite-open filename))) ;; 6
     (if db
 	(begin
-	  (when set-db-con?
-	    (aglobs/set 'db-con db)
-	    (aglobs/set 'db-name db-name)
-	    (when (access? pcre-lib-ext R_OK)
-	      (sqlite-enable-load-extension db 1)
-	      (sqlite/query db (format #f "~?" (db-con/load-pcre-ext-str) (list pcre-lib-ext)))
-	      (sqlite-enable-load-extension db 0) ;; avoiding security holes
-	      (aglobs/set 'db-pcre #t)))
+	  (when set-db-con? (db-con/set-db-con db db-name))
 	  db)
 	#f)))
 

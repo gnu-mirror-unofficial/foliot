@@ -1,6 +1,6 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012
+;;;; Copyright (C) 2011, 2012, 2013
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -44,12 +44,6 @@
   :use-module (kise p-draft)
   :use-module (kise p-commercial)
 
-  :duplicates (merge-generics 
-	       replace
-	       warn-override-core
-	       warn
-	       last)
-
   :export (kp/print))
 
 
@@ -66,8 +60,7 @@
       ((draft)
        (kp/print-draft kp/widget tl-widget tex-files))
       ((commercial)
-       (kp/print-commercial kp/widget tl-widget tex-files))
-      )))
+       (kp/print-commercial kp/widget tl-widget tex-files)))))
 
 
 ;;;
@@ -84,15 +77,12 @@
 				((commercial)
 				 (format #f "kise-~A-commercial.pdf" n-file)))))
 	  (unless (access? pdf-dir F_OK) (mkdir pdf-dir))
-	  (let ((pdf-filename (prompt-for-file-name (dialog kp/widget)
-						    (_ "Save as ...")
-						    'save
-						    pdf-dir
-						    proposed-name
-						    )))
-	    (unless (or (eq? pdf-filename 'cancel)
-			(eq? pdf-filename 'delete))
-	      (kp/print-1 kp/widget tl-widget pdf-filename))))
+	  (let ((pdf-filename (prompt-for-filename (dialog kp/widget)
+						   (_ "Save as ...")
+						   'save
+						   pdf-dir
+						   proposed-name)))
+	    (if pdf-filename (kp/print-1 kp/widget tl-widget pdf-filename))))
      (kp/print-1 kp/widget tl-widget #f))))
 
 

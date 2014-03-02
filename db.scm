@@ -1,6 +1,6 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012
+;;;; Copyright (C) 2011, 2012, 2013
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -35,8 +35,8 @@
   ;; kise
   :use-module (kise db-con)
   :use-module (kise db-kise)
-  :use-module (kise db-printing-templates)
   :use-module (kise db-imported-db)
+  :use-module (kise db-printing-templates)
 
   :export (db/add-schema
 	   db/check-schema
@@ -46,36 +46,38 @@
 (eval-when (compile load eval)
   (re-export-public-interface (kise db-con)
 			      (kise db-kise)
-			      (kise db-printing-templates)
-			      (kise db-imported-db)))
+			      (kise db-imported-db)
+			      (kise db-printing-templates)))
 
 
 ;;;
 ;;; Schema
 ;;;
 
-(define (db/add-schema)
-  (db-kise/add-kise-table)
-  (db-pt/add-printing-templates-table)
-  (db-idb/add-imported-db-table))
+(define (db/add-schema db)
+  (db-kise/add-kise-table db)
+  (db-pt/add-printing-templates-table db)
+  (db-idb/add-imported-db-table db))
 
-(define (db/check-schema)
-  (let* ((db (db-con))
-	 (kise? (sqlite/table-exists? db "kise"))
-	 (kise-printing-templates? (sqlite/table-exists? db "kise_printing_templates"))
-	 (kise-imported-db? (sqlite/table-exists? db "kise_imported_db")))
-    (cond ((and kise? kise-printing-templates? kise-imported-db?)
-	   ;; 'complete but we should still check the defs, todo.
+(define (db/check-schema db)
+  (let ((kise? (sqlite/table-exists? db "kise"))
+	(kise-printing-templates? (sqlite/table-exists? db "kise_printing_templates"))
+	(kise-imported-db? (db-idb/check-schema db)))
+    (cond ((and kise? ;; not good yet we should still check the defs
+		kise-printing-templates? ;; not good yet we should still check the defs
+		(eq? kise-imported-db? 'complete))
 	   'complete)
-	  ((or kise? kise-printing-templates? kise-imported-db?) 'partial)
+	  ((or kise?
+	       kise-printing-templates?
+	       (eq? kise-imported-db? 'partial))
+	   'partial)
 	  (else
 	   'none))))
 
-(define (db/complete-schema)
-  (let ((db (db-con)))
-    (db-kise/create-complete-table)
-    (db-pt/create-complete-table)
-    (db-idb/create-complete-table)))
+(define (db/complete-schema db)
+  (db-kise/create-complete-table db)
+  (db-pt/create-complete-table db)
+  (db-idb/create-complete-table db))
 
 
 #!

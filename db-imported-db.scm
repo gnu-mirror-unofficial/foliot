@@ -1,6 +1,6 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012
+;;;; Copyright (C) 2011, 2012, 2013
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -26,6 +26,7 @@
 (define-module (kise db-imported-db)
   ;; guile
   :use-module (ice-9 format)
+  :use-module (srfi srfi-1)
 
   ;; common
   :use-module (macros reexport)
@@ -35,12 +36,14 @@
   :use-module (system i18n)
   :use-module (system aglobs)
   :use-module (strings strings)
+  :use-module (gtk colours)
 
   ;; kise
   :use-module (kise globals)
   :use-module (kise db-con)
 
   :export (db-idb/add-imported-db-table
+	   db-idb/check-schema
 	   db-idb/create-complete-table
 	   db-idb/select-all
 	   db-idb/select-some
@@ -51,8 +54,10 @@
 	   db-idb/find-pos
 	   db-idb/get-next-id
 	   db-idb/add
-	   db-idb/duplicate
-	   db-idb/delete))
+	   db-idb/delete
+	   db-idb/get-used-colour-set-ids
+	   db-idb/get-unused-colour-set-ids
+	   db-idb/get-colour-alist))
 
 
 (eval-when (compile load eval)
@@ -68,6 +73,48 @@
 
 
 ;;;
+;;; Globals
+;;;
+
+(define (db-idb/fields)
+  (let ((sep "."))
+    (format #f "id,
+   name,
+   strftime('%d~A%m~A%Y', imported_the, 'unixepoch'),
+   imported_by,
+   colour_set"
+	    sep sep)))
+
+
+;;;
+;;; Attr pos, get, set
+;;;
+
+(define (db-idb/fields-offsets)
+  '((id . 0)
+    (name . 1) ;; it actually is the filename
+    (filename . 1)
+    (imported_the . 2)
+    (imported_by . 3)
+    (colour_set . 4)))
+
+(define (db-idb/get-pos what)
+  (assq-ref (db-idb/fields-offsets) what))
+
+(define (db-idb/get db-tuple what)
+  ;; db-tuple is a vector
+  (vector-ref db-tuple (db-idb/get-pos what)))
+
+(define (db-idb/set db-tuple what value)
+  ;; db-tuple is a vector
+  (vector-set! db-tuple (db-idb/get-pos what) value))
+
+(define (db-idb/get-tuple tuples offset)
+  ;; so far, tuples is a list
+  (list-ref tuples offset))
+
+
+;;;
 ;;; Create table
 ;;;
 
@@ -76,17 +123,33 @@
      id               integer primary key not null,
      name             text,
      imported_the     integer,
-     imported_by      text
+     imported_by      text,
+     colour_set       integer
 );")
 
-(define (db-idb/add-imported-db-table)
-  (sqlite/command (db-con) 
-		  (db-idb/add-imported-db-table-str)))
+(define (db-idb/add-imported-db-table db)
+  (sqlite/command db (db-idb/add-imported-db-table-str)))
 
-(define (db-idb/create-complete-table)
-  (let* ((db (db-con))
-	 (exists? (sqlite/table-exists? db "kise_imported_db")))
-   (unless exists? (db-idb/add-imported-db-table))))
+(define (db-idb/check-schema db)
+  ;; 'none, 'partial, 'complete
+  (if (sqlite/table-exists? db "kise_imported_db")
+      (let* ((table-info (sqlite/table-info db "kise_imported_db"))
+	     (cols-nb (length table-info)))
+	(cond ((= cols-nb 4) ;; colour_set column added - 2013/07/29
+	       'partial)
+	      ((= cols-nb 5)
+	       'complete)))
+      'none))
+
+(define (db-idb/create-complete-table db)
+  (if (sqlite/table-exists? db "kise_imported_db")
+      ;; colour_set columns added - 2013/07/29
+      (let* ((table-info (sqlite/table-info db "kise_imported_db"))
+	     (cols-nb (length table-info)))
+	(if (= cols-nb 4)
+	    (begin
+	      (sqlite/add-column db "kise_imported_db" "colour_set integer"))))
+      (db-idb/add-imported-db-table db)))
 
 
 ;;;
@@ -108,8 +171,16 @@
      from kise_imported_db
  order by name;")
 
-(define (db-idb/select-all)
-  (sqlite/query (db-con) (db-idb/select-all-str)))
+(define (db-idb/select-all-for-display-str)
+  "select ~A
+     from kise_imported_db
+ order by name;")
+
+(define* (db-idb/select-all #:optional (display? #f))
+  (if display?
+      (sqlite/query (db-con) (format #f "~?" (db-idb/select-all-for-display-str)
+				     (list (db-idb/fields))))
+      (sqlite/query (db-con) (db-idb/select-all-str))))
 
 (define (db-idb/select-some-str)
   "select *
@@ -122,40 +193,15 @@
 		(format #f "~?" (db-idb/select-some-str)
 			(list where))))
 
-;;;
-;;; Attr pos
-;;;
-
-(define (db-idb/fields-offsets)
-  '((id . 0)
-    (name . 1)
-    (imported_the . 2)
-    (imported_by . 3)))
-
-(define (db-idb/get-pos what)
-  (cdr (assoc what (db-idb/fields-offsets))))
-
-
-;;;
-;;; Later a global API
-;;;
-
-(define (db-idb/get db-tuple what)
-  ;; db-tuple is a vector
-  (vector-ref db-tuple (db-idb/get-pos what)))
-
-(define (db-idb/set db-tuple what value)
-  ;; db-tuple is a vector
-  (vector-set! db-tuple (db-idb/get-pos what) value))
-
-(define (db-idb/get-tuple tuples offset)
-  ;; so far, tuples is a list
-  (list-ref tuples offset))
-
 
 ;;;
 ;;; Updates
 ;;;
+
+(define (db-idb/set-date-str)
+  "update kise_imported_db
+      set ~A = strftime('%s','~A')
+    where id = '~A';")
 
 (define (db-idb/set-str)
   "update kise_imported_db
@@ -165,11 +211,14 @@
 (define (db-idb/update db-tuple what value . displayed-value)
   (let* ((id (db-idb/get db-tuple 'id))
 	 (sql-value (case what
-		      ((name) (str/prep-str-for-sql value))
+		      ((filename) (str/prep-str-for-sql value))
 		      (else
 		       value)))
-	 (cmd (format #f "~?" (db-idb/set-str) (list what sql-value id))))
-    ;; (format #t "~S~%Displayed value: ~S~%" cmd displayed-value)
+	 (sql-str (case what
+		    ((imported_the) (db-idb/set-date-str))
+		    (else
+		     (db-idb/set-str))))
+	 (cmd (format #f "~?" sql-str (list what sql-value id))))
     (sqlite/command (db-con) cmd)
     (if (null? displayed-value)
 	(db-idb/set db-tuple what value)
@@ -193,7 +242,7 @@
 
 
 ;;;
-;;; Add / Dupplcate
+;;; Add
 ;;;
 
 (define (db-idb/get-next-id-str)
@@ -207,14 +256,22 @@
     (if value (1+ value) 0)))
 
 (define (db-idb/add-str)
-  "insert into kise_imported_db (id, name, imported_the, imported_by)
-   values ('~A', '~A', strftime('%s','~A'), '~A');")
+  "insert into kise_imported_db (id,
+                                 name,
+                                 imported_the,
+                                 imported_by,
+                                 colour_set)
+   values ('~A',
+           '~A',
+           strftime('%s', '~A'),
+           '~A',
+           '~A');")
 
-(define (db-idb/add name date who)
-  (let* ((next-id (db-idb/get-next-id))
+(define* (db-idb/add filename date who cs-id #:optional (id #f))
+  (let* ((next-id (or id (db-idb/get-next-id)))
 	 (insert (format #f "~?" (db-idb/add-str)
-			 (list next-id name date who))))
-    ;; (format #t "~S~%" insert)
+			 (list next-id filename date who cs-id))))
+    ;; (dimfi insert)
     (sqlite/command (db-con) insert)
     next-id))
 
@@ -233,16 +290,37 @@
 			  (list reference))))
 
 
+;;;
+;;; Other
+;;;
+
+(define (db-idb/get-used-colour-set-ids)
+  (filter-map (lambda (tuple) (db-idb/get tuple 'colour_set)) (db-idb/select-all)))
+
+(define (db-idb/get-unused-colour-set-ids)
+  (lset-difference = (colour-set-ids) (db-idb/get-used-colour-set-ids)))
+
+(define (db-idb/get-colour-alist)
+  (let ((alist (list)))
+    (for-each (lambda (tuple)
+		(let* ((id (db-idb/get tuple 'id))
+		       (ics (db-idb/get tuple 'colour_set))
+		       (ibg (colour-set-bg ics))
+		       (ifg (colour-set-fg ics)))
+		  (set! alist (assoc-set! alist id (cons ibg ifg)))))
+	(db-idb/select-all))
+    alist))
+
+
 #!
 
 (use-modules (kise db-imported-db))
 (reload-module (resolve-module '(kise db-imported-db)))
 
-(db-con/open "/usr/alto/db/sqlite.alto.david.db")
+(db-con/open "/usr/alto/db/sqlite.alto.tests.db")
 (db-idb/select-all)
 
-(db-idb/add "sqlite.alto.christian.db" "2011-06-14" "david")
-
-(db-idb/select-some "name = 'sqlite.alto.christian.db'")
+(db-idb/add "/usr/alto/db/sqlite.alto.christian.db" "2011-06-14" "david")
+(db-idb/select-some "name like '%sqlite.alto.christian.db'")
 
 !#

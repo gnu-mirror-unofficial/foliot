@@ -1,6 +1,6 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012
+;;;; Copyright (C) 2011, 2012, 2013, 2014
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -32,6 +32,7 @@
   :use-module (gnome gobject)
   :use-module (gnome gtk)
   :use-module (gnome gtk gdk-event)
+  :use-module (gnome gnome-ui)
 
   ;; common
   :use-module (macros reexport)
@@ -51,23 +52,19 @@
   :use-module (kise iter)
   :use-module (kise tl-widget)
   :use-module (kise connect)
+  :use-module (kise import)
   :use-module (kise print)
-
-  :duplicates (merge-generics 
-	       replace
-	       warn-override-core
-	       warn
-	       last)
 
   :export (*tl-widget*
 	   kise/animate-ui
 	   kise/set-debug-variables ;; debug mode
-	   tl-widget
+	   tl-widget ;; debug
 	   model
 	   treeview
 	   selection
 	   row
 	   iter
+	   gdedit
 	   tuple))
 
 
@@ -75,6 +72,8 @@
   (re-export-public-interface (oop goops)
 			      (gnome gobject)
 			      (gnome gtk)
+			      (gnome gtk gdk-event)
+			      (gnome gnome-ui)
 			      ;; common
 			      (system dates)
 			      (system i18n)
@@ -89,6 +88,7 @@
 			      (kise iter)
 			      (kise tl-widget)
 			      (kise connect)
+			      (kise import)
 			      (kise print))
   (textdomain "kise")
   (bindtextdomain "kise" (aglobs/get 'pofdir)))
@@ -107,7 +107,11 @@
 (define selection #f)
 (define row #f)
 (define iter #f)
+(define gdedit #f)
+(define tuples #f)
 (define tuple #f)
+(define ref-lb #f)
+(define duration #f)
 
 (define (kise/set-debug-variables)
   (set! tl-widget *tl-widget*)
@@ -116,7 +120,12 @@
   (set! selection (tv-sel tl-widget))
   (set! row (current-row tl-widget))
   (set! iter (current-iter tl-widget))
-  (set! tuple (ktlw/get-tuple tl-widget row)))
+  (set! gdedit (date-edit tl-widget))
+  (set! tuples (db-tuples tl-widget))
+  (set! tuple (ktlw/get-tuple tl-widget row))
+  (set! duration (duration-sb tl-widget))
+  (set! ref-lb (reference-lb tl-widget)))
+#;(kise/set-debug-variables)
 
 #!
 
@@ -128,17 +137,29 @@
 
 !#
 
+
 ;;;
 ;;; row selection related stuff
 ;;;
 
-
 (define (kise/set-gtk-entries tl-widget row iter)
-  (let ((tuple (ktlw/get-tuple tl-widget row))
-	(model (tv-model tl-widget)))
+  (let* ((tuple (ktlw/get-tuple tl-widget row))
+	 (idb (db-kise/get tuple 'imported_db))
+	 (model (tv-model tl-widget)))
     ;; (format #t "~S~%" tuple)
-    (set-text (reference-entry tl-widget) (number->string (ktlw/get 'id tl-widget row)))
-    (set-text (date-entry tl-widget) (kiseiter/get 'date model iter))
+    (if (= idb -1)
+	(begin
+	  (set-markup (reference-lb tl-widget)
+		      (format #f "<span foreground=\"~A\"><i>~A:</i></span>" "#000000" (_ "Reference")))
+	  (set-text (reference-entry tl-widget) (number->string (ktlw/get 'id tl-widget row)))
+	  (hide (reference-eb tl-widget)))
+	(begin
+	  (set-markup (reference-lb tl-widget)
+		      (format #f "<span foreground=\"~A\"><i>~A:</i></span>" (kiter/get 'ibg model iter) (_ "Reference")))
+	  (set-text (reference-entry tl-widget) (number->string (ktlw/get 'imported_id tl-widget row)))
+	  (show (reference-eb tl-widget))
+	  (modify-bg (reference-eb tl-widget) 'normal (kiter/get 'ibg model iter))))
+    (set-text (date-entry tl-widget) (kiter/get 'date model iter))
     (let ((who? (gtk2/combo-find-row (who-combo tl-widget) (db-kise/get tuple 'who))))
       (if who?
 	  (set-active (who-combo tl-widget) who?)
@@ -151,7 +172,7 @@
 	  (begin
 	    ;; (gtk2/set-text (for-whom-entry tl-widget) "")
 	    (set-active (for-whom-combo tl-widget) -1))))
-    (set-value (duration-sb tl-widget) (kiseiter/get 'duration model iter))
+    (set-value (duration-sb tl-widget) (kiter/get 'duration model iter))
     (let ((what? (gtk2/combo-find-row (what-combo tl-widget) (db-kise/get tuple 'what))))
       (if what?
 	  (set-active (what-combo tl-widget) what?)
@@ -159,7 +180,7 @@
 	    ;; (gtk2/set-text (what-entry tl-widget) "")
 	    (set-active (what-combo tl-widget) -1))))
     (gtk2/set-text (description-entry tl-widget) (ktlw/get 'description tl-widget row))
-    (set-active (to-be-charged-cb tl-widget) (kiseiter/get 'to-be-charged model iter))))
+    (set-active (to-be-charged-cb tl-widget) (kiter/get 'to-be-charged model iter))))
 
 
 ;;;
@@ -200,16 +221,18 @@
     (if (and db-file open-at-startup)
 	;; we still need to proceed with all checks: it could have
 	;; been deleted, moved, chmod, delted schema ...
-	(let ((open-db-checks-result (ktlw/open-db-checks db-file)))
-	  (case (ktlw/open-db-checks db-file)
+	(receive (checks-result db)
+	    (ktlw/open-db-checks db-file)
+	  (case checks-result
 	    ((does-not-exist wrong-perm not-an-sqlite-file)
 	     (md1b/select-gui (dialog tl-widget)
 			      (_ "Warning!")
 			      (_ "DB connection problem:")
 			      (format #f "~?" (kise/open-db-cant-open-str) (list db-file))
-			      (lambda () (ktlw/no-db-mode tl-widget))))
+			      (lambda () (ktlw/no-db-mode tl-widget))
+			      'dialog-warning))
 	    ((opened opened-partial-schema opened-no-schema)
-	     (ktlw/open-db tl-widget db-file #f 'open open-at-startup open-db-checks-result))))
+	     (ktlw/open-db tl-widget db-file #f 'open open-at-startup checks-result db))))
 	(begin
 	  (ktlw/no-db-mode tl-widget)
 	  (emit (con-bt tl-widget) 'clicked)))))
@@ -252,11 +275,29 @@
 		   (gdk-event-get-coords event)
 		 (dimfi win-x win-y))
 	       #f)) ;; do not stop the event propagation
+    (connect (dialog tl-widget)
+	     'key-press-event
+	     (lambda (window event)
+	       #;(display-key-press-infos window event)
+	       (receive (has-focus key-val key-name)
+		   (get-key-press-infos window event)
+		 (if (and (eq? has-focus (tv tl-widget))
+			  (string-ci=? key-name "delete"))
+		     (begin
+		       (ktlw/delete tl-widget)
+		       #t) ;; stops the event propagation
+		     #f)))) ;; do not stop the event propagation
+
     (connect (con-bt tl-widget)
 	     'clicked
 	     (lambda (button)
 	       (kise/on-tv-row-change tl-widget)
 	       (kc/select-gui tl-widget)))
+    (connect (import-bt tl-widget)
+	     'clicked
+	     (lambda (button)
+	       (kise/on-tv-row-change tl-widget)
+	       (ki/select-gui tl-widget)))
     (connect (quit-bt tl-widget)
 	     'clicked
 	     (lambda (button) (kise/exit tl-widget)))
@@ -324,7 +365,7 @@
 		       (iter (current-iter tl-widget))
 		       (value (get-value widget)))
 		   ;; (dimfi row iter value)
-		   (kiseiter/set 'duration model iter value)
+		   (kiter/set 'duration model iter value)
 		   ;; update-db
 		   (ktlw/set 'duration tl-widget value row)
 		   (ktlw/update-totals-status-bars tl-widget)))))
@@ -343,7 +384,7 @@
 		   ;; do it on the toggle in the list store too ...
 		   (when (active-filter tl-widget) (ktlw/add-id id tl-widget))
 		   (set! (gui-callback? tl-widget) #f)
-		   (kiseiter/set 'to-be-charged model iter new-value)
+		   (kiter/set 'to-be-charged model iter new-value)
 		   (set! (gui-callback? tl-widget) #t)
 		   ;; update-db
 		   (ktlw/set 'to_be_charged tl-widget (sqlite/boolean new-value) row)
@@ -429,7 +470,6 @@
 	     (lambda (combo)
 	       (if (gui-callback? tl-widget)
 		   (ktlw/filter-apply tl-widget 'force))))
-
     ;;
     ;; treeview
     ;; 
@@ -477,10 +517,19 @@
 
     (gtk2/set-sensitive `(,(reference-entry tl-widget)) #f)
     (show-all (dialog tl-widget))
+    (if (aglobs/get 'debug)
+	(begin
+	  (set-flags (date-edit tl-widget) '(show-time))
+	  (set-flags (date-edit tl-widget) '())
+	  (set-time (date-edit tl-widget) 0))
+	(gtk2/hide `(,(date-edit tl-widget)))) ;; experimental stuff
     (gtk2/hide `(,(menubar tl-widget)
 		 ,(date-icon tl-widget)
-		 ,(get-widget (xml-code tl-widget) "kise/order_tb")
-		 ,(get-widget (xml-code tl-widget) "kise/db_name_bt")
+		 ,(get-widget (xml-code tl-widget) "kise/mb_sep3")
+		 ,(prefs-bt tl-widget)
+		 ,(get-widget (xml-code tl-widget) "kise/idb_tb2")
+		 ,(get-widget (xml-code tl-widget) "kise/idb_bt2")
+		 ,(get-widget (xml-code tl-widget) "kise/nav_tb_1")
 		 ,(get-widget (xml-code tl-widget) "kise/nav_tb_2")
 		 ,(db-name-lb2 tl-widget)
 		 ,(db-name-lb3 tl-widget)))
@@ -552,5 +601,20 @@
 	     (set-model completion completion-model))
 	   ;; gtk2 requirement ...
 	   #f))
+
+
+;;;
+;;; Gnome date edit tests
+;;;
+
+(define g2 (gnome-date-edit-new 0 #f #f))
+(get-flags g2)
+(set-flags g2 '(show-time))
+
+(let ((flags (get-flags gdedit))
+      (g2 (gnome-date-edit-new 0 #f #f)))
+  (dimfi "flags" flags)
+  (dimfi "g2 flags" (get-flags g2))
+  )
 
 !#

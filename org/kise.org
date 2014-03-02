@@ -4,9 +4,55 @@
 
 * GUI
 
-** Important stuff
+** Work in progress
 
-*** DONE memorize the last window pos
+*** import/unimport
+
+**** DONE reimporting -> the imported date must be updated
+CLOSED: [2013-07-23 Tue 22:16]
+- State "DONE"       from "TODO"       [2013-07-23 Tue 22:16]
+
+this is not done yet.
+
+**** DONE imported tuples should display their original reference value
+CLOSED: [2013-08-06 Tue 17:24]
+- State "DONE"       from "TODO"       [2013-08-06 Tue 17:24]
+**** DONE imported tuples should have a small colored column
+CLOSED: [2013-09-15 Sun 19:38]
+- State "DONE"       from "STARTED"    [2013-09-15 Sun 19:38]
+
+a few pixels on the left side for example
+
+**** DONE the import dialog should also display the colour
+CLOSED: [2013-09-15 Sun 19:47]
+- State "DONE"       from "TODO"       [2013-09-15 Sun 19:47]
+
+associated with this db [per default - later we should provide a mechanism to
+let the user select its perefered colour for each of his imported databases.
+
+
+** Other important stuff
+
+*** DONE delete: binding the delete key to remove row
+CLOSED: [2014-02-27 Thu 16:02]
+- State "DONE"       from "TODO"       [2014-02-27 Thu 16:02]
+*** DONE hidding the preferences button untill further developped
+CLOSED: [2014-02-25 Tue 17:03]
+- State "DONE"       from "TODO"       [2014-02-25 Tue 17:03]
+*** TODO import.scm need to check multiple imported fields are all properly handled
+
+goops implementation is a nightmare.  it does not re-export accessor per
+default, it hides the imported one(s) instead.  check the emails exchanged with
+devel for this matter [which i still need to reply to].
+
+*** TODO the duration callback is slow, i need to investigate
+
+why this is the case: maybe it's lacking a (set! (gui-callback tl-widget) #f)
+somewhere ...
+
+*** TODO adding a license header to kise.glade
+
+*** DONE memorize the last window pos and size
 CLOSED: [2012-12-29 Sat 15:47]
 - State "DONE"       from "TODO"       [2012-12-29 Sat 15:47]
 
@@ -97,8 +143,6 @@ CLOSED: [2011-12-23 Fri 15:36]
 
 *** TODO setting G_FILENAME_ENCODING [see doc p 364]
 
-*** TODO programming a preferences dialog
-
 *** TODO programming an undo system
 
 *** TODO implementing a search & replace tool
@@ -130,15 +174,20 @@ see kise entry 702 for explanation
   - [ ] 
   - [ ] missing prep-string-for-sql for all text filters
 
-*** STARTED message dialogs [66%]
+*** STARTED mdialogs: message dialogs [66%]
 
 - [X] 1 button
 - [X] 2 buttons
 - [ ] 3 buttons
 
-*** TODO mdialogs: need to be able to change their image dynamically 
+*** DONE mdialogs: dynamically set their image
+CLOSED: [2013-07-28 Sun 23:51]
+- State "DONE"       from "TODO"       [2013-07-28 Sun 23:51]
+*** TODO mdialogs: code review
 
-*** DONE programming the connect dialog
+there should be one code only, buttons should be showned/hiddem on demand
+
+*** DONE programming the connect dialog    
 CLOSED: [2011-11-07 Mon 11:33]
 - State "DONE"       from "STARTED"    [2011-11-07 Mon 11:33]
 
@@ -149,7 +198,6 @@ CLOSED: [2011-08-24 Wed 19:43]
 *** DONE str/prep-str-for-pg
 CLOSED: [2011-06-21 Tue 20:04]
 - State "DONE"       from "STARTED"    [2011-06-21 Tue 20:04]
-
 
 
 ** Secondary stuff

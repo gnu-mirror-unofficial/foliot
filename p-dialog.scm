@@ -1,6 +1,6 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012
+;;;; Copyright (C) 2011, 2012, 2013
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -285,7 +285,8 @@
 				    (_ "Warning!")
 				    (_ "Grouping:")
 				    (_ "You may not select more then 4 items to be grouped.")
-				    (lambda () 'nothing)))
+				    (lambda () 'nothing)
+				    'dialog-warning))
 	       (begin
 		 (gtk2/fixed-toggled model iter giter-get giter-set)
 		 (kp/on-g-tv-row-change kp-widget) ;; <- making sure focus-out-event tpl-entry ...
@@ -715,7 +716,7 @@
 			  :g-down-bt (get-widget xmlc "kp/grouping_down_bt")
 			  :cancel-bt (get-widget xmlc "kp/cancel_bt")
 			  :print-bt (get-widget xmlc "kp/print_bt"))))
-	(modify-bg (get-widget xmlc "kp/eventbox") 'normal *kc/dialog-title-eb-bg*)
+	(modify-bg (get-widget xmlc "kp/eventbox") 'normal *dialog-title-eb-bg*)
 	(when parent (set-transient-for (dialog kp-widget) parent))
 	(kp/translate kp-widget)
 	

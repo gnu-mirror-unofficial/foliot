@@ -6,6 +6,84 @@
 
 ** Bugs
 
+*** CLOSED [[46] 4] duplicate: created_by, modified_by now correct
+CLOSED: [2014-02-26 Wed 19:34]
+- State "CLOSED"     from "OPEN"       [2014-02-26 Wed 19:34]
+
+until this fix, a duplicated record was setting the created_by, modified_by
+value as of 'who' instead of the username.
+
+*** CLOSED [[45] 4] sys/write-config: creating kise.conf fails
+CLOSED: [2014-02-24 Mon 15:48]
+- State "CLOSED"     from "OPEN"       [2014-02-24 Mon 15:48]
+
+creating kise.conf [in ~user/.config] failed due to a wrong filename permission
+check.  now changed to 'if the file exists, it must be writable, otherwise the
+parent directory must be writable'.
+
+*** CLOSED [[44] 4] connect: no active-db [no .conf/kise.conf]
+CLOSED: [2014-02-24 Mon 15:38]
+- State "CLOSED"     from "OPEN"       [2014-02-24 Mon 15:38]
+
+when no active-db [no .config/kise.conf], creating opening a db raised a bug,
+recently 'introduced', while rewriting kc/connect [did miss to check
+active-db-file not being false before comparing it with other values, was tired
+i guess :)]
+
+*** CLOSED [[43] 3] destroy with parent does _not_ call the destroy-event callback
+CLOSED: [2013-11-05 Mon 13:07]
+- State "CLOSED"     from "OPEN"       [2013-11-04 Mon 13:07]
+
+this actually is a guile-gnome problem, I think, and common/gtk related problem
+[rather then kisê related], but I don't have a common-bugs.org file [yet].
+
+the common/gtk/glade file had all message dialogs [1, 2 and 3 buttons]
+'destroy-with-parent option set to true, which works fine _but_ guile-gnome [or
+is it gtk2] does not trigger the expected destroy-event signal.  this causes a
+bug in our code which expects the signal to unset a couple of things, including
+<md1[2|3]b-widget> instance pointers|variables.
+
+*** CLOSED [[42] 4] ktlw/open-db-checks should not set the global active db-con
+CLOSED: [2013-11-04 Mon 12:25]
+- State "CLOSED"     from "OPEN"       [2013-11-04 Mon 12:25]
+
+ktlw/open-db-checks _should_ call (db-con/open db-file #f), which prevents the
+global active db connector to be set.  indeed it should only be set if all
+checks passed: if the user cancel its connect operation in the middle [this is
+possible when the db he's opening has an old schema, in which case kisê opens a
+dialog and asks him if he wants to update it or not], then having set db-con [and
+not restoring the previous ative one] -> ERROR...
+
+*** CLOSED [[41] 4] sqlite/table-names, sqlite/table-exists?
+CLOSED: [2013-10-28 Mon 10:28]
+- State "CLOSED"     from "OPEN"       [2013-10-28 Mon 10:28]
+
+table names are _not_ properly cached: although the db copnector is passed as an
+argument, I managed to forget to use it while cashing.  this will always trigger
+an error, if you import a db which is an sqlite file but does not contain a kise
+table.
+
+*** OPEN [[40] 2] write-config: when not permitted, it is not possible to quit Kisê
+
+that's it, you can't quit Kisê, haha!  i set the sererity level of this bug to 2
+because it highly improbable.  indeed, someone with permission to do so should
+deliberately withdraw the user's one on this/his kise.conf [hidden] file.  i
+could 'not raise' an error, but i think it's better, of course now i need to
+catch it in order to let the user quit Kisê not writing his config file ...
+
+*** CLOSED [[39] 3] reimporting db: the date is coded in clear
+CLOSED: [2013-07-10 Mon 07:21]
+- State "CLOSED"     from "TODO"       [2013-07-10 Mon 07:21]
+
+and it shouldn't: the scheme update function code was missing to treat this as a
+special sql update case [set ~A = strftime('%s','~A')]
+
+*** CLOSED [[38] 2] db connect: when the user connects to another db
+CLOSED: [2013-08-06 Tue 17:27]
+- State "CLOSED"     from "TODO"       [2013-08-06 Tue 17:27]
+
+the selected row after connection is wrong [it's one of the last row, don't why
+yet], it should be the first row.
 
 *** CLOSED [[36] 4] config - not reloaded when it should
 CLOSED: [2013-01-18 Fri 19:40]
@@ -140,10 +218,12 @@ row reselected, but content added and/or modified was lost.
 kise/on-tv-row-change added on all filter-* button 'clicked signals
 as already the case for printing, nav buttons ...
 
-*** OPEN [[22] 3] connect: database schema incomplete, cancel
+*** CLOSED [[22] 3] connect: database schema incomplete, cancel
+CLOSED: [2013-11-01 Fri 19:09]
+- State "CLOSED"     from "OPEN"       [2013-11-01 Fri 19:09]
 
-When the user tries to connect to another database, or if the schema needs to be
-upgraded [version upgrades] and if he cancels, we should leave kise
+When the user tries to connect to another database, that its schema needs to be
+upgraded, but cancels, -> bug
 
 *** CLOSED [[21] 3] gui - filter-clear not restoring gui-callback
 CLOSED: [2011-11-16 Wed 11:34]

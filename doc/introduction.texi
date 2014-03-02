@@ -1,0 +1,128 @@
+@c -*-texinfo-*-
+@c This is part of the Kisê User Manual.
+@c Copyright (C)  2011, 2012, 2013 Free Software Foundation, Inc.
+@c See the file kise.texi for copying conditions.
+
+
+@node Introduction
+@chapter Introduction
+
+@c @unnumberedsec About Kisê
+@node About Kisê
+@section About Kisê
+
+Kisê is a small and easy to use time keeping application.  It can be used in a
+single user mode or by small organizations.  The fields it handles are: a
+@strong{reference}, a @strong{date}, @strong{who}, @strong{for whom},
+@strong{what}, a @strong{duration}, whether or not the time keeping entry needs
+@strong{to be charged} and a @strong{description}.  The reference is handled
+automatically by Kisê and therefore is a @emph{read only} field.
+
+A powerful dynamic filters criteria mechanism lets you visualize, work on and
+print a subset of your time keeping entries.  Unlike most other similar
+applications, this mechanism is available on Kisê's main application window.
+
+A printing templates system allows you to (pre)define, reuse and hence quickly
+generate the pdf files and/or printed reports of your needs.
+
+An import/export facility is under work for remote collaboration.
+
+@node Kisê, the name
+@section Kisê, the name
+
+Kisê comes from the language @emph{Tupi-Guarani}.  It means 'an old and/or rusty
+knife'.  It should be pronounced @samp{ki-c}.  However, if you pronounce it
+@samp{kee-c}, it would come close to the french expression 'qui sait?', which
+means 'who knows?'.  Then comes why the name: 'qui sait? kisê!' - 'who knows?
+Kisê!'.  Neat dont you think ? Finally, this kind of application is (also) used
+to, in the end, produce invoices, quite a pain, which could (too) well be caused
+by 'an old and/or rusty knife'...
+
+@node What else
+@section What else
+Kisê is written in @uref{@value{UGUILE}, guile}, an interpreter and compiler for
+the @uref{@value{USCHEME}, scheme} programming language.  It uses
+@uref{@value{UGUILE-GNOME}, guile-gnome} for its graphical interface,
+@uref{@value{USQLITE}, SQLite} for its database backend and
+@uref{@value{ULATEX}, latex} for the reports.
+
+
+@node Obtaining and Installing Kisê
+@section Obtaining and Installing Kisê
+
+
+@node Dependencies
+@subsection Dependencies
+
+Kisê needs the following software to run:
+
+@itemize @bullet
+@item
+@uref{@value{UGUILE}, guile}>= 2.0.5
+@item
+@uref{@value{UGUILE-GNOME}, guile-gnome} >= 2.16.2
+@item 
+@uref{@value{USQLITE}, SQLite} >= 3.7
+@item 
+@uref{@value{USQLITE3-PCRE}, sqlite3-pcre}: perl compatible regular expression support for SQLite
+@item
+@uref{@value{ULATEX}, latex}: any recent latex 2e version will do
+@end itemize
+
+Kisê reports needs the following font:
+
+@itemize @bullet
+@item 
+@uref{@value{UIWONA}, iwona}: on debian iwona is part of the texlive-fonts-extra package
+@end itemize
+
+
+@node Quickstart
+@subsection Quickstart
+
+Kisê can be obtained from the following archive site @uref{@value{UKISE-RELEASES}}.
+The file will be named kise-version.tar.gz. The current version is
+@value{VERSION}, so the file you should grab is:
+
+@tie{}@tie{}@tie{}@tie{}@uref{@value{UKISE-LATEST}}
+
+Kisê consists of a series of guile modules, some of which are common to several
+applications. Consequently, the tarball contains two directories, named
+@file{common} and @file{kise}.  Assuming you have satisfied the dependencies,
+download the latest tarball, open a terminal and proceed with the following
+steps@footnote{The directory of installation @file{/opt} and the name
+@file{nongnu} are of course just examples.  Subsequently, replace
+@code{'download-path'} as appropriate.  Finally, you probably want to add
+@file{/opt/nongnu/kise} to the @env{PATH} variable of your default shell
+configuration file as well.}:
+
+@example
+cd /opt
+mkdir nongnu; cd nongnu
+tar zxf 'download-path'/kise-@value{VERSION}.tar.gz
+cd kise
+ln -fs main.scm kise
+@c @result{#f}
+@end example
+
+In addition, in order to compile and run Kisê, you need to inform guile where to
+find all its necessary modules. There are several ways to do so, one of which is
+by defining the variable @env{GUILE_LOAD_PATH}@footnote{if it is already
+defined, use the following command instead: @code{export
+GUILE_LOAD_PATH=$GUILE_LOAD_PATH:/opt/nongnu:/opt/nongnu/common}. you also
+probably want to add [or modify] this definiton to [in] your default shell
+configuration file.}:
+
+@example
+export GUILE_LOAD_PATH=/opt/nongnu:/opt/nongnu/common
+./kise
+@end example
+
+Happy Kisê!
+
+
+@node Reporting Bugs
+@section Reporting Bugs
+
+Please send your questions, bug reports and/or requests for improvements to
+@email{david at altosw dot be}.

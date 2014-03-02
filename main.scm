@@ -6,7 +6,7 @@ export GUILE_WARN_DEPRECATED="detailed"
 exec guile-gnome-2 -e main -s $0 "$@"
 !#
 
-;;;; Copyright (C) 2011, 2012
+;;;; Copyright (C) 2011, 2012, 2013
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -38,7 +38,6 @@ exec guile-gnome-2 -e main -s $0 "$@"
 ;;;
 
 (use-modules (ice-9 getopt-long)
-	     (ice-9 format)
 	     (system locale) ;; re-export aglobs
 	     (system passwd)
 	     (system i18n)
@@ -49,36 +48,37 @@ exec guile-gnome-2 -e main -s $0 "$@"
 ;;; Globals and locale
 ;;;
 
-(eval-when (compile load eval)
-
-  (define (copyright-message)
-  "Copyright (C) 2011, 2012 Free Software Foundation, Inc.
+(define (copyright-message)
+  "Copyright (C) 2011, 2012, 2013  Free Software Foundation, Inc.
 
 Kise comes with ABSOLUTELY NO WARRANTY.  This program is free
 software, and you are welcome to redistribute it under certain
 conditions.  See <http://www.gnu.org/licenses/gpl.html>, for more
 details.")
 
-  (define (help-message)
+(define (help-message)
   "Usage: kise [OPTION]...
   -d, --debug       open a debugger aside the application
       --help        display this usage information
       --version     display version information")
 
-  (define (uninstalled-lang-message)
+(define (uninstalled-lang-message)
     "
   Warning:
     Your LANG environment variable is set to ~S which is not installed
     on this system. As a fallback, we will use ~S locale instead.\n")
 
-  (define (display-welcome port)
-    ;; 'GNU Kise', really nice! But let's wait GNU evaluation/acceptance
-    ;; (aglobs/display (string-append "GNU Kise " (aglobs/get 'version)) port)
-    (aglobs/display (string-append "Kise " (aglobs/get 'version)) port)
-    (aglobs/display (copyright-message) port))
+(define (display-welcome port)
+  ;; 'GNU Kise', really nice! But let's wait GNU evaluation/acceptance
+  ;; (aglobs/display (string-append "GNU Kise " (aglobs/get 'version)) port)
+  (aglobs/display (string-append "Kise " (aglobs/get 'version)) port)
+  (aglobs/display (copyright-message) port))
 
-  (define (display-help port)
-    (aglobs/display (help-message) port))
+(define (display-help port)
+  (aglobs/display (help-message) port))
+
+
+(eval-when (compile load eval)
 
   (define (display-uninstalled-lang port lang fallback)
     (aglobs/display (format #f "~?" (uninstalled-lang-message)
@@ -106,7 +106,7 @@ details.")
 	      '((debug (single-char #\d) (value #f))
 		(version (value #f))
 		(help (value #f))))
-  (aglobs/set 'version "0.9.3")
+  (aglobs/set 'version "0.9.4")
   (textdomain "main")
   (bindtextdomain "main" (aglobs/get 'pofdir))
 
@@ -121,13 +121,16 @@ details.")
 ;;; 2d load modules step
 ;;;
 
-(use-modules (oop goops)
+(use-modules (system repl server)
+	     (oop goops)
 	     (gnome gnome)
 	     (gnome gnome-ui) ;; <- uses $LANG
 	     (gnome gtk)
-	     (gnome gtk graphical-repl)
 	     (gnome glib)
 	     (kise kise))
+
+(default-duplicate-binding-handler
+  '(merge-generics replace warn-override-core warn last))
 
 
 ;;;
@@ -152,7 +155,6 @@ details.")
 	   (gnome-program-init "Kise" version)
 	   (gnome-authentication-manager-init)
 	   (kise/animate-ui uname (aglobs/get 'gladefile) version debug?)
-	   (if debug?
-	       (guile-gtk-repl)
-	       (g-main-loop-run (g-main-loop-new)))))))
+	   (if debug? (spawn-server (make-tcp-server-socket #:port 1969)))
+	   (g-main-loop-run (g-main-loop-new))))))
 
