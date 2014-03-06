@@ -49,7 +49,7 @@ exec guile-gnome-2 -e main -s $0 "$@"
 ;;;
 
 (define (copyright-message)
-  "Copyright (C) 2011, 2012, 2013  Free Software Foundation, Inc.
+  "Copyright (C) 2011, 2012, 2013, 2014  Free Software Foundation, Inc.
 
 Kise comes with ABSOLUTELY NO WARRANTY.  This program is free
 software, and you are welcome to redistribute it under certain
