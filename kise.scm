@@ -125,11 +125,10 @@
   (set! tuple (ktlw/get-tuple tl-widget row))
   (set! duration (duration-sb tl-widget))
   (set! ref-lb (reference-lb tl-widget)))
-#;(kise/set-debug-variables)
 
 #!
 
-(use-modules (kise kise))
+,m (kise kise))
 (kise/set-debug-variables)
 
 (define acti-combo (what-combo tl-widget))
@@ -363,8 +362,8 @@
 		 (let ((model (tv-model tl-widget))
 		       (row (current-row tl-widget))
 		       (iter (current-iter tl-widget))
-		       (value (get-value widget)))
-		   ;; (dimfi row iter value)
+		       (value (fp/round (get-value widget) 1)))
+		   ;; (dimfi 'row row 'duration value)
 		   (kiter/set 'duration model iter value)
 		   ;; update-db
 		   (ktlw/set 'duration tl-widget value row)
