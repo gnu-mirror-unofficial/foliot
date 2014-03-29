@@ -70,7 +70,8 @@ details.")
 
 (define (display-welcome port)
   ;; 'GNU Kise', really nice! But let's wait GNU evaluation/acceptance
-  ;; (aglobs/display (string-append "GNU Kise " (aglobs/get 'version)) port)
+  ;; (aglobs/display (string-append "GNU Kise " (aglobs/get 'version))
+  ;; port)
   (aglobs/display (string-append "Kise " (aglobs/get 'version)) port)
   (aglobs/display (copyright-message) port))
 
