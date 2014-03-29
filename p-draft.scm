@@ -22,7 +22,7 @@
 ;;; Commentary:
 
 ;;; Code:
- 
+
 (define-module (kise p-draft)
   ;; guile/guile-gnome
   :use-module (srfi srfi-1)
@@ -49,7 +49,7 @@
   :use-module (kise tl-widget)
   :use-module (kise p-dialog)
   :use-module (kise p-common)
-  
+
   :export (kp/print-draft))
 
 
@@ -212,9 +212,9 @@
 
 (define (kp/get-abstract-footnote-text)
   (format #f"~A."
-	  (string-append (_ "When diplayed [not grouped by]")
+	  (string-append (_ "When selected [not grouped by]")
 			 ", \\klabel{" (_ "to be charged") "} "
-			 (_ "is displayed using")
+			 (_ "is printed using")
 			 " \\checked" "~"
 			 (_ "when true") " "
 			 (_ "and") " " "\\textlnot" "~"
@@ -230,10 +230,10 @@
 			    (format #f "~A, \\klabel{~A}" result field-name)))))
 	core-fields)
     result))
-  
+
 (define (kp/write-draft-abstract-used-columns ostream core-fields)
   (format ostream "~A\\footnote{~A}: ~A.~%"
-	  (_ "In the core of this report, the displayed tables columns are")
+	  (_ "In the core of this report, printed kisê's fields are")
 	  (kp/get-abstract-footnote-text)
 	  (kp/get-core-fields-text core-fields)))
 
@@ -292,7 +292,7 @@
     (for-each (lambda (item)
 		(let* ((field (db-pt/df-get 'name item))
 		       (its-symb (string->symbol field)))
-		  (set! levels 
+		  (set! levels
 			(cons (cons its-symb (db-kise/get-pos its-symb)) levels))))
 	group-by)
     (reverse! levels)))
@@ -304,7 +304,7 @@
 (define (kp/get-group-values groups tuple)
   (let ((values (list)))
     (dotimes (i (length groups))
-      (set! values 
+      (set! values
 	    (cons (db-kise/get tuple (car (list-ref groups i)))
 		  values)))
     (reverse! values)))
@@ -404,7 +404,7 @@ reactivated within the table via the \showrowcolors command.
 
 (define (kp/get-ltx-first-row-values core-fields tuple)
   (let ((row-values (list)) ;; a list of strings
-	(j 0)) ;; the k to pass [maybe] to tex/prep 
+	(j 0)) ;; the k to pass [maybe] to tex/prep
     (for-each (lambda (core-field)
 		(let* ((field-name (car core-field))
 		       (val (db-kise/get tuple field-name))
@@ -571,10 +571,10 @@ Core fields: ~S
 	     (groups (kp/get-groups grouped))
 	     (core-fields (kp/get-core-ltx-field-specs kp-widget))
 	     (order-by (sqlite/build-group-by-order-by-expression order kp/order-by-extractor))
-	     (tuples (db-kise/select-another-some where 
+	     (tuples (db-kise/select-another-some where
 						  #f ;; group-by: we do it, otherwise we wouldn't get all tuples
 						  order-by)))
-	;; (kp/display-this-list-of-consed-items 
+	;; (kp/display-this-list-of-consed-items
 	;;   (list (cons "where" where) (cons "group by" group-by) (cons "order by" order-by)))
 	;; (format #t "core-fields: ~S~%" core-fields)
 	(kp/write-nptsepdsig ostream '("," . "."))
