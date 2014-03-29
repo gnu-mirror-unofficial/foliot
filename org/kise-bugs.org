@@ -6,6 +6,19 @@
 
 ** Bugs
 
+*** CLOSED [[47] 3] connect: default database schema incomplete, cancel
+CLOSED: [2014-03-17 Mon 16:06]
+- State "CLOSED"     from "OPEN"       [2014-03-17 Mon 16:06]
+
+When the default [~/.config/kise.conf db filename] database needs its schema to
+be upgraded, but the cancels, -> then tries to connect to the same database ->
+kisê would wrongly state that 'Db is already in use'.  this is because in
+kc/connect, active-db-file was bound to (kcfg/get 'db-file): that should only be
+the case if the user is connected to a db, in which case (db-con) is _not_ #f.
+so the correct let binding is:
+
+	... (active-db-file (and (db-con) (kcfg/get 'db-file))) ...
+
 *** CLOSED [[46] 4] duplicate: created_by, modified_by now correct
 CLOSED: [2014-02-26 Wed 19:34]
 - State "CLOSED"     from "OPEN"       [2014-02-26 Wed 19:34]
@@ -136,7 +149,7 @@ select clause looks like
 
 instead of
 
-		where date > 01.10.2012 
+		where date > 01.10.2012
 		  and (who = lpdi or who = dema)
 
 *** CLOSED [[32] 3] to-be-charged now implies sorting the database
@@ -213,7 +226,7 @@ CLOSED: [2011-11-25 Fri 22:29]
 
 while in a filter mode, editing a description [or any other entry],
 then clicking filter-clear was the symptom: filter was cleared and the
-row reselected, but content added and/or modified was lost. 
+row reselected, but content added and/or modified was lost.
 
 kise/on-tv-row-change added on all filter-* button 'clicked signals
 as already the case for printing, nav buttons ...
@@ -274,17 +287,17 @@ We need to use ngettext anyway, but even before that this simple case
 should be corrected.
 
 *** CLOSED [[15] 4] ktlw/delete and duplicate not calling update-totals
-CLOSED: [2011-09-11 Sun 19:46] 
+CLOSED: [2011-09-11 Sun 19:46]
 - State "CLOSED"     from "OPEN"       [2011-09-11 Sun 19:46]
 
 *** CLOSED [[14] 4] are properly updated after delete
-CLOSED: [2011-09-11 Sun 19:47] 
+CLOSED: [2011-09-11 Sun 19:47]
 - State "CLOSED"     from "OPEN"       [2011-09-11 Sun 19:47]
 
 Especially when deleting the only record of a selection
 
 *** CLOSED [[13] 4] to-be-charged callback incomplete when active-filter
-CLOSED: [2011-09-01 Thu 01:41] 
+CLOSED: [2011-09-01 Thu 01:41]
 - State "CLOSED"     from "OPEN"       [2011-09-01 Thu 01:41]
 
 When there is an active filter, 1. without 'to-be-charged, then
@@ -297,7 +310,7 @@ the id of the tuple to the id-set if and when there was an
 active-filter.
 
 *** CLOSED [[12] 4] clicking to-be-charged in the list-store
-CLOSED: [2011-09-01 Thu 01:34] 
+CLOSED: [2011-09-01 Thu 01:34]
 - State "CLOSED"     from "OPEN"       [2011-09-01 Thu 01:34]
 
 When clicking the checkbox of another row then the active one, the
@@ -308,7 +321,7 @@ wrong.
 
 ktlw/a-facturer-toggle-set-callback needs to be changed accordingly
 
-*** CLOSED [     4] bad ordering [lacking 'what'] db-kise.scm 
+*** CLOSED [     4] bad ordering [lacking 'what'] db-kise.scm
 CLOSED: [2011-07-05 Tue 12:20]
 - State "CLOSED"       from "OPEN"       [2011-07-05 Tue 12:20]
 
@@ -319,51 +332,51 @@ itself leads to wrong gtk entries settings displayed values in the
 detailed view.
 
 *** CLOSED [     3] clicking a row does not update the statusbar ratio
-CLOSED: [2011-08-04 Thu 17:08] 
+CLOSED: [2011-08-04 Thu 17:08]
 - State "CLOSED"       from "OPEN"       [2011-08-04 Thu 17:08]
 
 *** CLOSED [[11] 4] text filters not calling str/prep-str-for-pg
-CLOSED: [2011-09-11 Sun 20:13] 
+CLOSED: [2011-09-11 Sun 20:13]
 - State "CLOSED"     from "OPEN"       [2011-09-11 Sun 20:13]
 
 *** CLOSED [[10] 4] ktlw/entry-std-cb crashed kise when old-pos was -1
-CLOSED: [2011-08-25 Thu 22:52] 
+CLOSED: [2011-08-25 Thu 22:52]
 - State "CLOSED"     from "OPEN"  [2011-08-25 Thu 22:53]
 
 *** CLOSED [[9] 4] characters in date filter crashes kise
-CLOSED: [2011-08-24 Wed 20:50] 
+CLOSED: [2011-08-24 Wed 20:50]
 - State "CLOSED"       from "OPEN"       [2011-08-24 Wed 20:50]
 
 *** CLOSED [[8] 4] alto.br in who and reentering who crashes kise
-CLOSED: [2011-08-24 Wed 19:42] 
+CLOSED: [2011-08-24 Wed 19:42]
 - State "CLOSED"       from "OPEN"       [2011-08-24 Wed 19:42]
 
 *** CLOSED [[7] 4] a date 'only' [no operator] crashes kise
-CLOSED: [2011-08-04 Thu 18:42] 
+CLOSED: [2011-08-04 Thu 18:42]
 - State "CLOSED"       from "OPEN"       [2011-08-04 Thu 18:42]
 
 *** CLOSED [[6] 3] ktlw/filter-clear should select previously selected row if possible
-CLOSED: [2011-08-23 Tue 18:58] 
+CLOSED: [2011-08-23 Tue 18:58]
 - State "CLOSED"       from "OPEN"       [2011-08-23 Tue 18:58]
 
 *** CLOSED [[5] 3] ktlw/filter-apply should select previously selected row if possible
-CLOSED: [2011-08-23 Tue 19:15] 
+CLOSED: [2011-08-23 Tue 19:15]
 - State "CLOSED"       from "OPEN"       [2011-08-23 Tue 19:15]
 
 *** CLOSED [[4] 3] same filter conditions should not trigger apply-filter
-CLOSED: [2011-08-24 Wed 20:50] 
+CLOSED: [2011-08-24 Wed 20:50]
 - State "CLOSED"       from "OPEN"       [2011-08-24 Wed 20:50]
 
 *** CLOSED [[3] 3] empty set does not empty entry fields and combo selection
-CLOSED: [2011-08-10 Wed 12:05] 
+CLOSED: [2011-08-10 Wed 12:05]
 - State "CLOSED"       from "OPEN"       [2011-08-10 Wed 12:05]
 
 *** CLOSED [[2] 3] empty set does not grey inapropriate actions
-CLOSED: [2011-08-10 Wed 12:05] 
+CLOSED: [2011-08-10 Wed 12:05]
 - State "CLOSED"       from "OPEN"       [2011-08-10 Wed 12:05]
 
 *** CLOSED [[1] 3] empty set - statusbar says 'Record 1/0'
-CLOSED: [2011-08-10 Wed 12:05] 
+CLOSED: [2011-08-10 Wed 12:05]
 - State "CLOSED"       from "OPEN"       [2011-08-10 Wed 12:05]
 
 
@@ -377,7 +390,7 @@ CLOSED: [2011-08-10 Wed 12:05]
 * Severity levels
 
 ** 7 critical
- 
+
 makes unrelated software on the system (or the whole system) break, or
 causes serious data loss, or introduces a security hole on systems
 where you install the package.
