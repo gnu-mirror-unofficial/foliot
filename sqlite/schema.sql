@@ -76,3 +76,15 @@ create table kise_imported_db (
 
 -- 2013/09/04
 -- alter table kise_imported_db add column colour_set text;
+
+
+---
+--- Db infos
+---
+
+drop table if exists kise_shinning;
+
+create table kise_shinning (
+  id         integer primary key not null,
+  room_237   text,
+);

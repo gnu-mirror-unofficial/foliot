@@ -37,6 +37,7 @@
   :use-module (kise db-kise)
   :use-module (kise db-imported-db)
   :use-module (kise db-printing-templates)
+  :use-module (kise db-shinning)
 
   :export (db/add-schema
 	   db/check-schema
@@ -47,7 +48,8 @@
   (re-export-public-interface (kise db-con)
 			      (kise db-kise)
 			      (kise db-imported-db)
-			      (kise db-printing-templates)))
+			      (kise db-printing-templates)
+			      (kise db-shinning)))
 
 
 ;;;
@@ -57,19 +59,23 @@
 (define (db/add-schema db)
   (db-kise/add-kise-table db)
   (db-pt/add-printing-templates-table db)
-  (db-idb/add-imported-db-table db))
+  (db-idb/add-imported-db-table db)
+  (db-shi/add-shinning-table db))
 
 (define (db/check-schema db)
   (let ((kise? (sqlite/table-exists? db "kise"))
 	(kise-printing-templates? (sqlite/table-exists? db "kise_printing_templates"))
-	(kise-imported-db? (db-idb/check-schema db)))
+	(kise-imported-db? (db-idb/check-schema db))
+	(kise-shinning? (db-shi/check-schema db)))
     (cond ((and kise? ;; not good yet we should still check the defs
 		kise-printing-templates? ;; not good yet we should still check the defs
-		(eq? kise-imported-db? 'complete))
+		(eq? kise-imported-db? 'complete)
+		(eq? kise-shinning? 'complete))
 	   'complete)
 	  ((or kise?
 	       kise-printing-templates?
-	       (eq? kise-imported-db? 'partial))
+	       (eq? kise-imported-db? 'partial)
+	       (eq? kise-shinning? 'partial))
 	   'partial)
 	  (else
 	   'none))))
@@ -77,7 +83,8 @@
 (define (db/complete-schema db)
   (db-kise/create-complete-table db)
   (db-pt/create-complete-table db)
-  (db-idb/create-complete-table db))
+  (db-idb/create-complete-table db)
+  (db-shi/create-complete-table db))
 
 
 #!
