@@ -60,7 +60,7 @@
   :export (<kise/tl-widget>
 	   gui-callback?
 	   user-name
-	   
+
 	   db-file
 	   db-tuples
 	   whos
@@ -133,7 +133,7 @@
 	   filter-apply-bt
 	   filter-clear-bt
 	   filter-select-bt
-	   
+
 	   filter-date-entry
 	   filter-who-entry
 	   filter-who-lb
@@ -286,7 +286,7 @@
   (filter-apply-bt :accessor filter-apply-bt :init-keyword :filter-apply-bt :init-value #f)
   (filter-clear-bt :accessor filter-clear-bt :init-keyword :filter-clear-bt :init-value #f)
   (filter-select-bt :accessor filter-select-bt :init-keyword :filter-select-bt :init-value #f)
-  
+
   (filter-date-lb :accessor filter-date-lb :init-keyword :filter-date-lb :init-value #f)
   (filter-date-entry :accessor filter-date-entry :init-keyword :filter-date-entry :init-value #f)
   (filter-who-lb :accessor filter-who-lb :init-keyword :filter-who-lb :init-value #f)
@@ -308,7 +308,7 @@
   (tv-model :accessor tv-model :init-keyword :tv-model :init-value #f)
   (tv-sel :accessor tv-sel :init-keyword :tv-sel :init-value #f)
   (g-reselect-path? :accessor g-reselect-path? :init-value #f)
-  
+
   (status-bar-1 :accessor status-bar-1 :init-keyword :status-bar-1 :init-value #f)
   (status-bar-2 :accessor status-bar-2 :init-keyword :status-bar-2 :init-value #f)
   (status-bar-3 :accessor status-bar-3 :init-keyword :status-bar-3 :init-value #f)
@@ -331,7 +331,7 @@
 (define (ktlw/del-id id tl-widget)
   ;; this could be called with an id that is not in the set
   (let ((ids (id-set tl-widget)))
-    (and ids 
+    (and ids
 	 (memv id ids)
 	 (let ((new-ids (delete! id ids)))
 	   (if (not (null? new-ids))
@@ -370,7 +370,7 @@
     (ktlw/set 'to_be_charged tl-widget (sqlite/boolean new-value) row)
     (ktlw/update-totals-status-bars tl-widget)
     (ktlw/update-store-check-position tl-widget 'to_be_charged new-value #f row)
-    #f)) ;; 
+    #f)) ;;
 
 (define (ktlw/add-model treeview)
   (let* ((column-types (list <gchararray>
@@ -595,7 +595,7 @@
 			(length (db-tuples tl-widget)))))
     (gtk2/status-pop status-bar "")
     #;(set-markup (db-name-lb2 tl-widget)
-		(format #f "<span foreground=\"#777777\"><b>[ ~A: ~A ]</b></span>" 
+		(format #f "<span foreground=\"#777777\"><b>[ ~A: ~A ]</b></span>"
 			(_ "total records") 33))
     (if (and tuples-nb (> tuples-nb 0))
 	(gtk2/status-push status-bar (format #f "Record: ~A/~A" (1+ new-row) tuples-nb) "")
@@ -760,7 +760,7 @@
 
 (define (ktlw/entry-std-cb entry tl-widget what list-store-col-pos empty-msg . date?)
   (let* ((old-pos (current-row tl-widget))
-	 (db-tuple (and old-pos 
+	 (db-tuple (and old-pos
 			(>= old-pos 0)
 			(ktlw/get-tuple tl-widget old-pos)))
 	 (reference (and db-tuple (db-kise/get db-tuple 'id)))
@@ -860,43 +860,40 @@
 	    db)))
 
 (define (ktlw/post-open-db-ops tl-widget db-fname open-at-startup? ulogo db)
-  ;; the list-store related operations that needs to be done @
-  ;; connection time is exactly what needs to be done when clearing a
-  ;; filter _but_ (1) filling the combos _and_ (2) selecting the first
-  ;; row [this is because filter-clear will try to (re)select the
-  ;; row that was active before it's been called.
+  ;; the list-store related operations that needs to be done @ connection time is
+  ;; exactly what needs to be done when clearing a filter _but_ (1) filling the
+  ;; combos _and_ (2) selecting the first row [this is because filter-clear will
+  ;; try to (re)select the row that was active before it's been called.
   (db-con/set-db-con db (basename db-fname))
   (set! (active-filter tl-widget) #t)
   (set! (db-file tl-widget) db-fname)
   (ktlw/write-config tl-widget db-fname open-at-startup? ulogo)
   (set-markup (db-name-lb1 tl-widget)
 	      (format #f "<span foreground=\"#777777\"><b>[ ~A ]</b></span>" (basename db-fname)))
+  (run-shinning-room-237-checks db)
   (ktlw/filter-clear tl-widget 'fillcombos)
   (unless (= (current-row tl-widget) 0) (ktlw/select-row tl-widget 0)))
 
-(define (ktlw/open-db tl-widget db-file from-gui? mode open-at-startup? checks-result db)
-  ;; when basic checks passed, the schema is tested and for this the
-  ;; db is opened already: -> db [the argument] is either #f or a db
-  ;; connector
+(define (ktlw/open-db tl-widget db-filename from-gui? mode open-at-startup? checks-result db)
+  ;; when basic checks passed, the schema is tested and for this the db is opened
+  ;; already: -> db [the argument] is either #f or a db connector
   (case mode
     ((open)
      (case checks-result
-       ((opened) (ktlw/post-open-db-ops tl-widget db-file open-at-startup? (kcfg/get 'ulogo) db))
+       ((opened) (ktlw/post-open-db-ops tl-widget db-filename open-at-startup? (kcfg/get 'ulogo) db))
        ((opened-partial-schema)
 	(md2b/select-gui (dialog tl-widget)
 			 (_ "Confirm dialog")
 			 (_ "Complete schema")
-			 (_ "This database has an incomplete Kisê schema, would you like to complete it now?")
+			 (_ (format #f "This database [~A] has an incomplete Kisê schema, would you like to complete it now?"
+				    (basename db-filename)))
 			 (lambda ()
 			   (db/complete-schema db)
-			   (ktlw/post-open-db-ops tl-widget db-file open-at-startup? (kcfg/get 'ulogo) db))
+			   (ktlw/post-open-db-ops tl-widget db-filename open-at-startup? (kcfg/get 'ulogo) db))
 			 (lambda ()
-			   ;; Notes: [a] an open at start-up
-			   ;; incomplete schema db cancel operation
-			   ;; must set kisê to its no db mode; [b] a
-			   ;; connect to an incomplete schema db
-			   ;; cancel is ok, [dialogs closed, prev
-			   ;; connected db in use].
+			   ;; Notes: [a] an open at start-up incomplete schema db cancel operation must set
+			   ;; kisê to its no db mode; [b] a connect to an incomplete schema db cancel is
+			   ;; ok, [dialogs closed, prev connected db in use].
 			   (if (db-con)
 			       'nothing
 			       (ktlw/no-db-mode tl-widget))))
@@ -908,22 +905,20 @@
 			 (_ "This database does not contain the Kisê schema, would you like to add it now?")
 			 (lambda ()
 			   (db/add-schema db)
-			   (ktlw/post-open-db-ops tl-widget db-file open-at-startup? (kcfg/get 'ulogo) db))
+			   (ktlw/post-open-db-ops tl-widget db-filename open-at-startup? (kcfg/get 'ulogo) db))
 			 (lambda ()
-			   ;; Notes: [a] an open at start-up no-schema
-			   ;; db is not possible; [b] a connect to a
-			   ;; no schema db cancel is ok [dialogs
-			   ;; closed, prev connected db in use].
+			   ;; Notes: [a] an open at start-up no-schema db is not possible; [b] a connect to
+			   ;; a no schema db cancel is ok [dialogs closed, prev connected db in use].
 			   (if (db-con)
 			       'nothing
 			       (ktlw/no-db-mode tl-widget))))
 
 	#f)))
     ((create)
-     ;; (format #t "ktlw/open-db: ~S ~S~%" mode db-file)
-     (let ((db (db-con/open db-file #f)))
+     ;; (format #t "ktlw/open-db: ~S ~S~%" mode db-filename)
+     (let ((db (db-con/open db-filename #f)))
        (db/add-schema db)
-       (ktlw/post-open-db-ops tl-widget db-file open-at-startup? (kcfg/get 'ulogo) db)))))
+       (ktlw/post-open-db-ops tl-widget db-filename open-at-startup? (kcfg/get 'ulogo) db)))))
 
 
 ;;;
@@ -1004,11 +999,11 @@
       combos-defs))
 
 (define (ktlw/connect-combos tl-widget)
-  (ktlw/connect-combos-1 `((,tl-widget ,who-combo ,who-entry who #t ,whos 
+  (ktlw/connect-combos-1 `((,tl-widget ,who-combo ,who-entry who #t ,whos
 				       ,(lambda () (db-kise/select-distinct 'who #t)))
-			   (,tl-widget ,for-whom-combo ,for-whom-entry for_whom #t ,for-whoms 
+			   (,tl-widget ,for-whom-combo ,for-whom-entry for_whom #t ,for-whoms
 				       ,(lambda () (db-kise/select-distinct 'for_whom #t)))
-			   (,tl-widget ,what-combo ,what-entry what #t ,whats 
+			   (,tl-widget ,what-combo ,what-entry what #t ,whats
 				       ,(lambda () (db-kise/select-distinct 'what #t))))))
 
 
@@ -1072,7 +1067,7 @@
 	   (widget-size-whos (inexact->exact (round (* dpi-ratio (get (who-combo tl-widget) 'width-request))))))
       (set (reference-entry tl-widget) 'width-request widget-size-dates)
       (set (date-entry tl-widget) 'width-request widget-size-dates)
-      (set (date-edit tl-widget) 'width-request 
+      (set (date-edit tl-widget) 'width-request
 	   (+ 20 ;; the size of the popup button
 	      (inexact->exact (round (* dpi-ratio (get (date-edit tl-widget) 'width-request))))))
       (set (who-combo tl-widget) 'width-request widget-size-whos)
@@ -1090,7 +1085,7 @@
        date: ~S
         who: ~S
 filter date: ~S~%"
-	      (get (reference-entry tl-widget) 'width-request)	    
+	      (get (reference-entry tl-widget) 'width-request)
 	      (get (date-entry tl-widget) 'width-request)
 	      (get (who-combo tl-widget) 'width-request)
 	      (get (filter-date-entry tl-widget) 'width-request)
@@ -1161,7 +1156,7 @@ filter date: ~S~%"
 		      :filter-apply-bt (get-widget xmlc "kise/filter_apply_bt")
 		      :filter-clear-bt (get-widget xmlc "kise/filter_clear_bt")
 		      :filter-select-bt (get-widget xmlc "kise/filter_select_bt")
-		      
+
 		      :filter-date-lb (get-widget xmlc "kise/filter_date_lb")
 		      :filter-date-entry (get-widget xmlc "kise/filter_date")
 		      :filter-who-lb (get-widget xmlc "kise/filter_who_lb")
@@ -1174,7 +1169,7 @@ filter date: ~S~%"
 		      :filter-description-entry (get-widget xmlc "kise/filter_description")
 		      :filter-to-be-charged-lb (get-widget xmlc "kise/filter_to_be_charged_lb")
 		      :filter-to-be-charged-combo (get-widget xmlc "kise/filter_to_be_charged_combo")
-		      
+
 		      :sw (get-widget xmlc "kise/sw")
 		      :tv (get-widget xmlc "kise/tv")
 		      :status-bar-1 (get-widget xmlc "kise/status_bar_1")
@@ -1211,7 +1206,7 @@ filter date: ~S~%"
 	 (new-id (db-kise/add iso-today
 			      uname	;; who
 			      ""	;; for_whom
-			      "" 	;; what 
+			      "" 	;; what
 			      0		;; duration
 			      "f"	;; to-be-charged
 			      ""))	;; description
@@ -1441,7 +1436,7 @@ filter date: ~S~%"
   (let ((t-tip (tooltip tl-widget))
 	(image (filter-icon tl-widget)))
     (case mode
-      ((on) 
+      ((on)
        (set-from-file image (string-append (aglobs/get 'iconsdir) "/pie-24x24-color-2.png"))
        (set-tip t-tip image (_ "ON: your are working on a subset of your database.")))
       ((off)
