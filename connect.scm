@@ -91,7 +91,7 @@ create/connect to another Kisê database.
   (let* ((kc-dialog (dialog kc-widget))
 	 (filename (get-filename kc-dialog))
 	 (reuse-db? (get-active (reuse-db-cb kc-widget)))
-	 (active-db-file (kcfg/get 'db-file)))
+	 (active-db-file (and (db-con) (kcfg/get 'db-file))))
     (if (and active-db-file
 	     (string=? filename active-db-file))
 	(md1b/select-gui (dialog kc-widget)
@@ -102,8 +102,7 @@ create/connect to another Kisê database.
 			 'dialog-info)
 	(case (mode kc-widget)
 	  ((open)
-	   ;; the user could select a 'wrong file'. all checks must be
-	   ;; done but 'exists
+	   ;; the user could select a 'wrong file'. all checks must be done but 'exists
 	   (receive (checks-result db)
 	       (ktlw/open-db-checks filename)
 	     (case checks-result
@@ -118,9 +117,9 @@ create/connect to another Kisê database.
 		(ktlw/open-db tl-widget filename 'from-gui 'open reuse-db? checks-result db)
 		(kc/close-dialog kc-dialog)))))
 	  ((create)
-	   ;; for some very obscure reasons, when in 'create' mode,
-	   ;; kc/connect is called 2x ... see kise-bugs for details.
-	   ;; (format #t "modal?: ~S // New db for kise in ~A~%" (get-modal kc-dialog) filename)
+	   ;; for some very obscure reasons, when in 'create' mode, kc/connect is called 2x ... see
+	   ;; kise-bugs for details.  (format #t "modal?: ~S // New db for kise in ~A~%" (get-modal
+	   ;; kc-dialog) filename)
 	   (when (get-modal kc-dialog)
 	     (let ((checks-result (ktlw/create-db-checks filename)))
 	       (case checks-result
@@ -149,23 +148,23 @@ create/connect to another Kisê database.
 	 (reuse-db? (or (not db-file) (kcfg/get 'open-at-startup)))
 	 (kc-widget (kc/make-dialog parent g-file))
 	 (kc-dialog (dialog kc-widget)))
-    ;; (format #t "Connecting Widget: ~S~%Parent: ~S~%Connecting Dialog: ~S~%" 
+    ;; (format #t "Connecting Widget: ~S~%Parent: ~S~%Connecting Dialog: ~S~%"
     ;; kc-widget parent kc-dialog)
     (if reuse-db?
 	(set-active (reuse-db-cb kc-widget) #t))
     (if db-file
-	;;(set-current-folder kc-dialog (dirname db-file))
+	;; (set-current-folder kc-dialog (dirname db-file))
 	(select-filename kc-dialog db-file)
 	(set-current-folder kc-dialog (sys/get 'udir)))
-    ;; this is not allowed in 'open mode, which is the default
-    ;; (if fname (set-current-name kc-dialog fname))
+    ;; this is not allowed in 'open mode, which is the default (if fname (set-current-name kc-dialog
+    ;; fname))
     (connect (ok-bt kc-widget)
 	     'clicked
-	     (lambda (button) 
+	     (lambda (button)
 	       (kc/connect tl-widget kc-widget)))
     (connect (cancel-bt kc-widget)
 	     'clicked
-	     (lambda (button) 
+	     (lambda (button)
 	       (kc/close-dialog kc-dialog)))
     (set-modal kc-dialog #t)
     (show kc-dialog)))
