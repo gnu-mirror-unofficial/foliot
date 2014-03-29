@@ -111,7 +111,7 @@
 (define tuples #f)
 (define tuple #f)
 (define ref-lb #f)
-(define duration #f)
+(define duration-sp #f)
 
 (define (kise/set-debug-variables)
   (set! tl-widget *tl-widget*)
@@ -122,8 +122,8 @@
   (set! iter (current-iter tl-widget))
   (set! gdedit (date-edit tl-widget))
   (set! tuples (db-tuples tl-widget))
-  (set! tuple (ktlw/get-tuple tl-widget row))
-  (set! duration (duration-sb tl-widget))
+  (set! tuple (and tuples (ktlw/get-tuple tl-widget row)))
+  (set! duration-sp (duration-sb tl-widget))
   (set! ref-lb (reference-lb tl-widget)))
 
 #!
@@ -241,7 +241,7 @@
 		   (_ "Exit")
 		   (_ "Exit")
 		   (_ "Exit Kisê ?")
-		   (lambda () 
+		   (lambda ()
 		     (kise/on-tv-row-change tl-widget)
 		     (ktlw/write-config tl-widget)
 		     (exit 0))
@@ -432,7 +432,7 @@
 		     (begin
 		       (gdk-beep)
 		       (gtk2/status-pop (status-bar-2 tl-widget) "")
-		       (gtk2/status-push (status-bar-2 tl-widget) 
+		       (gtk2/status-push (status-bar-2 tl-widget)
 					 "Invalid date filter expression"
 					 "")
 		       (gtk2/set-text entry ""))
@@ -471,7 +471,7 @@
 		   (ktlw/filter-apply tl-widget 'force))))
     ;;
     ;; treeview
-    ;; 
+    ;;
     (connect (tv tl-widget)
 	     'row-activated
 	     (lambda (tview path col)
