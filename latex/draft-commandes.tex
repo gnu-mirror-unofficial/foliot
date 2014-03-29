@@ -37,28 +37,28 @@
 %% @\z is equivalent to 0pt
 
 \makeatletter
- \renewcommand\section{\@startsection{section}{1}{.2cm}% 
+ \renewcommand\section{\@startsection{section}{1}{.2cm}%
 	{2ex \@plus -1ex \@minus -.2ex}%
 	{.5ex \@plus.2ex}%
 	{\reset@font\huge\bfseries}}
 \makeatother
 
 \makeatletter
- \renewcommand\subsection{\@startsection{subsection}{2}{.54cm}% 
+ \renewcommand\subsection{\@startsection{subsection}{2}{.54cm}%
 	{1.7ex \@plus -1ex \@minus -.2ex}%
 	{.5ex \@plus.2ex}%
 	{\reset@font\Large\bfseries}}
 \makeatother
 
 \makeatletter
- \renewcommand\subsubsection{\@startsection{subsubsection}{3}{1.2cm}% 
+ \renewcommand\subsubsection{\@startsection{subsubsection}{3}{1.2cm}%
 	{1.7ex \@plus -1ex \@minus -.2ex}%
 	{.5ex \@plus.2ex}%
 	{\reset@font\large\bfseries}}
 \makeatother
 
 \makeatletter
- \renewcommand\paragraph{\@startsection{paragraph}{4}{1.7cm}% 
+ \renewcommand\paragraph{\@startsection{paragraph}{4}{1.7cm}%
 	{1.7ex \@plus -1ex \@minus -.2ex}%
 	{.5ex \@plus.2ex}%
 	{\reset@font\normalsize\itshape}}
@@ -100,14 +100,11 @@
   \section*{\textcolor{\ksectioncolour}{\textbf{#1}}}
   \vspace{-0.48cm}
   \ulksection{\textwidth}{\ksectioncolour}
-  \vspace{-0.1cm}
 }
 
 \newcommand{\ksubsection}[1]{%
+  \vspace{-0.2cm}
   \subsection*{\textcolor{\ksubsectioncolour}{\textbf{#1}}}
-  %\vspace{-0.65cm}
-  %\ulksection{\textwidth}{#2}
-  %\vspace{-0.3cm}
 }
 
 \newcommand{\ksubsubsection}[1]{%
