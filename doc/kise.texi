@@ -50,16 +50,24 @@ Documentation License.''
 @end ifnottex
 
 
-@c with emacs, use Texinfo/Update All Menus
 @menu
-* Overview of Kisê::    
-* Using Kisê::          
-* Printing dialog::             
-* Index::                       
+* Preface::
+* Introduction::
+* Using Kisê::
+
+Appendices
+
+* GNU Free Documentation License::  The license of this manual.
+
+Indices
+
+* Index::
 @end menu
+
 
 @c insert the table of contents
 @contents
+
 
 @include preface.texi
 @include introduction.texi

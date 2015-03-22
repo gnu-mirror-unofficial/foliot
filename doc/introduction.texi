@@ -7,6 +7,15 @@
 @node Introduction
 @chapter Introduction
 
+@menu
+* About Kisê::                
+* Kisê the name::
+* What else::
+* Obtaining and Installing Kisê::
+* Reporting Bugs::
+@end menu
+
+
 @c @unnumberedsec About Kisê
 @node About Kisê
 @section About Kisê
@@ -27,8 +36,8 @@ generate the pdf files and/or printed reports of your needs.
 
 An import/export facility is under work for remote collaboration.
 
-@node Kisê, the name
-@section Kisê, the name
+@node Kisê the name
+@section Kisê the name
 
 Kisê comes from the language @emph{Tupi-Guarani}.  It means 'an old and/or rusty
 knife'.  It should be pronounced @samp{ki-c}.  However, if you pronounce it
@@ -50,6 +59,10 @@ the @uref{@value{USCHEME}, scheme} programming language.  It uses
 @node Obtaining and Installing Kisê
 @section Obtaining and Installing Kisê
 
+@menu
+* Dependencies::
+* Quickstart::
+@end menu
 
 @node Dependencies
 @subsection Dependencies
