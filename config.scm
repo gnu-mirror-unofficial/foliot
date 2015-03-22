@@ -32,8 +32,6 @@
 
 (define-module (kise config)
   ;; guile
-  :use-module (ice-9 format)
-  :use-module (oop goops)
 
   ;; common
   :use-module (macros reexport)
@@ -43,21 +41,41 @@
   :export (kcfg/get))
 
 
-(define *config* #f)
+(define kcfg/get #f)
 
-(eval-when (compile load eval)
-  (set! *config* (sys/read-config "kise"))
-  (re-export-public-interface (ice-9 format)
-			      (oop goops)
-			      (system passwd)
-			      (system config)))
 
-(define (kcfg/get what)
-  (case what
-    ((reload) (set! *config* (sys/read-config "kise")))
-    (else
-     (let ((pair (and *config* (assoc what *config*))))
-       (and pair (cdr pair))))))
+(eval-when (expand load eval)
+  (re-export-public-interface (system passwd)
+			      (system config))
+  (let ((config (sys/read-config "kise")))
+    (set! kcfg/get
+	  (lambda (what)
+	    (case what
+	      ((all)
+	       config)
+	      ((reload)
+	       (sys/read-config "kise")
+	       config)
+	      (else
+	       (assq-ref config what)))))))
+
+;; the solution here below, which was suggested by mark weaver on irc,
+;; would work @ compile load eval time, but not @ expand tine.  till
+;; now, I don't need any of the kisê's config user setting at expand
+;; time, but that might not always be true.  i keep the definition
+;; below as an example, it could even help someone else :lo:.
+
+#;(define kcfg/get
+  (let ((config (sys/read-config "kise")))
+    (lambda (what)
+      (case what
+	((all)
+	 config)
+	((reload)
+	 (sys/read-config "kise")
+	 config)
+	(else
+	 (assq-ref config what))))))
 
 
 #!
@@ -65,6 +83,8 @@
 (use-modules (kise config))
 (reload-module (resolve-module '(kise config)))
 
+(kcfg/get 'all)
+(kcfg/get 'reload)
 (kcfg/get 'db-file)
 (kcfg/get 'open-at-startup)
 (kcfg/get 'ulogo)
@@ -72,14 +92,6 @@
 (kcfg/get 'win-y)
 (kcfg/get 'win-w)
 (kcfg/get 'win-h)
-
-
-;;;
-;;;
-;;;
-
-(define istream (open-input-file (string-append (sys/get 'udir) "/.config/kise.conf")))
-(define line (read istream))
 
 !#
 

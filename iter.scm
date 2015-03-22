@@ -31,33 +31,31 @@
 	   kiter/append-fill
 	   kiter/prepend-fill))
 
-(define kiter/get-pos #f)
-(define kiter/get #f)
-(define kiter/set #f)
 
-(eval-when (compile load eval)
-  (let ((offsets '((icolour . 0)
-		   (date . 1)
-		   (date_ . 1)
-		   (who . 2)
-		   (for-whom . 3)
-		   (for_whom . 3)
-		   (duration . 4)
-		   (to-be-charged . 5)
-		   (to_be_charged . 5)
-		   (what . 6)
-		   (rowbg . 7)
-		   (rowfg . 8)
-		   (ibg . 9)
-		   (ifg . 10))))
-    (set! kiter/get-pos
-	  (lambda (what) (cdr (assoc what offsets))))
-    (set! kiter/get
-	  (lambda (what model iter)
-	    (get-value model iter (kiter/get-pos what))))
-    (set! kiter/set
-	  (lambda (what model iter value)
-	    (set-value model iter (kiter/get-pos what) value)))))
+(define *kise-iter-offsets*
+  '((icolour . 0)
+    (date . 1)
+    (date_ . 1)
+    (who . 2)
+    (for-whom . 3)
+    (for_whom . 3)
+    (duration . 4)
+    (to-be-charged . 5)
+    (to_be_charged . 5)
+    (what . 6)
+    (rowbg . 7)
+    (rowfg . 8)
+    (ibg . 9)
+    (ifg . 10)))
+
+(define (kiter/get-pos what)
+  (cdr (assoc what *kise-iter-offsets*)))
+
+(define (kiter/get what model iter)
+  (get-value model iter (kiter/get-pos what)))
+
+(define (kiter/set what model iter value)
+  (set-value model iter (kiter/get-pos what) value))
 
 (define (kiter/fill-next model iter date who for-whom duration to-be-charged what ibg ifg)
   (kiter/set 'date model iter date)

@@ -58,28 +58,28 @@
 	   kp/get-core-ltx-field-specs))
 
 
-(define kpiter/get-pos #f)
-(define kpiter/get #f)
-(define kpiter/set #f)
-
 (eval-when (compile load eval)
-  (let ((offsets '((print . 0)
-		   (group . 1)
-		   (name . 2)
-		   (asc . 3)
-		   (desc . 4)
-		   (none . 5))))
-    (set! kpiter/get-pos
-	  (lambda (what) (cdr (assoc what offsets))))
-    (set! kpiter/get
-	  (lambda (what model iter)
-	    (get-value model iter (kpiter/get-pos what))))
-    (set! kpiter/set
-	  (lambda (what model iter value)
-	    ;; (format #t "offset: ~S~%" (cdr (assoc what offsets)))
-	    (set-value model iter (kpiter/get-pos what) value)))
   (textdomain "p-dialog")
-  (bindtextdomain "p-dialog" (aglobs/get 'pofdir))))
+  (bindtextdomain "p-dialog" (aglobs/get 'pofdir)))
+
+
+(define *kise-p-dialog-offsets*
+  '((print . 0)
+    (group . 1)
+    (name . 2)
+    (asc . 3)
+    (desc . 4)
+    (none . 5)))
+
+(define (kpiter/get-pos what)
+  (assoc-ref *kise-p-dialog-offsets* what))
+
+(define (kpiter/get what model iter)
+  (get-value model iter (kpiter/get-pos what)))
+
+(define (kpiter/set what model iter value)
+  ;; (format #t "offset: ~S~%" (cdr (assoc what offsets)))
+  (set-value model iter (kpiter/get-pos what) value))
 
 
 ;;;

@@ -1031,6 +1031,8 @@
     (db-kise/update db-tuple what value)))
 
 (define (ktlw/fill-tv tl-widget)
+  ;; note that icolors alist is like this [example]:
+  ;; '((1 "#ac5251" . "#000000") (0 "#60a8a8" . "#000000"))
   (let ((model (tv-model tl-widget))
 	(icolours (db-idb/get-colour-alist)))
     (gtk-list-store-clear model)

@@ -59,29 +59,30 @@
 	   ki/make-dialog
 	   ki/fill-treeview))
 
-(define kiiter/get-pos #f)
-(define kiiter/get #f)
-(define kiiter/set #f)
 
 (eval-when (compile load eval)
-  (let ((offsets '((icolour . 0)
-		   (name . 1)
-		   (date . 2)
-		   (by . 3)
-		   (id . 4)
-		   (filename . 5)
-		   (ibg . 6))))
-    (set! kiiter/get-pos
-	  (lambda (what) (cdr (assoc what offsets))))
-    (set! kiiter/get
-	  (lambda (what model iter)
-	    (get-value model iter (kiiter/get-pos what))))
-    (set! kiiter/set
-	  (lambda (what model iter value)
-	    ;; (format #t "offset: ~S~%" (cdr (assoc what offsets)))
-	    (set-value model iter (kiiter/get-pos what) value))))
   (textdomain "i-dialog")
   (bindtextdomain "i-dialog" (aglobs/get 'pofdir)))
+
+
+(define *kise-i-dialog-offset*
+  '((icolour . 0)
+    (name . 1)
+    (date . 2)
+    (by . 3)
+    (id . 4)
+    (filename . 5)
+    (ibg . 6)))
+
+(define (kiiter/get-pos what)
+  (assoc-ref *kise-i-dialog-offset* what))
+
+(define (kiiter/get what model iter)
+  (get-value model iter (kiiter/get-pos what)))
+
+(define (kiiter/set what model iter value)
+  ;; (format #t "offset: ~S~%" (cdr (assoc what offsets)))
+  (set-value model iter (kiiter/get-pos what) value))
 
 
 ;;;
