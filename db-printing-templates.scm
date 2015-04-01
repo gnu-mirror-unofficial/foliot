@@ -23,42 +23,43 @@
 
 ;;; Code:
 
+
 (define-module (kise db-printing-templates)
   ;; guile
-  :use-module (ice-9 format)
-  ;; :use-module (ice-9 receive)
-  ;; :use-module (oop goops)
+  #:use-module (ice-9 format)
+  ;; #:use-module (ice-9 receive)
+  ;; #:use-module (oop goops)
 
   ;; common
-  :use-module (macros reexport)
-  :use-module (macros do)
-  :use-module (db sqlite)
-  :use-module (system dates)
-  :use-module (system i18n)
-  :use-module (system aglobs)
-  :use-module (strings strings)
+  #:use-module (macros reexport)
+  #:use-module (macros do)
+  #:use-module (db sqlite)
+  #:use-module (system dates)
+  #:use-module (system i18n)
+  #:use-module (system aglobs)
+  #:use-module (strings strings)
 
   ;; kise
-  :use-module (kise globals)
-  :use-module (kise db-con)
+  #:use-module (kise globals)
+  #:use-module (kise db-con)
 
-  :export (db-pt/add-printing-templates-table
-	   db-pt/create-complete-table
-	   db-pt/select-all
-	   db-pt/select-some
-	   db-pt/get
-	   db-pt/set
-	   db-pt/get-tuple
-	   db-pt/update
-	   db-pt/find-pos
-	   db-pt/get-next-id
-	   db-pt/add
-	   db-pt/get-tex-field-spec
-	   db-pt/treeview-field-specs
-	   db-pt/df-get
-	   db-pt/add-default
-	   db-pt/duplicate
-	   db-pt/delete))
+  #:export (db-pt/add-printing-templates-table
+	    db-pt/create-complete-table
+	    db-pt/select-all
+	    db-pt/select-some
+	    db-pt/get
+	    db-pt/set
+	    db-pt/get-tuple
+	    db-pt/update
+	    db-pt/find-pos
+	    db-pt/get-next-id
+	    db-pt/add
+	    db-pt/get-tex-field-spec
+	    db-pt/treeview-field-specs
+	    db-pt/df-get
+	    db-pt/add-default
+	    db-pt/duplicate
+	    db-pt/delete))
 
 
 (eval-when (compile load eval)

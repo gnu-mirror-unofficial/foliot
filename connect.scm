@@ -23,24 +23,25 @@
 
 ;;; Code:
 
+
 (define-module (kise connect)
   ;; guile/guile-gnome
-  :use-module (oop goops)
-  :use-module (gnome gobject)
-  :use-module (gnome gtk)
+  #:use-module (oop goops)
+  #:use-module (gnome gobject)
+  #:use-module (gnome gtk)
 
   ;; common
-  ;; :use-module (macros reexport)
-  :use-module (gtk all)
-  :use-module (system i18n)
+  ;; #:use-module (macros reexport)
+  #:use-module (gtk all)
+  #:use-module (system i18n)
 
   ;; kise
-  :use-module (kise db)
-  :use-module (kise tl-widget)
-  :use-module (kise config)
-  :use-module (kise c-dialog)
+  #:use-module (kise db)
+  #:use-module (kise tl-widget)
+  #:use-module (kise config)
+  #:use-module (kise c-dialog)
 
-  :export (kc/select-gui))
+  #:export (kc/select-gui))
 
 
 #!
@@ -149,15 +150,15 @@ create/connect to another Kisê database.
 	 (kc-widget (kc/make-dialog parent g-file))
 	 (kc-dialog (dialog kc-widget)))
     ;; (format #t "Connecting Widget: ~S~%Parent: ~S~%Connecting Dialog: ~S~%"
-    ;; kc-widget parent kc-dialog)
+    ;;         kc-widget parent kc-dialog)
     (if reuse-db?
 	(set-active (reuse-db-cb kc-widget) #t))
     (if db-file
 	;; (set-current-folder kc-dialog (dirname db-file))
 	(select-filename kc-dialog db-file)
 	(set-current-folder kc-dialog (sys/get 'udir)))
-    ;; this is not allowed in 'open mode, which is the default (if fname (set-current-name kc-dialog
-    ;; fname))
+    ;; this is not allowed in 'open mode, which is the default (if fname
+    ;; (set-current-name kc-dialog fname))
     (connect (ok-bt kc-widget)
 	     'clicked
 	     (lambda (button)
@@ -177,7 +178,7 @@ create/connect to another Kisê database.
 ,m (kise connect)
 
 (define tl-widget (make <kise/tl-widget>
-		    :glade-file (aglobs/get 'gladefile)))
+		    #:glade-file (aglobs/get 'gladefile)))
 (kc/select-gui tl-widget "/usr/alto/db" "sqlite.alto.db")
 
 (define c-widget (kc/make-dialog (dialog tl-widget) (aglobs/get 'gladefile)))

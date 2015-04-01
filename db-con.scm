@@ -23,19 +23,20 @@
 
 ;;; Code:
 
+
 (define-module (kise db-con)
   ;; common
-  :use-module (macros reexport)
-  :use-module (system aglobs)
-  :use-module (db sqlite)
+  #:use-module (macros reexport)
+  #:use-module (system aglobs)
+  #:use-module (db sqlite)
 
-  :export (db-con
-	   db-name
-	   db-con/set-db-con
-	   db-con/open
-	   db-con/close
+  #:export (db-con
+	    db-name
+	    db-con/set-db-con
+	    db-con/open
+	    db-con/close
 	   
-	   db-con/add-schema))
+	    db-con/add-schema))
 
 
 (eval-when (compile load eval)

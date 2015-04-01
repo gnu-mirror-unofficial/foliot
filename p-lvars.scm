@@ -23,26 +23,27 @@
 
 ;;; Code:
 
+
 (define-module (kise p-lvars)
   ;; guile
-  :use-module (oop goops)
+  #:use-module (oop goops)
 
   ;; common
-  :use-module (macros reexport)
-  :use-module (system dates)
-  :use-module (system passwd)
-  :use-module (system i18n)
-  :use-module (system aglobs)
-  :use-module (nbs all)
-  :use-module (tex common)
-  :use-module (db sqlite)
+  #:use-module (macros reexport)
+  #:use-module (system dates)
+  #:use-module (system passwd)
+  #:use-module (system i18n)
+  #:use-module (system aglobs)
+  #:use-module (nbs all)
+  #:use-module (tex common)
+  #:use-module (db sqlite)
 
   ;; kise
-  :use-module (kise config)
-  :use-module (kise p-common)
-  :use-module (kise p-dialog)
+  #:use-module (kise config)
+  #:use-module (kise p-common)
+  #:use-module (kise p-dialog)
 
-  :export (kp/write-local-variables))
+  #:export (kp/write-local-variables))
 
 
 (eval-when (compile load eval)

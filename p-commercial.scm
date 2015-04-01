@@ -25,16 +25,17 @@
 
 ;;; Code:
 
+
 (define-module (kise p-commercial)
   ;; guile/guile-gnome
-  :use-module (oop goops)
-  ;; :use-module (gnome gw generics)
+  #:use-module (oop goops)
+  ;; #:use-module (gnome gw generics)
 
   ;; common
 
   ;; kise
 
-  :export (kp/print-commercial))
+  #:export (kp/print-commercial))
 
 
 ;;;

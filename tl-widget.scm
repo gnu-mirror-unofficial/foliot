@@ -24,181 +24,182 @@
 
 ;;; Code:
 
+
 (define-module (kise tl-widget)
   ;; guile/guile-gnome
-  :use-module (ice-9 format)
-  :use-module (ice-9 receive)
-  :use-module (oop goops)
-  :use-module (gnome gnome) ;; could use the system help
-  :use-module (gnome gobject)
-  :use-module (gnome gtk)
-  :use-module (gnome gtk gdk-event)
-  :use-module (gnome glade)
-  :use-module (gnome gnome-ui)
+  #:use-module (ice-9 format)
+  #:use-module (ice-9 receive)
+  #:use-module (oop goops)
+  #:use-module (gnome gnome) ;; could use the system help
+  #:use-module (gnome gobject)
+  #:use-module (gnome gtk)
+  #:use-module (gnome gtk gdk-event)
+  #:use-module (gnome glade)
+  #:use-module (gnome gnome-ui)
 
   ;; common
-  :use-module (macros reexport)
-  :use-module (macros push)
-  :use-module (macros do)
-  :use-module (system dates)
-  :use-module (system i18n)
-  :use-module (system aglobs)
-  :use-module (system xft)
-  :use-module (strings strings)
-  :use-module (nbs all)
-  :use-module (gtk all)
-  :use-module (db sqlite)
+  #:use-module (macros reexport)
+  #:use-module (macros push)
+  #:use-module (macros do)
+  #:use-module (system dates)
+  #:use-module (system i18n)
+  #:use-module (system aglobs)
+  #:use-module (system xft)
+  #:use-module (strings strings)
+  #:use-module (nbs all)
+  #:use-module (gtk all)
+  #:use-module (db sqlite)
 
   ;; kise
-  :use-module (kise config)
-  :use-module (kise colours)
+  #:use-module (kise config)
+  #:use-module (kise colours)
 
-  :use-module (kise db)
-  :use-module (kise iter)
-  ;; :use-module (kise what-tree)
+  #:use-module (kise db)
+  #:use-module (kise iter)
+  ;; #:use-module (kise what-tree)
 
-  :export (<kise/tl-widget>
-	   gui-callback?
-	   user-name
+  #:export (<kise/tl-widget>
+	    gui-callback?
+	    user-name
 
-	   db-file
-	   db-tuples
-	   whos
-	   for-whoms
-	   whats
-	   current-row
-	   current-iter
+	    db-file
+	    db-tuples
+	    whos
+	    for-whoms
+	    whats
+	    current-row
+	    current-iter
 
-	   glade-file
-	   xml-code
-	   dialog
-	   menubar
+	    glade-file
+	    xml-code
+	    dialog
+	    menubar
 
-	   ;; sorting-lb
-	   ;; sorting-combo
+	    ;; sorting-lb
+	    ;; sorting-combo
 
-	   con-bt
-	   import-bt
-	   quit-bt
-	   dup-bt
-	   add-bt
-	   del-bt
-	   print-bt
+	    con-bt
+	    import-bt
+	    quit-bt
+	    dup-bt
+	    add-bt
+	    del-bt
+	    print-bt
 
-	   first-bt
-	   prev-bt
-	   next-bt
-	   last-bt
-	   ;; help-bt
-	   prefs-bt
+	    first-bt
+	    prev-bt
+	    next-bt
+	    last-bt
+	    ;; help-bt
+	    prefs-bt
 
-	   reference-lb
-	   reference-entry
-	   reference-eb
+	    reference-lb
+	    reference-entry
+	    reference-eb
 
-	   date-lb
-	   date-entry
-	   date-icon ;; exported because currently hidden in kise.scm
-	   date-edit ;; exported because currently hidden in kise.scm
+	    date-lb
+	    date-entry
+	    date-icon ;; exported because currently hidden in kise.scm
+	    date-edit ;; exported because currently hidden in kise.scm
 
-	   who-lb
-	   who-entry
-	   who-combo
+	    who-lb
+	    who-entry
+	    who-combo
 
-	   for-whom-lb
-	   for-whom-entry
-	   for-whom-combo
+	    for-whom-lb
+	    for-whom-entry
+	    for-whom-combo
 
-	   duration-lb
-	   duration-sb
+	    duration-lb
+	    duration-sb
 
-	   what-lb
-	   what-combo
-	   what-entry
-	   ;; what-tv
-	   ;; what-tv-model
-	   ;; what-tv-sel
+	    what-lb
+	    what-combo
+	    what-entry
+	    ;; what-tv
+	    ;; what-tv-model
+	    ;; what-tv-sel
 
-	   to-be-charged-cb
+	    to-be-charged-cb
 
-	   description-lb
-	   description-sw
-	   description-entry
+	    description-lb
+	    description-sw
+	    description-entry
 
-	   db-name-lb1
-	   db-name-lb2
-	   db-name-lb3
+	    db-name-lb1
+	    db-name-lb2
+	    db-name-lb3
 
-	   filter-icon ;; exported because currently hidden in kise.scm
-	   filter-apply-bt
-	   filter-clear-bt
-	   filter-select-bt
+	    filter-icon ;; exported because currently hidden in kise.scm
+	    filter-apply-bt
+	    filter-clear-bt
+	    filter-select-bt
 
-	   filter-date-entry
-	   filter-who-entry
-	   filter-who-lb
-	   filter-for-whom-entry
-	   filter-for-whom-lb
-	   filter-what-entry
-	   filter-what-lb
-	   filter-description-entry
-	   filter-to-be-charged-lb
-	   filter-to-be-charged-combo
+	    filter-date-entry
+	    filter-who-entry
+	    filter-who-lb
+	    filter-for-whom-entry
+	    filter-for-whom-lb
+	    filter-what-entry
+	    filter-what-lb
+	    filter-description-entry
+	    filter-to-be-charged-lb
+	    filter-to-be-charged-combo
 
-	   active-filter
-	   id-set
+	    active-filter
+	    id-set
 
-	   sw
-	   tv
-	   tv-model
-	   tv-sel
-	   g-reselect-path?
+	    sw
+	    tv
+	    tv-model
+	    tv-sel
+	    g-reselect-path?
 
-	   status-bar-1 ;; records info
-	   status-bar-2 ;; app messages
-	   status-bar-3 ;; total time
-	   status-bar-4 ;; charged time
+	    status-bar-1 ;; records info
+	    status-bar-2 ;; app messages
+	    status-bar-3 ;; total time
+	    status-bar-4 ;; charged time
 
-	   ktlw/write-config
+	    ktlw/write-config
 
-	   ktlw/create-db-checks
-	   ktlw/open-db-checks
-	   ktlw/open-db
-	   ktlw/fill-combos
-	   ktlw/connect-combos
+	    ktlw/create-db-checks
+	    ktlw/open-db-checks
+	    ktlw/open-db
+	    ktlw/fill-combos
+	    ktlw/connect-combos
 
-	   ktlw/get-tuple
-	   ktlw/get
-	   ktlw/set
-	   ktlw/setup-treeview
-	   ktlw/fill-tv
-	   ktlw/get-hr-hrs
-	   ktlw/get-hour-hours
-	   ktlw/get-day-days
-	   ktlw/get-totals
-	   ktlw/update-status-bar-1
-	   ktlw/select-ctime
-	   ktlw/update-totals-status-bars
+	    ktlw/get-tuple
+	    ktlw/get
+	    ktlw/set
+	    ktlw/setup-treeview
+	    ktlw/fill-tv
+	    ktlw/get-hr-hrs
+	    ktlw/get-hour-hours
+	    ktlw/get-day-days
+	    ktlw/get-totals
+	    ktlw/update-status-bar-1
+	    ktlw/select-ctime
+	    ktlw/update-totals-status-bars
 
-	   ktlw/set-cur-globals
-	   ktlw/select-row
-	   ktlw/update-store-check-position
-	   ktlw/entry-std-cb
-	   ktlw/make-tl-widget
+	    ktlw/set-cur-globals
+	    ktlw/select-row
+	    ktlw/update-store-check-position
+	    ktlw/entry-std-cb
+	    ktlw/make-tl-widget
 
-	   ktlw/add-id ;; filter additional 'or' id set
-	   ktlw/del-id
-	   ktlw/import
-	   ktlw/add
-	   ktlw/duplicate
-	   ktlw/delete
+	    ktlw/add-id ;; filter additional 'or' id set
+	    ktlw/del-id
+	    ktlw/import
+	    ktlw/add
+	    ktlw/duplicate
+	    ktlw/delete
 
-	   ktlw/check-nav-tb-sensitive-needs
-	   ktlw/empty-subset-or-db-mode
-	   ktlw/no-db-mode
-	   ktlw/normal-mode
-	   ktlw/filter-apply
-	   ktlw/filter-clear))
+	    ktlw/check-nav-tb-sensitive-needs
+	    ktlw/empty-subset-or-db-mode
+	    ktlw/no-db-mode
+	    ktlw/normal-mode
+	    ktlw/filter-apply
+	    ktlw/filter-clear))
 
 
 (eval-when (compile load eval)
@@ -216,103 +217,103 @@
 ;;;
 
 (define-class <kise/tl-widget> () ;; (<kise/config>)
-  (user-name :accessor user-name :init-keyword :user-name :init-value #f)
-  (gui-callback? :accessor gui-callback? :init-keyword :gui-callback? :init-value #t)
+  (user-name #:accessor user-name #:init-keyword #:user-name #:init-value #f)
+  (gui-callback? #:accessor gui-callback? #:init-keyword #:gui-callback? #:init-value #t)
 
-  (db-file :accessor db-file :init-keyword :db-file :init-value #f)
-  (db-tuples :accessor db-tuples :init-keyword :db-tuples :init-value #f)
-  (whos :accessor whos :init-keyword :whos :init-value #f)
-  (for-whoms :accessor for-whoms :init-keyword :for-whoms :init-value #f)
-  (whats :accessor whats :init-keyword :whats :init-value #f)
-  (current-row :accessor current-row :init-keyword :current-row :init-value #f)
-  (current-iter :accessor current-iter :init-keyword :current-iter :init-value #f)
-  (glade-file :accessor glade-file :init-keyword :glade-file :init-value #f)
-  (xml-code :accessor xml-code :init-keyword :xml-code :init-value #f)
+  (db-file #:accessor db-file #:init-keyword #:db-file #:init-value #f)
+  (db-tuples #:accessor db-tuples #:init-keyword #:db-tuples #:init-value #f)
+  (whos #:accessor whos #:init-keyword #:whos #:init-value #f)
+  (for-whoms #:accessor for-whoms #:init-keyword #:for-whoms #:init-value #f)
+  (whats #:accessor whats #:init-keyword #:whats #:init-value #f)
+  (current-row #:accessor current-row #:init-keyword #:current-row #:init-value #f)
+  (current-iter #:accessor current-iter #:init-keyword #:current-iter #:init-value #f)
+  (glade-file #:accessor glade-file #:init-keyword #:glade-file #:init-value #f)
+  (xml-code #:accessor xml-code #:init-keyword #:xml-code #:init-value #f)
 
-  (dialog :accessor dialog :init-keyword :dialog :init-value #f)
-  (menubar :accessor menubar :init-keyword :menubar :init-value #f)
-  (tooltip :accessor tooltip :init-keyword :tooltip :init-value #f)
+  (dialog #:accessor dialog #:init-keyword #:dialog #:init-value #f)
+  (menubar #:accessor menubar #:init-keyword #:menubar #:init-value #f)
+  (tooltip #:accessor tooltip #:init-keyword #:tooltip #:init-value #f)
 
-  (sorting-lb :accessor sorting-lb :init-keyword :sorting-lb :init-value #f)
-  (sorting-combo :accessor sorting-combo :init-keyword :sorting-combo :init-value #f)
+  (sorting-lb #:accessor sorting-lb #:init-keyword #:sorting-lb #:init-value #f)
+  (sorting-combo #:accessor sorting-combo #:init-keyword #:sorting-combo #:init-value #f)
 
-  (con-bt :accessor con-bt :init-keyword :con-bt :init-value #f)
-  (import-bt :accessor import-bt :init-keyword :import-bt :init-value #f)
-  (quit-bt :accessor quit-bt :init-keyword :quit-bt :init-value #f)
-  (dup-bt :accessor dup-bt :init-keyword :dup-bt :init-value #f)
-  (add-bt :accessor add-bt :init-keyword :add-bt :init-value #f)
-  (del-bt :accessor del-bt :init-keyword :del-bt :init-value #f)
-  (print-bt :accessor print-bt :init-keyword :print-bt :init-value #f)
+  (con-bt #:accessor con-bt #:init-keyword #:con-bt #:init-value #f)
+  (import-bt #:accessor import-bt #:init-keyword #:import-bt #:init-value #f)
+  (quit-bt #:accessor quit-bt #:init-keyword #:quit-bt #:init-value #f)
+  (dup-bt #:accessor dup-bt #:init-keyword #:dup-bt #:init-value #f)
+  (add-bt #:accessor add-bt #:init-keyword #:add-bt #:init-value #f)
+  (del-bt #:accessor del-bt #:init-keyword #:del-bt #:init-value #f)
+  (print-bt #:accessor print-bt #:init-keyword #:print-bt #:init-value #f)
 
-  (first-bt :accessor first-bt :init-keyword :first-bt :init-value #f)
-  (prev-bt :accessor prev-bt :init-keyword :prev-bt :init-value #f)
-  (next-bt :accessor next-bt :init-keyword :next-bt :init-value #f)
-  (last-bt :accessor last-bt :init-keyword :last-bt :init-value #f)
-  (help-bt :accessor help-bt :init-keyword :help-bt :init-value #f)
-  (prefs-bt :accessor prefs-bt :init-keyword :prefs-bt :init-value #f)
+  (first-bt #:accessor first-bt #:init-keyword #:first-bt #:init-value #f)
+  (prev-bt #:accessor prev-bt #:init-keyword #:prev-bt #:init-value #f)
+  (next-bt #:accessor next-bt #:init-keyword #:next-bt #:init-value #f)
+  (last-bt #:accessor last-bt #:init-keyword #:last-bt #:init-value #f)
+  (help-bt #:accessor help-bt #:init-keyword #:help-bt #:init-value #f)
+  (prefs-bt #:accessor prefs-bt #:init-keyword #:prefs-bt #:init-value #f)
 
-  (reference-lb :accessor reference-lb :init-keyword :reference-lb :init-value #f)
-  (reference-entry :accessor reference-entry :init-keyword :reference-entry :init-value #f)
-  (reference-eb :accessor reference-eb :init-keyword :reference-eb :init-value #f)
-  (date-lb :accessor date-lb :init-keyword :date-lb :init-value #f)
-  (date-entry :accessor date-entry :init-keyword :date-entry :init-value #f)
-  (date-icon :accessor date-icon :init-keyword :date-icon :init-value #f)
-  (date-edit :accessor date-edit :init-keyword :date-edit :init-value #f)
-  (who-lb :accessor who-lb :init-keyword :who-lb :init-value #f)
-  (who-entry :accessor who-entry :init-keyword :who-entry :init-value #f)
-  (who-combo :accessor who-combo :init-keyword :who-combo :init-value #f)
-  (for-whom-lb :accessor for-whom-lb :init-keyword :for-whom-lb :init-value #f)
-  (for-whom-entry :accessor for-whom-entry :init-keyword :for-whom-entry :init-value #f)
-  (for-whom-combo :accessor for-whom-combo :init-keyword :for-whom-combo :init-value #f)
-  (duration-lb :accessor duration-lb :init-keyword :duration-lb :init-value #f)
-  (duration-sb :accessor duration-sb :init-keyword :duration-sb :init-value #f)
-  (what-lb :accessor what-lb :init-keyword :what-lb :init-value #f)
-  (what-combo :accessor what-combo :init-keyword :what-combo :init-value #f)
-  (what-entry :accessor what-entry :init-keyword :what-entry :init-value #f)
-  ;; (what-tv :accessor what-tv :init-keyword :what-tv :init-value #f)
-  ;; (what-tv-model :accessor what-tv-model :init-keyword :what-tv-model :init-value #f)
-  ;; (what-tv-sel :accessor what-tv-sel :init-keyword :what-tv-sel :init-value #f)
-  (to-be-charged-cb :accessor to-be-charged-cb :init-keyword :to-be-charged-cb :init-value #f)
-  (description-lb :accessor description-lb :init-keyword :description-lb :init-value #f)
-  (description-sw :accessor description-sw :init-keyword :description-sw :init-value #f)
-  (description-entry :accessor description-entry :init-keyword :description-entry :init-value #f)
+  (reference-lb #:accessor reference-lb #:init-keyword #:reference-lb #:init-value #f)
+  (reference-entry #:accessor reference-entry #:init-keyword #:reference-entry #:init-value #f)
+  (reference-eb #:accessor reference-eb #:init-keyword #:reference-eb #:init-value #f)
+  (date-lb #:accessor date-lb #:init-keyword #:date-lb #:init-value #f)
+  (date-entry #:accessor date-entry #:init-keyword #:date-entry #:init-value #f)
+  (date-icon #:accessor date-icon #:init-keyword #:date-icon #:init-value #f)
+  (date-edit #:accessor date-edit #:init-keyword #:date-edit #:init-value #f)
+  (who-lb #:accessor who-lb #:init-keyword #:who-lb #:init-value #f)
+  (who-entry #:accessor who-entry #:init-keyword #:who-entry #:init-value #f)
+  (who-combo #:accessor who-combo #:init-keyword #:who-combo #:init-value #f)
+  (for-whom-lb #:accessor for-whom-lb #:init-keyword #:for-whom-lb #:init-value #f)
+  (for-whom-entry #:accessor for-whom-entry #:init-keyword #:for-whom-entry #:init-value #f)
+  (for-whom-combo #:accessor for-whom-combo #:init-keyword #:for-whom-combo #:init-value #f)
+  (duration-lb #:accessor duration-lb #:init-keyword #:duration-lb #:init-value #f)
+  (duration-sb #:accessor duration-sb #:init-keyword #:duration-sb #:init-value #f)
+  (what-lb #:accessor what-lb #:init-keyword #:what-lb #:init-value #f)
+  (what-combo #:accessor what-combo #:init-keyword #:what-combo #:init-value #f)
+  (what-entry #:accessor what-entry #:init-keyword #:what-entry #:init-value #f)
+  ;; (what-tv #:accessor what-tv #:init-keyword #:what-tv #:init-value #f)
+  ;; (what-tv-model #:accessor what-tv-model #:init-keyword #:what-tv-model #:init-value #f)
+  ;; (what-tv-sel #:accessor what-tv-sel #:init-keyword #:what-tv-sel #:init-value #f)
+  (to-be-charged-cb #:accessor to-be-charged-cb #:init-keyword #:to-be-charged-cb #:init-value #f)
+  (description-lb #:accessor description-lb #:init-keyword #:description-lb #:init-value #f)
+  (description-sw #:accessor description-sw #:init-keyword #:description-sw #:init-value #f)
+  (description-entry #:accessor description-entry #:init-keyword #:description-entry #:init-value #f)
 
-  (db-name-lb1 :accessor db-name-lb1 :init-keyword :db-name-lb1 :init-value #f)
-  (db-name-lb2 :accessor db-name-lb2 :init-keyword :db-name-lb2 :init-value #f)
-  (db-name-lb3 :accessor db-name-lb3 :init-keyword :db-name-lb3 :init-value #f)
+  (db-name-lb1 #:accessor db-name-lb1 #:init-keyword #:db-name-lb1 #:init-value #f)
+  (db-name-lb2 #:accessor db-name-lb2 #:init-keyword #:db-name-lb2 #:init-value #f)
+  (db-name-lb3 #:accessor db-name-lb3 #:init-keyword #:db-name-lb3 #:init-value #f)
 
-  (filter-icon :accessor filter-icon :init-keyword :filter-icon :init-value #f)
-  (filter-criteria-lb :accessor filter-criteria-lb :init-keyword :filter-criteria-lb :init-value #f)
-  (filter-apply-bt :accessor filter-apply-bt :init-keyword :filter-apply-bt :init-value #f)
-  (filter-clear-bt :accessor filter-clear-bt :init-keyword :filter-clear-bt :init-value #f)
-  (filter-select-bt :accessor filter-select-bt :init-keyword :filter-select-bt :init-value #f)
+  (filter-icon #:accessor filter-icon #:init-keyword #:filter-icon #:init-value #f)
+  (filter-criteria-lb #:accessor filter-criteria-lb #:init-keyword #:filter-criteria-lb #:init-value #f)
+  (filter-apply-bt #:accessor filter-apply-bt #:init-keyword #:filter-apply-bt #:init-value #f)
+  (filter-clear-bt #:accessor filter-clear-bt #:init-keyword #:filter-clear-bt #:init-value #f)
+  (filter-select-bt #:accessor filter-select-bt #:init-keyword #:filter-select-bt #:init-value #f)
 
-  (filter-date-lb :accessor filter-date-lb :init-keyword :filter-date-lb :init-value #f)
-  (filter-date-entry :accessor filter-date-entry :init-keyword :filter-date-entry :init-value #f)
-  (filter-who-lb :accessor filter-who-lb :init-keyword :filter-who-lb :init-value #f)
-  (filter-who-entry :accessor filter-who-entry :init-keyword :filter-who-entry :init-value #f)
-  (filter-for-whom-lb :accessor filter-for-whom-lb :init-keyword :filter-for-whom-lb :init-value #f)
-  (filter-for-whom-entry :accessor filter-for-whom-entry :init-keyword :filter-for-whom-entry :init-value #f)
-  (filter-what-lb :accessor filter-what-lb :init-keyword :filter-what-lb :init-value #f)
-  (filter-what-entry :accessor filter-what-entry :init-keyword :filter-what-entry :init-value #f)
-  (filter-description-lb :accessor filter-description-lb :init-keyword :filter-description-lb :init-value #f)
-  (filter-description-entry :accessor filter-description-entry :init-keyword :filter-description-entry :init-value #f)
-  (filter-to-be-charged-lb :accessor filter-to-be-charged-lb :init-keyword :filter-to-be-charged-lb :init-value #f)
-  (filter-to-be-charged-combo :accessor filter-to-be-charged-combo :init-keyword :filter-to-be-charged-combo :init-value #f)
+  (filter-date-lb #:accessor filter-date-lb #:init-keyword #:filter-date-lb #:init-value #f)
+  (filter-date-entry #:accessor filter-date-entry #:init-keyword #:filter-date-entry #:init-value #f)
+  (filter-who-lb #:accessor filter-who-lb #:init-keyword #:filter-who-lb #:init-value #f)
+  (filter-who-entry #:accessor filter-who-entry #:init-keyword #:filter-who-entry #:init-value #f)
+  (filter-for-whom-lb #:accessor filter-for-whom-lb #:init-keyword #:filter-for-whom-lb #:init-value #f)
+  (filter-for-whom-entry #:accessor filter-for-whom-entry #:init-keyword #:filter-for-whom-entry #:init-value #f)
+  (filter-what-lb #:accessor filter-what-lb #:init-keyword #:filter-what-lb #:init-value #f)
+  (filter-what-entry #:accessor filter-what-entry #:init-keyword #:filter-what-entry #:init-value #f)
+  (filter-description-lb #:accessor filter-description-lb #:init-keyword #:filter-description-lb #:init-value #f)
+  (filter-description-entry #:accessor filter-description-entry #:init-keyword #:filter-description-entry #:init-value #f)
+  (filter-to-be-charged-lb #:accessor filter-to-be-charged-lb #:init-keyword #:filter-to-be-charged-lb #:init-value #f)
+  (filter-to-be-charged-combo #:accessor filter-to-be-charged-combo #:init-keyword #:filter-to-be-charged-combo #:init-value #f)
 
-  (active-filter :accessor active-filter :init-keyword :active-filter :init-value #f)
-  (id-set :accessor id-set :init-keyword :id-set :init-value #f)
+  (active-filter #:accessor active-filter #:init-keyword #:active-filter #:init-value #f)
+  (id-set #:accessor id-set #:init-keyword #:id-set #:init-value #f)
 
-  (sw :accessor sw :init-keyword :sw :init-value #f)
-  (tv :accessor tv :init-keyword :tv :init-value #f)
-  (tv-model :accessor tv-model :init-keyword :tv-model :init-value #f)
-  (tv-sel :accessor tv-sel :init-keyword :tv-sel :init-value #f)
-  (g-reselect-path? :accessor g-reselect-path? :init-value #f)
+  (sw #:accessor sw #:init-keyword #:sw #:init-value #f)
+  (tv #:accessor tv #:init-keyword #:tv #:init-value #f)
+  (tv-model #:accessor tv-model #:init-keyword #:tv-model #:init-value #f)
+  (tv-sel #:accessor tv-sel #:init-keyword #:tv-sel #:init-value #f)
+  (g-reselect-path? #:accessor g-reselect-path? #:init-value #f)
 
-  (status-bar-1 :accessor status-bar-1 :init-keyword :status-bar-1 :init-value #f)
-  (status-bar-2 :accessor status-bar-2 :init-keyword :status-bar-2 :init-value #f)
-  (status-bar-3 :accessor status-bar-3 :init-keyword :status-bar-3 :init-value #f)
-  (status-bar-4 :accessor status-bar-4 :init-keyword :status-bar-4 :init-value #f))
+  (status-bar-1 #:accessor status-bar-1 #:init-keyword #:status-bar-1 #:init-value #f)
+  (status-bar-2 #:accessor status-bar-2 #:init-keyword #:status-bar-2 #:init-value #f)
+  (status-bar-3 #:accessor status-bar-3 #:init-keyword #:status-bar-3 #:init-value #f)
+  (status-bar-4 #:accessor status-bar-4 #:init-keyword #:status-bar-4 #:init-value #f))
 
 (define-method (show-me (widget <kise/tl-widget>))
   (format #t "Widget: ~S~%" widget)
@@ -395,99 +396,99 @@
 	 ;; IMPORTED ROW COLOUR
 	 (renderer0 (make <gtk-cell-renderer-text>))
 	 (column0   (make <gtk-tree-view-column>
-		       :sizing      'fixed
-		       :fixed-width 5
-		       :clickable   #f
-		       :resizable   #f
-		       :reorderable #f
-		       :alignment   .5))
+		       #:sizing      'fixed
+		       #:fixed-width 5
+		       #:clickable   #f
+		       #:resizable   #f
+		       #:reorderable #f
+		       #:alignment   .5))
 	 ;; DATE
 	 (renderer1 (make <gtk-cell-renderer-text>))
 	 (column1   (make <gtk-tree-view-column>
-		      :title       (_ "Date")
-		      :sizing      'fixed
-		      :fixed-width (if apply-ratio? (inexact->exact (round (* dpi-ratio 90))) 90)
-		      :clickable   #f
-		      :resizable   #f
-		      :reorderable #f
-		      :alignment   .5))
+		      #:title       (_ "Date")
+		      #:sizing      'fixed
+		      #:fixed-width (if apply-ratio? (inexact->exact (round (* dpi-ratio 90))) 90)
+		      #:clickable   #f
+		      #:resizable   #f
+		      #:reorderable #f
+		      #:alignment   .5))
 	 ;; WHO
 	 (renderer2 (make <gtk-cell-renderer-text>
-		      :foreground    "Blue"))
+		      #:foreground    "Blue"))
 	 (column2   (make <gtk-tree-view-column>
-		      :title       (_ "Who")
-		      :sizing      'fixed
-		      :fixed-width (if apply-ratio? (inexact->exact (round (* dpi-ratio 65))) 65)
-		      :clickable   #f
-		      :resizable   #f
-		      :reorderable #f
-		      :alignment   .5))
+		      #:title       (_ "Who")
+		      #:sizing      'fixed
+		      #:fixed-width (if apply-ratio? (inexact->exact (round (* dpi-ratio 65))) 65)
+		      #:clickable   #f
+		      #:resizable   #f
+		      #:reorderable #f
+		      #:alignment   .5))
 	 ;; FOR WHOM
 	 (renderer3 (make <gtk-cell-renderer-text>))
 	 (column3   (make <gtk-tree-view-column>
-		      :title       (_ "For wh.")
-		      :sizing      'fixed
-		      :fixed-width (if apply-ratio? (inexact->exact (round (* dpi-ratio 65))) 65)
-		      :clickable   #f
-		      :resizable   #f
-		      :reorderable #f
-		      :alignment   .5))
+		      #:title       (_ "For wh.")
+		      #:sizing      'fixed
+		      #:fixed-width (if apply-ratio? (inexact->exact (round (* dpi-ratio 65))) 65)
+		      #:clickable   #f
+		      #:resizable   #f
+		      #:reorderable #f
+		      #:alignment   .5))
 	 ;; DURATION
 	 (adjustment4 (make <gtk-adjustment>
-			:value 0
-			:lower 0
-			:upper 100
-			:step-increment .1
-			:page-increment 1
-			:page-size 0))
+			#:value 0
+			#:lower 0
+			#:upper 100
+			#:step-increment .1
+			#:page-increment 1
+			#:page-size 0))
 	 (renderer4 (make <gtk-cell-renderer-spin>
-		      ;; :family "Monospace"
-		      :adjustment adjustment4
-		      :climb-rate 0.1
-		      :digits 1))
+		      ;; #:family "Monospace"
+		      #:adjustment adjustment4
+		      #:climb-rate 0.1
+		      #:digits 1))
 	 (column4   (make <gtk-tree-view-column>
-		      :title       (_ "Dur.")
-		      :sizing      'fixed
-		      :fixed-width (if apply-ratio? (inexact->exact (round (* dpi-ratio 50))) 50)
-		      :clickable   #f
-		      :resizable   #f
-		      :reorderable #f
-		      :alignment   .5))
+		      #:title       (_ "Dur.")
+		      #:sizing      'fixed
+		      #:fixed-width (if apply-ratio? (inexact->exact (round (* dpi-ratio 50))) 50)
+		      #:clickable   #f
+		      #:resizable   #f
+		      #:reorderable #f
+		      #:alignment   .5))
 	 ;; A FACTURER
 	 (renderer5 (make <gtk-cell-renderer-toggle>))
 	 (column5   (make <gtk-tree-view-column>
-		       :title       (_ "C")
-		       :sizing      'fixed
-		       :fixed-width 30
-		       :alignment   .5))
+		       #:title       (_ "C")
+		       #:sizing      'fixed
+		       #:fixed-width 30
+		       #:alignment   .5))
 	 ;; WHAT
 	 (renderer6 (make <gtk-cell-renderer-text>))
 	 (column6   (make <gtk-tree-view-column>
-		      :title       (_ "What")
-		      :clickable   #f
-		      :resizable   #f
-		      :reorderable #f
-		      :alignment   .5))
+		      #:title       (_ "What")
+		      #:clickable   #f
+		      #:resizable   #f
+		      #:reorderable #f
+		      #:alignment   .5))
 	 ;; ROW BACKGROUND COLOUR
 	 (renderer7 (make <gtk-cell-renderer-text>
-		      :xalign      1))
+		      #:xalign      1))
 	 (column7   (make <gtk-tree-view-column>
-		      :visible     #f))
+		      #:visible     #f))
 	 ;; ROW FOREGROUND COLOUR
 	 (renderer8 (make <gtk-cell-renderer-text>
-		      :xalign      1))
+		      #:xalign      1))
 	 (column8   (make <gtk-tree-view-column>
-		      :visible     #f))
+		      #:visible     #f))
 	 ;; ICOLOUR BACKGROUND
 	 (renderer9 (make <gtk-cell-renderer-text>
-		      :xalign      1))
+		      #:xalign      1))
 	 (column9   (make <gtk-tree-view-column>
-		      :visible     #f))
+		      #:visible     #f))
 	 ;; ICOLOUR FOREGROUND
 	 (renderer10 (make <gtk-cell-renderer-text>
-		      :xalign      1))
+		      #:xalign      1))
 	 (column10   (make <gtk-tree-view-column>
-		      :visible     #f))
+		      #:visible     #f))
 	 (to-pack   `((icolour ,column0 ,renderer0 "text")
 		      (date ,column1 ,renderer1 "text")
 		      (who ,column2 ,renderer2 "text")
@@ -1097,87 +1098,87 @@ filter date: ~S~%"
   (let* ((xmlc (glade-xml-new gfile  #f "kise"))
 	 (t-tip (gtk-tooltips-new))
 	 (tl-widget (make <kise/tl-widget>
-		      :user-name uname
-		      :glade-file gfile
-		      :xml-code xmlc
-		      :dialog (get-widget xmlc "kise")
-		      :menubar (get-widget xmlc "kise/menubar")
-		      :tooltip t-tip
-		      :sorting-lb (get-widget xmlc "kise/sorting_lb")
-		      :sorting-combo (get-widget xmlc "kise/sorting_combo")
+		      #:user-name uname
+		      #:glade-file gfile
+		      #:xml-code xmlc
+		      #:dialog (get-widget xmlc "kise")
+		      #:menubar (get-widget xmlc "kise/menubar")
+		      #:tooltip t-tip
+		      #:sorting-lb (get-widget xmlc "kise/sorting_lb")
+		      #:sorting-combo (get-widget xmlc "kise/sorting_combo")
 
-		      :con-bt (get-widget xmlc "kise/con_bt")
-		      :import-bt (get-widget xmlc "kise/import_bt")
-		      :quit-bt (get-widget xmlc "kise/quit_bt")
-		      :dup-bt (get-widget xmlc "kise/dup_bt")
-		      :add-bt (get-widget xmlc "kise/add_bt")
-		      :del-bt (get-widget xmlc "kise/del_bt")
-		      :print-bt (get-widget xmlc "kise/print_bt")
+		      #:con-bt (get-widget xmlc "kise/con_bt")
+		      #:import-bt (get-widget xmlc "kise/import_bt")
+		      #:quit-bt (get-widget xmlc "kise/quit_bt")
+		      #:dup-bt (get-widget xmlc "kise/dup_bt")
+		      #:add-bt (get-widget xmlc "kise/add_bt")
+		      #:del-bt (get-widget xmlc "kise/del_bt")
+		      #:print-bt (get-widget xmlc "kise/print_bt")
 
-		      :first-bt (get-widget xmlc "kise/first_bt")
-		      :prev-bt (get-widget xmlc "kise/prev_bt")
-		      :next-bt (get-widget xmlc "kise/next_bt")
-		      :last-bt (get-widget xmlc "kise/last_bt")
-		      ;; :help-bt (get-widget xmlc "kise/help_bt")
-		      :prefs-bt (get-widget xmlc "kise/prefs_bt")
-		      :reference-lb (get-widget xmlc "kise/reference_lb")
-		      :reference-entry (get-widget xmlc "kise/reference_entry")
-		      :reference-eb (get-widget xmlc "kise/reference_eb")
-		      :date-lb (get-widget xmlc "kise/date_lb")
-		      :date-entry (get-widget xmlc "kise/date_entry")
-		      :date-icon (get-widget xmlc "kise/date_icon")
-		      :date-edit (get-widget xmlc "kise/date_edit")
+		      #:first-bt (get-widget xmlc "kise/first_bt")
+		      #:prev-bt (get-widget xmlc "kise/prev_bt")
+		      #:next-bt (get-widget xmlc "kise/next_bt")
+		      #:last-bt (get-widget xmlc "kise/last_bt")
+		      ;; #:help-bt (get-widget xmlc "kise/help_bt")
+		      #:prefs-bt (get-widget xmlc "kise/prefs_bt")
+		      #:reference-lb (get-widget xmlc "kise/reference_lb")
+		      #:reference-entry (get-widget xmlc "kise/reference_entry")
+		      #:reference-eb (get-widget xmlc "kise/reference_eb")
+		      #:date-lb (get-widget xmlc "kise/date_lb")
+		      #:date-entry (get-widget xmlc "kise/date_entry")
+		      #:date-icon (get-widget xmlc "kise/date_icon")
+		      #:date-edit (get-widget xmlc "kise/date_edit")
 
-		      :who-lb (get-widget xmlc "kise/who_lb")
-		      :who-combo (get-widget xmlc "kise/who_combo")
-		      :who-entry (gtk-bin-get-child (get-widget xmlc "kise/who_combo"))
+		      #:who-lb (get-widget xmlc "kise/who_lb")
+		      #:who-combo (get-widget xmlc "kise/who_combo")
+		      #:who-entry (gtk-bin-get-child (get-widget xmlc "kise/who_combo"))
 
-		      :for-whom-lb (get-widget xmlc "kise/for_whom_lb")
-		      :for-whom-combo (get-widget xmlc "kise/for_whom_combo")
-		      :for-whom-entry (gtk-bin-get-child (get-widget xmlc "kise/for_whom_combo"))
+		      #:for-whom-lb (get-widget xmlc "kise/for_whom_lb")
+		      #:for-whom-combo (get-widget xmlc "kise/for_whom_combo")
+		      #:for-whom-entry (gtk-bin-get-child (get-widget xmlc "kise/for_whom_combo"))
 
-		      :duration-lb (get-widget xmlc "kise/duration_lb")
-		      :duration-sb (get-widget xmlc "kise/duration_sb")
+		      #:duration-lb (get-widget xmlc "kise/duration_lb")
+		      #:duration-sb (get-widget xmlc "kise/duration_sb")
 
-		      :what-lb (get-widget xmlc "kise/what_lb")
-		      :what-combo (get-widget xmlc "kise/what_combo")
-		      :what-entry (gtk-bin-get-child (get-widget xmlc "kise/what_combo"))
-		      ;;:what-tv (get-widget xmlc "kise/what_tv")
+		      #:what-lb (get-widget xmlc "kise/what_lb")
+		      #:what-combo (get-widget xmlc "kise/what_combo")
+		      #:what-entry (gtk-bin-get-child (get-widget xmlc "kise/what_combo"))
+		      ;;#:what-tv (get-widget xmlc "kise/what_tv")
 
-		      :to-be-charged-cb (get-widget xmlc "kise/to_be_charged_cb")
-		      :description-lb (get-widget xmlc "kise/description_lb")
-		      :description-sw (get-widget xmlc "kise/description_sw")
-		      :description-entry (get-widget xmlc "kise/description_entry")
+		      #:to-be-charged-cb (get-widget xmlc "kise/to_be_charged_cb")
+		      #:description-lb (get-widget xmlc "kise/description_lb")
+		      #:description-sw (get-widget xmlc "kise/description_sw")
+		      #:description-entry (get-widget xmlc "kise/description_entry")
 
-		      :db-name-lb1 (get-widget xmlc "kise/db_name_lb1")
-		      :db-name-lb2 (get-widget xmlc "kise/db_name_lb2")
-		      :db-name-lb3 (get-widget xmlc "kise/db_name_lb3")
+		      #:db-name-lb1 (get-widget xmlc "kise/db_name_lb1")
+		      #:db-name-lb2 (get-widget xmlc "kise/db_name_lb2")
+		      #:db-name-lb3 (get-widget xmlc "kise/db_name_lb3")
 
-		      :filter-icon (get-widget xmlc "kise/filter_icon")
-		      :filter-criteria-lb (get-widget xmlc "kise/filter_criteria_lb")
-		      :filter-apply-bt (get-widget xmlc "kise/filter_apply_bt")
-		      :filter-clear-bt (get-widget xmlc "kise/filter_clear_bt")
-		      :filter-select-bt (get-widget xmlc "kise/filter_select_bt")
+		      #:filter-icon (get-widget xmlc "kise/filter_icon")
+		      #:filter-criteria-lb (get-widget xmlc "kise/filter_criteria_lb")
+		      #:filter-apply-bt (get-widget xmlc "kise/filter_apply_bt")
+		      #:filter-clear-bt (get-widget xmlc "kise/filter_clear_bt")
+		      #:filter-select-bt (get-widget xmlc "kise/filter_select_bt")
 
-		      :filter-date-lb (get-widget xmlc "kise/filter_date_lb")
-		      :filter-date-entry (get-widget xmlc "kise/filter_date")
-		      :filter-who-lb (get-widget xmlc "kise/filter_who_lb")
-		      :filter-who-entry (get-widget xmlc "kise/filter_who")
-		      :filter-for-whom-lb (get-widget xmlc "kise/filter_for_whom_lb")
-		      :filter-for-whom-entry (get-widget xmlc "kise/filter_for_whom")
-		      :filter-what-lb (get-widget xmlc "kise/filter_what_lb")
-		      :filter-what-entry (get-widget xmlc "kise/filter_what")
-		      :filter-description-lb (get-widget xmlc "kise/filter_description_lb")
-		      :filter-description-entry (get-widget xmlc "kise/filter_description")
-		      :filter-to-be-charged-lb (get-widget xmlc "kise/filter_to_be_charged_lb")
-		      :filter-to-be-charged-combo (get-widget xmlc "kise/filter_to_be_charged_combo")
+		      #:filter-date-lb (get-widget xmlc "kise/filter_date_lb")
+		      #:filter-date-entry (get-widget xmlc "kise/filter_date")
+		      #:filter-who-lb (get-widget xmlc "kise/filter_who_lb")
+		      #:filter-who-entry (get-widget xmlc "kise/filter_who")
+		      #:filter-for-whom-lb (get-widget xmlc "kise/filter_for_whom_lb")
+		      #:filter-for-whom-entry (get-widget xmlc "kise/filter_for_whom")
+		      #:filter-what-lb (get-widget xmlc "kise/filter_what_lb")
+		      #:filter-what-entry (get-widget xmlc "kise/filter_what")
+		      #:filter-description-lb (get-widget xmlc "kise/filter_description_lb")
+		      #:filter-description-entry (get-widget xmlc "kise/filter_description")
+		      #:filter-to-be-charged-lb (get-widget xmlc "kise/filter_to_be_charged_lb")
+		      #:filter-to-be-charged-combo (get-widget xmlc "kise/filter_to_be_charged_combo")
 
-		      :sw (get-widget xmlc "kise/sw")
-		      :tv (get-widget xmlc "kise/tv")
-		      :status-bar-1 (get-widget xmlc "kise/status_bar_1")
-		      :status-bar-2 (get-widget xmlc "kise/status_bar_2")
-		      :status-bar-3 (get-widget xmlc "kise/status_bar_3")
-		      :status-bar-4 (get-widget xmlc "kise/status_bar_4"))))
+		      #:sw (get-widget xmlc "kise/sw")
+		      #:tv (get-widget xmlc "kise/tv")
+		      #:status-bar-1 (get-widget xmlc "kise/status_bar_1")
+		      #:status-bar-2 (get-widget xmlc "kise/status_bar_2")
+		      #:status-bar-3 (get-widget xmlc "kise/status_bar_3")
+		      #:status-bar-4 (get-widget xmlc "kise/status_bar_4"))))
     (ktlw/setup-treeview tl-widget)
     ;; the combos need to be cleared since some example items
     ;; are defined in the glade file

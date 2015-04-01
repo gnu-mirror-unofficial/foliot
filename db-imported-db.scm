@@ -23,41 +23,42 @@
 
 ;;; Code:
 
+
 (define-module (kise db-imported-db)
   ;; guile
-  :use-module (ice-9 format)
-  :use-module (srfi srfi-1)
+  #:use-module (ice-9 format)
+  #:use-module (srfi srfi-1)
 
   ;; common
-  :use-module (macros reexport)
-  :use-module (macros do)
-  :use-module (db sqlite)
-  :use-module (system dates)
-  :use-module (system i18n)
-  :use-module (system aglobs)
-  :use-module (strings strings)
-  :use-module (gtk colours)
+  #:use-module (macros reexport)
+  #:use-module (macros do)
+  #:use-module (db sqlite)
+  #:use-module (system dates)
+  #:use-module (system i18n)
+  #:use-module (system aglobs)
+  #:use-module (strings strings)
+  #:use-module (gtk colours)
 
   ;; kise
-  :use-module (kise globals)
-  :use-module (kise db-con)
+  #:use-module (kise globals)
+  #:use-module (kise db-con)
 
-  :export (db-idb/add-imported-db-table
-	   db-idb/check-schema
-	   db-idb/create-complete-table
-	   db-idb/select-all
-	   db-idb/select-some
-	   db-idb/get
-	   db-idb/set
-	   db-idb/get-tuple
-	   db-idb/update
-	   db-idb/find-pos
-	   db-idb/get-next-id
-	   db-idb/add
-	   db-idb/delete
-	   db-idb/get-used-colour-set-ids
-	   db-idb/get-unused-colour-set-ids
-	   db-idb/get-colour-alist))
+  #:export (db-idb/add-imported-db-table
+	    db-idb/check-schema
+	    db-idb/create-complete-table
+	    db-idb/select-all
+	    db-idb/select-some
+	    db-idb/get
+	    db-idb/set
+	    db-idb/get-tuple
+	    db-idb/update
+	    db-idb/find-pos
+	    db-idb/get-next-id
+	    db-idb/add
+	    db-idb/delete
+	    db-idb/get-used-colour-set-ids
+	    db-idb/get-unused-colour-set-ids
+	    db-idb/get-colour-alist))
 
 
 (eval-when (compile load eval)

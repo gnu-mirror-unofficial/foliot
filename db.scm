@@ -23,25 +23,26 @@
 
 ;;; Code:
 
+
 (define-module (kise db)
   ;; from guile
 
   ;; common
-  :use-module (macros reexport)
-  ;:use-module (system aglobs)
-  ;:use-module (system dates)
-  ;:use-module (db sqlite)
+  #:use-module (macros reexport)
+  ;#:use-module (system aglobs)
+  ;#:use-module (system dates)
+  ;#:use-module (db sqlite)
 
   ;; kise
-  :use-module (kise db-con)
-  :use-module (kise db-kise)
-  :use-module (kise db-imported-db)
-  :use-module (kise db-printing-templates)
-  :use-module (kise db-shinning)
+  #:use-module (kise db-con)
+  #:use-module (kise db-kise)
+  #:use-module (kise db-imported-db)
+  #:use-module (kise db-printing-templates)
+  #:use-module (kise db-shinning)
 
-  :export (db/add-schema
-	   db/check-schema
-	   db/complete-schema))
+  #:export (db/add-schema
+	    db/check-schema
+	    db/complete-schema))
 
 
 (eval-when (compile load eval)

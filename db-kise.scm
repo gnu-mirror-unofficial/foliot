@@ -23,52 +23,53 @@
 
 ;;; Code:
 
+
 (define-module (kise db-kise)
   ;; guile
-  :use-module (ice-9 format)
-  :use-module (ice-9 receive)
-  :use-module (oop goops)
+  #:use-module (ice-9 format)
+  #:use-module (ice-9 receive)
+  #:use-module (oop goops)
 
   ;; common
-  :use-module (macros reexport)
-  :use-module (macros do)
-  :use-module (system dates)
-  :use-module (system i18n)
-  :use-module (system aglobs)
-  :use-module (system passwd)
-  :use-module (strings strings)
-  :use-module (db sqlite)
-  :use-module (gtk colours)
+  #:use-module (macros reexport)
+  #:use-module (macros do)
+  #:use-module (system dates)
+  #:use-module (system i18n)
+  #:use-module (system aglobs)
+  #:use-module (system passwd)
+  #:use-module (strings strings)
+  #:use-module (db sqlite)
+  #:use-module (gtk colours)
 
   ;; kise
-  :use-module (kise globals)
-  :use-module (kise db-con)
-  :use-module (kise db-imported-db)
+  #:use-module (kise globals)
+  #:use-module (kise db-con)
+  #:use-module (kise db-imported-db)
   
-  :export (db-kise/add-kise-table
-	   db-kise/complete-table
-	   db-kise/create-complete-table
-	   db-kise/prepend-empty
-	   db-kise/select-one
-	   db-kise/select-all
-	   db-kise/select-all-other-db
-	   db-kise/select-some
-	   db-kise/select-another-some
-	   db-kise/select-distinct
-	   db-kise/get-pos
-	   db-kise/get
-	   db-kise/set
-	   db-kise/get-tuple
-	   db-kise/update
-	   db-kise/find-pos
-	   db-kise/get-next-id
-	   db-kise/add
-	   db-kise/add-from-other-db
-	   db-kise/duplicate
-	   db-kise/delete
-	   db-kise/delete-some
-	   db-kise/import
-	   db-kise/delete-imported-tuples))
+  #:export (db-kise/add-kise-table
+	    db-kise/complete-table
+	    db-kise/create-complete-table
+	    db-kise/prepend-empty
+	    db-kise/select-one
+	    db-kise/select-all
+	    db-kise/select-all-other-db
+	    db-kise/select-some
+	    db-kise/select-another-some
+	    db-kise/select-distinct
+	    db-kise/get-pos
+	    db-kise/get
+	    db-kise/set
+	    db-kise/get-tuple
+	    db-kise/update
+	    db-kise/find-pos
+	    db-kise/get-next-id
+	    db-kise/add
+	    db-kise/add-from-other-db
+	    db-kise/duplicate
+	    db-kise/delete
+	    db-kise/delete-some
+	    db-kise/import
+	    db-kise/delete-imported-tuples))
 
 
 (eval-when (compile load eval)

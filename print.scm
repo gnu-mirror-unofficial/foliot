@@ -23,22 +23,23 @@
 
 ;;; Code:
 
+
 (define-module (kise print)
   ;; guile/guile-gnome
-  :use-module (oop goops)
-  :use-module (gnome gobject)
-  :use-module (gnome gtk)
+  #:use-module (oop goops)
+  #:use-module (gnome gobject)
+  #:use-module (gnome gtk)
 
   ;; common
-  ;; :use-module (system reexport)
-  :use-module (gtk all)
+  ;; #:use-module (system reexport)
+  #:use-module (gtk all)
 
-  :use-module (kise globals)
-  :use-module (kise tl-widget)
-  :use-module (kise p-dialog)
-  :use-module (kise p-main)
+  #:use-module (kise globals)
+  #:use-module (kise tl-widget)
+  #:use-module (kise p-dialog)
+  #:use-module (kise p-main)
 
-  :export (kp/select-gui))
+  #:export (kp/select-gui))
 
 
 #!
@@ -68,7 +69,7 @@
     (set-modal widget #f)
     (catch 'exit
 	   (lambda ()
-	     (let ((response (genum->symbol (make <gtk-response-type> :value (run widget)))))
+	     (let ((response (genum->symbol (make <gtk-response-type> #:value (run widget)))))
 	       (hide widget)
 	       (case response
 		 ((ok)

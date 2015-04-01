@@ -23,6 +23,7 @@
 
 ;;; Code:
 
+
 (define-module (kise kise)
   ;; guile/guile-gnome
   :use-module (ice-9 format)

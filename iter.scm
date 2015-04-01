@@ -23,13 +23,14 @@
 
 ;;; Code:
 
+
 (define-module (kise iter)
-  :use-module (oop goops)
-  :use-module (gnome gtk)
-  :export (kiter/get
-	   kiter/set
-	   kiter/append-fill
-	   kiter/prepend-fill))
+  #:use-module (oop goops)
+  #:use-module (gnome gtk)
+  #:export (kiter/get
+	    kiter/set
+	    kiter/append-fill
+	    kiter/prepend-fill))
 
 
 (define *kise-iter-offsets*

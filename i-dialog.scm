@@ -23,41 +23,42 @@
 
 ;;; Code:
 
+
 (define-module (kise i-dialog)
   ;; guile/guile-gnome
-  :use-module (ice-9 format)
-  :use-module (ice-9 receive)
-  :use-module (oop goops)
-  :use-module (gnome gobject)
-  :use-module (gnome glade)
-  :use-module (gnome gtk)
-  :use-module (gnome gtk gdk-event)
+  #:use-module (ice-9 format)
+  #:use-module (ice-9 receive)
+  #:use-module (oop goops)
+  #:use-module (gnome gobject)
+  #:use-module (gnome glade)
+  #:use-module (gnome gtk)
+  #:use-module (gnome gtk gdk-event)
 
   ;; common
-  :use-module (macros do)
-  :use-module (system i18n)
-  :use-module (system aglobs)
-  :use-module (gtk all)
+  #:use-module (macros do)
+  #:use-module (system i18n)
+  #:use-module (system aglobs)
+  #:use-module (gtk all)
 
   ;; kise
-  :use-module (kise colours)
-  :use-module (kise db)
+  #:use-module (kise colours)
+  #:use-module (kise db)
 
-  :export (*ki-widget*
+  #:export (*ki-widget*
 
-	   <ki-widget>
-	   gui-callback?
-	   dialog
-	   tv-model
-	   tv-sel
-	   add-bt
-	   remove-bt
-	   reimport-bt
+	    <ki-widget>
+	    gui-callback?
+	    dialog
+	    tv-model
+	    tv-sel
+	    add-bt
+	    remove-bt
+	    reimport-bt
 
-	   kiiter/get
-	   kiiter/set
-	   ki/make-dialog
-	   ki/fill-treeview))
+	    kiiter/get
+	    kiiter/set
+	    ki/make-dialog
+	    ki/fill-treeview))
 
 
 (eval-when (compile load eval)
@@ -97,20 +98,20 @@
 ;;;
 
 (define-class <ki-widget> ()
-  (gui-callback? :accessor gui-callback? :init-keyword :gui-callback? :init-value #t)
-  (xml-code :accessor xml-code :init-keyword :xml-code :init-value #f)
-  (dialog :accessor dialog :init-keyword :dialog :init-value #f)
+  (gui-callback? #:accessor gui-callback? #:init-keyword #:gui-callback? #:init-value #t)
+  (xml-code #:accessor xml-code #:init-keyword #:xml-code #:init-value #f)
+  (dialog #:accessor dialog #:init-keyword #:dialog #:init-value #f)
 
-  (tv :accessor tv :init-keyword :tv :init-value #f)
-  (tv-model :accessor tv-model :init-keyword :tv-model :init-value #f)
-  (tv-sel :accessor tv-sel :init-keyword :tv-sel :init-value #f)
+  (tv #:accessor tv #:init-keyword #:tv #:init-value #f)
+  (tv-model #:accessor tv-model #:init-keyword #:tv-model #:init-value #f)
+  (tv-sel #:accessor tv-sel #:init-keyword #:tv-sel #:init-value #f)
 
-  (add-bt :accessor add-bt :init-keyword :add-bt :init-value #f)
-  (remove-bt :accessor remove-bt :init-keyword :remove-bt :init-value #f)
-  (reimport-bt :accessor reimport-bt :init-keyword :reimport-bt :init-value #f)
+  (add-bt #:accessor add-bt #:init-keyword #:add-bt #:init-value #f)
+  (remove-bt #:accessor remove-bt #:init-keyword #:remove-bt #:init-value #f)
+  (reimport-bt #:accessor reimport-bt #:init-keyword #:reimport-bt #:init-value #f)
 
-  (cancel-bt :accessor cancel-bt :init-keyword :cancel-bt :init-value #f)
-  (close-bt :accessor close-bt :init-keyword :close-bt :init-value #f))
+  (cancel-bt #:accessor cancel-bt #:init-keyword #:cancel-bt #:init-value #f)
+  (close-bt #:accessor close-bt #:init-keyword #:close-bt #:init-value #f))
 
 
 ;;;
@@ -154,65 +155,65 @@
 	 ;; IMPORTED ROW COLOUR
 	 (renderer0 (make <gtk-cell-renderer-text>))
 	 (column0   (make <gtk-tree-view-column>
-		       :sizing      'fixed
-		       :fixed-width 5
-		       :clickable   #f
-		       :resizable   #f
-		       :reorderable #f
-		       :alignment   .5))
+		       #:sizing      'fixed
+		       #:fixed-width 5
+		       #:clickable   #f
+		       #:resizable   #f
+		       #:reorderable #f
+		       #:alignment   .5))
 	 ;; ID
 	 (renderer1 (make <gtk-cell-renderer-text>))
 	 (column1   (make <gtk-tree-view-column>
-		      :visible     #f))
+		      #:visible     #f))
 	 ;; DB NAME
 	 (renderer2 (make <gtk-cell-renderer-text>))
 	 (column2   (make <gtk-tree-view-column>
-		      :title       (_ "Name")
-		      :sizing      'autosize
-		      :expand      #t
-					;:sizing      'grow-only
-					;:min-width   134
-					;:clickable   #f
-					;:resizable   #f
-					;:reorderable #f
-		      :alignment   .5))
+		      #:title       (_ "Name")
+		      #:sizing      'autosize
+		      #:expand      #t
+					;#:sizing      'grow-only
+					;#:min-width   134
+					;#:clickable   #f
+					;#:resizable   #f
+					;#:reorderable #f
+		      #:alignment   .5))
 	 ;; DATE
 	 (renderer3 (make <gtk-cell-renderer-text>))
 	 (column3   (make <gtk-tree-view-column>
-		      :title       (_ "Date")
-		      :sizing      'fixed
-		      :fixed-width (if apply-ratio? (inexact->exact (round (* dpi-ratio 90))) 90)
-		      :clickable   #f
-		      :resizable   #f
-		      :reorderable #f
-		      :alignment   .5))
+		      #:title       (_ "Date")
+		      #:sizing      'fixed
+		      #:fixed-width (if apply-ratio? (inexact->exact (round (* dpi-ratio 90))) 90)
+		      #:clickable   #f
+		      #:resizable   #f
+		      #:reorderable #f
+		      #:alignment   .5))
 	 ;; BY
 	 (renderer4 (make <gtk-cell-renderer-text>
-		      #;:foreground    #;"Blue"))
+		      #;#:foreground    #;"Blue"))
 	 (column4   (make <gtk-tree-view-column>
-		      :title       (_ "By")
-		      :sizing      'fixed
-		      :fixed-width (if apply-ratio? (inexact->exact (round (* dpi-ratio 65))) 65)
-		      :clickable   #f
-		      :resizable   #f
-		      :reorderable #f
-		      :alignment   .5))
+		      #:title       (_ "By")
+		      #:sizing      'fixed
+		      #:fixed-width (if apply-ratio? (inexact->exact (round (* dpi-ratio 65))) 65)
+		      #:clickable   #f
+		      #:resizable   #f
+		      #:reorderable #f
+		      #:alignment   .5))
 	 ;; FILENAME
 	 (renderer5 (make <gtk-cell-renderer-text>))
 	 (column5   (make <gtk-tree-view-column>
-		      :visible     #f))
+		      #:visible     #f))
 	 ;; IMPORT
 	 #;(renderer9 (make <gtk-cell-renderer-toggle>))
 	 #;(column9   (make <gtk-tree-view-column>
-		      :title       (_ "Imp.")
-		      :sizing      'fixed
-		      :fixed-width 40
-		      :expand      #f
-		      :alignment   .5))
+		      #:title       (_ "Imp.")
+		      #:sizing      'fixed
+		      #:fixed-width 40
+		      #:expand      #f
+		      #:alignment   .5))
 	 ;; ICOLOUR BACKGROUND
 	 (renderer6 (make <gtk-cell-renderer-text>))
 	 (column6   (make <gtk-tree-view-column>
-		      :visible     #f))
+		      #:visible     #f))
 
 	 (to-pack   `((icolour ,column0 ,renderer0 "text")
 		      (name ,column2 ,renderer2 "text")
@@ -272,14 +273,14 @@
       *ki-widget*
       (let* ((xmlc (glade-xml-new glade-f #f "ki/dialog"))
 	     (ki-widget (make <ki-widget>
-			  :xml-code xmlc
-			  :dialog (get-widget xmlc "ki/dialog")
-			  :tv (get-widget xmlc "ki/import_tv")
-			  :add-bt (get-widget xmlc "ki/add_bt")
-			  :remove-bt (get-widget xmlc "ki/remove_bt")
-			  :reimport-bt (get-widget xmlc "ki/reimport_bt")
-			  :cancel-bt (get-widget xmlc "ki/cancel_bt")
-			  :close-bt (get-widget xmlc "ki/close_bt"))))
+			  #:xml-code xmlc
+			  #:dialog (get-widget xmlc "ki/dialog")
+			  #:tv (get-widget xmlc "ki/import_tv")
+			  #:add-bt (get-widget xmlc "ki/add_bt")
+			  #:remove-bt (get-widget xmlc "ki/remove_bt")
+			  #:reimport-bt (get-widget xmlc "ki/reimport_bt")
+			  #:cancel-bt (get-widget xmlc "ki/cancel_bt")
+			  #:close-bt (get-widget xmlc "ki/close_bt"))))
 	(modify-bg (get-widget xmlc "ki/eventbox") 'normal *dialog-title-eb-bg*)
 	(when parent (set-transient-for (dialog ki-widget) parent))
 	(ki/translate ki-widget)

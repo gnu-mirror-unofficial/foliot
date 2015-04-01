@@ -30,15 +30,16 @@
 
 ;;; Code:
 
+
 (define-module (kise config)
   ;; guile
 
   ;; common
-  :use-module (macros reexport)
-  :use-module (system passwd)
-  :use-module (system config)
+  #:use-module (macros reexport)
+  #:use-module (system passwd)
+  #:use-module (system config)
 
-  :export (kcfg/get))
+  #:export (kcfg/get))
 
 
 (define kcfg/get #f)

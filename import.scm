@@ -23,22 +23,23 @@
 
 ;;; Code:
 
+
 (define-module (kise import)
   ;; guile/guile-gnome
-  :use-module (oop goops)
+  #:use-module (oop goops)
 
   ;; common
-  :use-module (macros reexport)
-  :use-module (macros do)
-  :use-module (gtk all)
-  :use-module (system i18n)
+  #:use-module (macros reexport)
+  #:use-module (macros do)
+  #:use-module (gtk all)
+  #:use-module (system i18n)
 
-  :use-module (kise config)
-  :use-module (kise tl-widget)
-  :use-module (kise i-dialog)
-  :use-module (kise db)
+  #:use-module (kise config)
+  #:use-module (kise tl-widget)
+  #:use-module (kise i-dialog)
+  #:use-module (kise db)
 
-  :export (ki/select-gui))
+  #:export (ki/select-gui))
 
 
 (eval-when (compile load eval)
@@ -185,7 +186,7 @@
     (show widget)
     (catch 'exit
 	   (lambda ()
-	     (let ((response (genum->symbol (make <gtk-response-type> :value (run widget)))))
+	     (let ((response (genum->symbol (make <gtk-response-type> #:value (run widget)))))
 	       ;; (dimfi "ki/select-gui" response)
 	       (hide widget)
 	       (case response

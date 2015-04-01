@@ -23,39 +23,40 @@
 
 ;;; Code:
 
+
 (define-module (kise p-dialog)
   ;; guile/guile-gnome
-  :use-module (ice-9 format)
-  :use-module (ice-9 receive)
-  :use-module (oop goops)
-  :use-module (gnome gobject)
-  :use-module (gnome glade)
-  :use-module (gnome gtk)
-  :use-module (gnome gtk gdk-event)
+  #:use-module (ice-9 format)
+  #:use-module (ice-9 receive)
+  #:use-module (oop goops)
+  #:use-module (gnome gobject)
+  #:use-module (gnome glade)
+  #:use-module (gnome gtk)
+  #:use-module (gnome gtk gdk-event)
 
   ;; common
-  :use-module (macros do)
-  :use-module (system i18n)
-  :use-module (system aglobs)
-  :use-module (gtk all)
+  #:use-module (macros do)
+  #:use-module (system i18n)
+  #:use-module (system aglobs)
+  #:use-module (gtk all)
 
   ;; kise
-  :use-module (kise colours)
-  :use-module (kise db-kise)
-  :use-module (kise db-printing-templates)
+  #:use-module (kise colours)
+  #:use-module (kise db-kise)
+  #:use-module (kise db-printing-templates)
 
-  :export (*kp-widget*
-	   kp/make-dialog
-	   <kp-widget>
-	   tpl-tuples
-	   dialog
-	   printer-combo
-	   pdf
-	   tex
-	   items
-	   mode
-	   template-combo
-	   kp/get-core-ltx-field-specs))
+  #:export (*kp-widget*
+	    kp/make-dialog
+	    <kp-widget>
+	    tpl-tuples
+	    dialog
+	    printer-combo
+	    pdf
+	    tex
+	    items
+	    mode
+	    template-combo
+	    kp/get-core-ltx-field-specs))
 
 
 (eval-when (compile load eval)
@@ -106,41 +107,41 @@
 ;;;
 
 (define-class <kp-widget> ()
-  (gui-callback? :accessor gui-callback? :init-keyword :gui-callback? :init-value #t)
-  (tpl-tuples :accessor tpl-tuples :init-keyword :tpl-tuples :init-value #f)
-  (xml-code :accessor xml-code :init-keyword :xml-code :init-value #f)
-  (dialog :accessor dialog :init-keyword :dialog :init-value #f)
-  (printer-frame-lb :accessor printer-frame-lb :init-keyword :printer-frame-lb :init-value #f)
-  (printer-combo :accessor printer-combo :init-keyword :printer-combo :init-value #f)
-  (pdf-cb :accessor pdf-cb :init-keyword :pdf-cb :init-value #f)
-  (pdf :accessor pdf :init-keyword :pdf :init-value #f)
-  (latex-keep-files-cb :accessor latex-keep-files-cb :init-keyword :latex-keep-files-cb :init-value #f)
-  (tex :accessor tex :init-keyword :tex :init-value #f)
-  (template-frame-lb :accessor template-frame-lb :init-keyword :template-frame-lb :init-value #f)
-  (template-add-bt :accessor template-add-bt :init-keyword :template-add-bt :init-value #f)
-  (template-rem-bt :accessor template-rem-bt :init-keyword :template-rem-bt :init-value #f)
-  (template-name-lb :accessor template-name-lb :init-keyword :template-name-lb :init-value #f)
-  (template-combo :accessor template-combo :init-keyword :template-combo :init-value #f)
-  (template-entry :accessor template-entry :init-keyword :template-entry :init-value #f)
-  (template-entry-focus-in-value :accessor template-entry-focus-in-value :init-value #f)
-  (tpl-active-pos-at-entry-focus-in :accessor tpl-active-pos-at-entry-focus-in :init-value #f)
-  (i-selected-rb :accessor i-selected-rb :init-keyword :i-selected-rb :init-value #f)
-  (i-all-rb :accessor i-all-rb :init-keyword :i-all-rb :init-value #f)
-  (items :accessor items :init-keyword :items :init-value #f)
-  (m-draft-rb :accessor m-draft-rb :init-keyword :m-draft-rb :init-value #f)
-  (m-com-rb :accessor m-com-rb :init-keyword :m-com-rb :init-value #f)
-  (mode :accessor mode :init-keyword :mode :init-value #f)
-  (g-tv :accessor g-tv :init-keyword :g-tv :init-value #f)
-  (g-tv-model :accessor g-tv-model :init-keyword :g-tv-model :init-value #f)
-  (g-tv-sel :accessor g-tv-sel :init-keyword :g-tv-sel :init-value #f)
-  (grouping :accessor grouping :init-keyword :grouping :init-value #f)
-  (g-add-bt :accessor g-add-bt :init-keyword :g-add-bt :init-value #f)
-  (g-rem-bt :accessor g-rem-bt :init-keyword :g-rem-bt :init-value #f)
-  (g-up-bt :accessor g-up-bt :init-keyword :g-up-bt :init-value #f)
-  (g-down-bt :accessor g-down-bt :init-keyword :g-down-bt :init-value #f)
-  (g-reselect-path? :accessor g-reselect-path? :init-value #f)
-  (cancel-bt :accessor cancel-bt :init-keyword :cancel-bt :init-value #f)
-  (print-bt :accessor print-bt :init-keyword :print-bt :init-value #f))
+  (gui-callback? #:accessor gui-callback? #:init-keyword #:gui-callback? #:init-value #t)
+  (tpl-tuples #:accessor tpl-tuples #:init-keyword #:tpl-tuples #:init-value #f)
+  (xml-code #:accessor xml-code #:init-keyword #:xml-code #:init-value #f)
+  (dialog #:accessor dialog #:init-keyword #:dialog #:init-value #f)
+  (printer-frame-lb #:accessor printer-frame-lb #:init-keyword #:printer-frame-lb #:init-value #f)
+  (printer-combo #:accessor printer-combo #:init-keyword #:printer-combo #:init-value #f)
+  (pdf-cb #:accessor pdf-cb #:init-keyword #:pdf-cb #:init-value #f)
+  (pdf #:accessor pdf #:init-keyword #:pdf #:init-value #f)
+  (latex-keep-files-cb #:accessor latex-keep-files-cb #:init-keyword #:latex-keep-files-cb #:init-value #f)
+  (tex #:accessor tex #:init-keyword #:tex #:init-value #f)
+  (template-frame-lb #:accessor template-frame-lb #:init-keyword #:template-frame-lb #:init-value #f)
+  (template-add-bt #:accessor template-add-bt #:init-keyword #:template-add-bt #:init-value #f)
+  (template-rem-bt #:accessor template-rem-bt #:init-keyword #:template-rem-bt #:init-value #f)
+  (template-name-lb #:accessor template-name-lb #:init-keyword #:template-name-lb #:init-value #f)
+  (template-combo #:accessor template-combo #:init-keyword #:template-combo #:init-value #f)
+  (template-entry #:accessor template-entry #:init-keyword #:template-entry #:init-value #f)
+  (template-entry-focus-in-value #:accessor template-entry-focus-in-value #:init-value #f)
+  (tpl-active-pos-at-entry-focus-in #:accessor tpl-active-pos-at-entry-focus-in #:init-value #f)
+  (i-selected-rb #:accessor i-selected-rb #:init-keyword #:i-selected-rb #:init-value #f)
+  (i-all-rb #:accessor i-all-rb #:init-keyword #:i-all-rb #:init-value #f)
+  (items #:accessor items #:init-keyword #:items #:init-value #f)
+  (m-draft-rb #:accessor m-draft-rb #:init-keyword #:m-draft-rb #:init-value #f)
+  (m-com-rb #:accessor m-com-rb #:init-keyword #:m-com-rb #:init-value #f)
+  (mode #:accessor mode #:init-keyword #:mode #:init-value #f)
+  (g-tv #:accessor g-tv #:init-keyword #:g-tv #:init-value #f)
+  (g-tv-model #:accessor g-tv-model #:init-keyword #:g-tv-model #:init-value #f)
+  (g-tv-sel #:accessor g-tv-sel #:init-keyword #:g-tv-sel #:init-value #f)
+  (grouping #:accessor grouping #:init-keyword #:grouping #:init-value #f)
+  (g-add-bt #:accessor g-add-bt #:init-keyword #:g-add-bt #:init-value #f)
+  (g-rem-bt #:accessor g-rem-bt #:init-keyword #:g-rem-bt #:init-value #f)
+  (g-up-bt #:accessor g-up-bt #:init-keyword #:g-up-bt #:init-value #f)
+  (g-down-bt #:accessor g-down-bt #:init-keyword #:g-down-bt #:init-value #f)
+  (g-reselect-path? #:accessor g-reselect-path? #:init-value #f)
+  (cancel-bt #:accessor cancel-bt #:init-keyword #:cancel-bt #:init-value #f)
+  (print-bt #:accessor print-bt #:init-keyword #:print-bt #:init-value #f))
 
 
 ;;;
@@ -340,58 +341,58 @@
 	 ;; GROUPING
 	 (renderer1 (make <gtk-cell-renderer-toggle>))
 	 (column1   (make <gtk-tree-view-column>
-		      :title       (_ "Grp.")
-		      :sizing      'fixed
-		      :fixed-width 40
-		      :expand      #f
-		      :alignment   .5))
+		      #:title       (_ "Grp.")
+		      #:sizing      'fixed
+		      #:fixed-width 40
+		      #:expand      #f
+		      #:alignment   .5))
 	 ;; WHAT
 	 (renderer2 (make <gtk-cell-renderer-text>))
 	 (column2   (make <gtk-tree-view-column>
-		      :title       (_ "What")
-		      :sizing      'autosize
-		      :expand      #t
-		      ;:sizing      'grow-only
-		      ;:min-width   134
-		      ;:clickable   #f
-		      ;:resizable   #f
-		      ;:reorderable #f
-		      :alignment   .5))
+		      #:title       (_ "What")
+		      #:sizing      'autosize
+		      #:expand      #t
+		      ;#:sizing      'grow-only
+		      ;#:min-width   134
+		      ;#:clickable   #f
+		      ;#:resizable   #f
+		      ;#:reorderable #f
+		      #:alignment   .5))
 	 ;; ASCENDING
 	 (renderer3 (make <gtk-cell-renderer-toggle>
-		      :radio #t))
+		      #:radio #t))
 	 (column3   (make <gtk-tree-view-column>
-		      :title       (_ "Asc.")
-		      :sizing      'fixed
-		      :fixed-width 45
-		      :expand      #f
-		      :alignment   .5))
+		      #:title       (_ "Asc.")
+		      #:sizing      'fixed
+		      #:fixed-width 45
+		      #:expand      #f
+		      #:alignment   .5))
 	 ;; DESCENDING
 	 (renderer4 (make <gtk-cell-renderer-toggle>
-		      :radio #t))
+		      #:radio #t))
 	 (column4   (make <gtk-tree-view-column>
-		      :title       (_ "Desc.")
-		      :sizing      'fixed
-		      :fixed-width 45
-		      :expand      #f
-		      :alignment   .5))
+		      #:title       (_ "Desc.")
+		      #:sizing      'fixed
+		      #:fixed-width 45
+		      #:expand      #f
+		      #:alignment   .5))
 	 ;; NONE
 	 (renderer5 (make <gtk-cell-renderer-toggle>
-		      :radio #t))
+		      #:radio #t))
 	 (column5   (make <gtk-tree-view-column>
-		      :title       (_ "None")
-		      :sizing      'fixed
-		      :fixed-width 45
-		      :expand      #f
-		      :alignment   .5))
+		      #:title       (_ "None")
+		      #:sizing      'fixed
+		      #:fixed-width 45
+		      #:expand      #f
+		      #:alignment   .5))
 	 ;; PRINTING
 	 (renderer6 (make <gtk-cell-renderer-toggle>))
 	 (column6   (make <gtk-tree-view-column>
-		      :title       (_ "Print")
-		      :sizing      'fixed
-		      :fixed-width 45
-		      :expand      #f
-		      :alignment   .5))
+		      #:title       (_ "Print")
+		      #:sizing      'fixed
+		      #:fixed-width 45
+		      #:expand      #f
+		      #:alignment   .5))
 	 (to-pack   `((printing ,column6 ,renderer6 "active")
 		      (grouping ,column1 ,renderer1 "active")
 		      (what ,column2 ,renderer2 "text")
@@ -534,10 +535,9 @@
 (define (kp/update kp-widget what value . row)
   (let* ((tpl-pos (if (null? row) (get-active (template-combo kp-widget)) (car row)))
 	 (tpl-tuple (db-pt/get-tuple (tpl-tuples kp-widget) tpl-pos)))
-    ;; (format #t "kp/update: tpl-pos ~A~%  before: : ~S~%" tpl-pos tpl-tuple)
+    ;; (format #t "kp/update: tpl-pos ~A~%  before: ~S~%" tpl-pos tpl-tuple)
     (db-pt/update tpl-tuple what value)
-    ;; (format #t "  after: ~S~%" tpl-tuple)
-    ))
+    #;(format #t "  after: ~S~%" tpl-tuple)))
 
 (define (kp/build-grouping-value kp-widget)
   (let* ((model (g-tv-model kp-widget))
@@ -694,28 +694,28 @@
       *kp-widget*
       (let* ((xmlc (glade-xml-new glade-f #f "kp/dialog"))
 	     (kp-widget (make <kp-widget>
-			  :tpl-tuples (kp/get-templates)
-			  :xml-code xmlc
-			  :dialog (get-widget xmlc "kp/dialog")
-			  :printer-frame-lb (get-widget xmlc "kp/printer_frame_lb")
-			  :printer-combo (get-widget xmlc "kp/printer_combo")
-			  :pdf-cb (get-widget xmlc "kp/pdf_cb")
-			  :latex-keep-files-cb (get-widget xmlc "kp/latex_keep_files_cb")
-			  :template-add-bt (get-widget xmlc "kp/template_add_bt")
-			  :template-rem-bt (get-widget xmlc "kp/template_rem_bt")
-			  :template-combo (get-widget xmlc "kp/template_combo")
-			  :template-entry (gtk-bin-get-child (get-widget xmlc "kp/template_combo"))
-			  :i-selected-rb (get-widget xmlc "kp/items_entry_rb")
-			  :i-all-rb (get-widget xmlc "kp/items_all_rb")
-			  :m-draft-rb (get-widget xmlc "kp/mode_draft_rb")
-			  :m-com-rb (get-widget xmlc "kp/mode_commercial_rb")
-			  :g-tv (get-widget xmlc "kp/grouping_tv")
-			  :g-add-bt (get-widget xmlc "kp/grouping_add_bt")
-			  :g-rem-bt (get-widget xmlc "kp/grouping_rem_bt")
-			  :g-up-bt (get-widget xmlc "kp/grouping_up_bt")
-			  :g-down-bt (get-widget xmlc "kp/grouping_down_bt")
-			  :cancel-bt (get-widget xmlc "kp/cancel_bt")
-			  :print-bt (get-widget xmlc "kp/print_bt"))))
+			  #:tpl-tuples (kp/get-templates)
+			  #:xml-code xmlc
+			  #:dialog (get-widget xmlc "kp/dialog")
+			  #:printer-frame-lb (get-widget xmlc "kp/printer_frame_lb")
+			  #:printer-combo (get-widget xmlc "kp/printer_combo")
+			  #:pdf-cb (get-widget xmlc "kp/pdf_cb")
+			  #:latex-keep-files-cb (get-widget xmlc "kp/latex_keep_files_cb")
+			  #:template-add-bt (get-widget xmlc "kp/template_add_bt")
+			  #:template-rem-bt (get-widget xmlc "kp/template_rem_bt")
+			  #:template-combo (get-widget xmlc "kp/template_combo")
+			  #:template-entry (gtk-bin-get-child (get-widget xmlc "kp/template_combo"))
+			  #:i-selected-rb (get-widget xmlc "kp/items_entry_rb")
+			  #:i-all-rb (get-widget xmlc "kp/items_all_rb")
+			  #:m-draft-rb (get-widget xmlc "kp/mode_draft_rb")
+			  #:m-com-rb (get-widget xmlc "kp/mode_commercial_rb")
+			  #:g-tv (get-widget xmlc "kp/grouping_tv")
+			  #:g-add-bt (get-widget xmlc "kp/grouping_add_bt")
+			  #:g-rem-bt (get-widget xmlc "kp/grouping_rem_bt")
+			  #:g-up-bt (get-widget xmlc "kp/grouping_up_bt")
+			  #:g-down-bt (get-widget xmlc "kp/grouping_down_bt")
+			  #:cancel-bt (get-widget xmlc "kp/cancel_bt")
+			  #:print-bt (get-widget xmlc "kp/print_bt"))))
 	(modify-bg (get-widget xmlc "kp/eventbox") 'normal *dialog-title-eb-bg*)
 	(when parent (set-transient-for (dialog kp-widget) parent))
 	(kp/translate kp-widget)

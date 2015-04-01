@@ -23,28 +23,29 @@
 
 ;;; Code:
 
+
 (define-module (kise p-main)
   ;; guile/guile-gnome
-  :use-module (oop goops)
-  :use-module (gnome gobject)
-  :use-module (gnome gtk)
+  #:use-module (oop goops)
+  #:use-module (gnome gobject)
+  #:use-module (gnome gtk)
 
   ;; common
-  :use-module (macros reexport)
-  :use-module (system passwd)
-  :use-module (system dates)
-  :use-module (system i18n)
-  :use-module (system aglobs)
-  :use-module (gtk filechooser)
+  #:use-module (macros reexport)
+  #:use-module (system passwd)
+  #:use-module (system dates)
+  #:use-module (system i18n)
+  #:use-module (system aglobs)
+  #:use-module (gtk filechooser)
 
   ;; kise
-  :use-module (kise p-dialog)
-  :use-module (kise p-common)
-  :use-module (kise p-lvars)
-  :use-module (kise p-draft)
-  :use-module (kise p-commercial)
+  #:use-module (kise p-dialog)
+  #:use-module (kise p-common)
+  #:use-module (kise p-lvars)
+  #:use-module (kise p-draft)
+  #:use-module (kise p-commercial)
 
-  :export (kp/print))
+  #:export (kp/print))
 
 
 (eval-when (compile load eval)

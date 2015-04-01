@@ -23,14 +23,15 @@
 
 ;;; Code:
 
-(define-module (kise colours)
-  :use-module (macros reexport)
-  :use-module (gtk colours)
 
-  :export (*filters-fg*
-	   *filters-border*
-	   *filters-bg*
-	   *dialog-title-eb-bg*))
+(define-module (kise colours)
+  #:use-module (macros reexport)
+  #:use-module (gtk colours)
+
+  #:export (*filters-fg*
+	    *filters-border*
+	    *filters-bg*
+	    *dialog-title-eb-bg*))
 
 (eval-when (compile load eval)
   (re-export-public-interface (gtk colours)))

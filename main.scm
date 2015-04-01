@@ -29,19 +29,29 @@ exec guile-gnome-2 -e main -s $0 "$@"
 
 ;;; Code:
 
-(read-set! keywords 'prefix)
-
 
 ;;;
-;;; 1st of a 2 steps load modules
-;;;    [ to handle the locale 'problem' ]
+;;; 1st of a 2 steps import modules, because (gnome gnome-ui) uses $LANG
+;;; and we want to make sure (setlocale LC_ALL "") 'pass' first.  It may
+;;; fail, if the user $LANG is set to uninstalled locale.  In this case,
+;;; the user is warned, as we catch the exception, and then we start to
+;;; look to other possibilities, first looking for utf-8 available
+;;; locales and in last ressort if no utf-8 locale is available, it is
+;;; set to "C".
 ;;;
 
 (use-modules (ice-9 getopt-long)
+	     (system repl server)
 	     (system locale) ;; re-export aglobs
 	     (system passwd)
 	     (system i18n)
 	     (kise globals))
+
+
+(eval-when (expand load eval)
+  (use-modules (oop goops))
+  (default-duplicate-binding-handler
+    '(merge-generics replace warn-override-core warn last)))
 
 
 ;;;
@@ -79,7 +89,7 @@ details.")
   (aglobs/display (help-message) port))
 
 
-(eval-when (compile load eval)
+(eval-when (expand load eval)
 
   (define (display-uninstalled-lang port lang fallback)
     (aglobs/display (format #f "~?" (uninstalled-lang-message)
@@ -111,7 +121,7 @@ details.")
   (textdomain "main")
   (bindtextdomain "main" (aglobs/get 'pofdir))
 
-  ;; these 2 must be executed before writting to the port AND loading
+  ;; these 2 must be executed before writting to the port _and_ loading
   ;; any gnome modules
   (let ((port (current-output-port)))
     (set-port-encoding! port "utf-8")
@@ -119,19 +129,14 @@ details.")
 
 
 ;;;
-;;; 2d load modules step
+;;; now we can import gnome modules and kise
 ;;;
 
-(use-modules (system repl server)
-	     (oop goops)
-	     (gnome gnome)
+(use-modules (gnome gnome)
 	     (gnome gnome-ui) ;; <- uses $LANG
 	     (gnome gtk)
 	     (gnome glib)
 	     (kise kise))
-
-(default-duplicate-binding-handler
-  '(merge-generics replace warn-override-core warn last))
 
 
 ;;;
@@ -158,4 +163,3 @@ details.")
 	   (kise/animate-ui uname (aglobs/get 'gladefile) version debug?)
 	   (if debug? (spawn-server (make-tcp-server-socket #:port 1969)))
 	   (g-main-loop-run (g-main-loop-new))))))
-

@@ -23,34 +23,35 @@
 
 ;;; Code:
 
+
 (define-module (kise p-draft)
   ;; guile/guile-gnome
-  :use-module (srfi srfi-1)
-  :use-module (srfi srfi-17)
-  :use-module (ice-9 receive)
-  :use-module (ice-9 format)
-  :use-module (oop goops)
-  :use-module (gnome gobject)
-  :use-module (gnome gtk)
+  #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-17)
+  #:use-module (ice-9 receive)
+  #:use-module (ice-9 format)
+  #:use-module (oop goops)
+  #:use-module (gnome gobject)
+  #:use-module (gnome gtk)
 
   ;; common
-  :use-module (macros do)
-  :use-module (system dates)
-  :use-module (system passwd)
-  :use-module (system i18n)
-  :use-module (nbs all)
-  :use-module (tex common)
-  :use-module (gtk all)
+  #:use-module (macros do)
+  #:use-module (system dates)
+  #:use-module (system passwd)
+  #:use-module (system i18n)
+  #:use-module (nbs all)
+  #:use-module (tex common)
+  #:use-module (gtk all)
 
   ;; kise
-  :use-module (kise globals)
-  :use-module (kise db)
-  :use-module (kise iter)
-  :use-module (kise tl-widget)
-  :use-module (kise p-dialog)
-  :use-module (kise p-common)
+  #:use-module (kise globals)
+  #:use-module (kise db)
+  #:use-module (kise iter)
+  #:use-module (kise tl-widget)
+  #:use-module (kise p-dialog)
+  #:use-module (kise p-common)
 
-  :export (kp/print-draft))
+  #:export (kp/print-draft))
 
 
 (eval-when (compile load eval)
@@ -525,7 +526,7 @@ Core fields: ~S
 				  (kp/write-draft-ltx-tuple ltx-stream tuple core-fields rowfmt nb-cols description? ltx-offset)))
 			      (receive (c-values same-nb different-pos)
 				  (kp/group-compare-current current group-values)
-				;; (format #t "comp cur;:~%  c-values: ~S, same-nb: ~A, different-pos ~A~%"
+				;; (format #t "comp cur.:~%  c-values: ~S, same-nb: ~A, different-pos ~A~%"
 				;; c-values same-nb different-pos)
 				(case different-pos
 				  ((-1)

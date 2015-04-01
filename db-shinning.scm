@@ -23,39 +23,40 @@
 
 ;;; Code:
 
+
 (define-module (kise db-shinning)
   ;; guile
-  :use-module (ice-9 format)
-  :use-module (ice-9 threads)
-  :use-module (srfi srfi-1)
+  #:use-module (ice-9 format)
+  #:use-module (ice-9 threads)
+  #:use-module (srfi srfi-1)
 
   ;; common
-  :use-module (macros reexport)
-  :use-module (macros do)
-  :use-module (db sqlite)
-  :use-module (system i18n)
-  :use-module (system aglobs)
-  :use-module (nbs all)
-  :use-module (strings strings)
+  #:use-module (macros reexport)
+  #:use-module (macros do)
+  #:use-module (db sqlite)
+  #:use-module (system i18n)
+  #:use-module (system aglobs)
+  #:use-module (nbs all)
+  #:use-module (strings strings)
 
   ;; kise
-  :use-module (kise globals)
-  :use-module (kise db-con)
-  :use-module (kise db-kise)
+  #:use-module (kise globals)
+  #:use-module (kise db-con)
+  #:use-module (kise db-kise)
 
-  :export (db-shi/add-shinning-table
-	   db-shi/check-schema
-	   db-shi/create-complete-table
-	   db-shi/select-all
-	   db-shi/select-one
-	   db-shi/get
-	   db-shi/set
-	   db-shi/get-tuple
-	   db-shi/update
-	   db-shi/get-next-id
-	   db-shi/add
-	   db-shi/delete
-	   run-shinning-room-237-checks))
+  #:export (db-shi/add-shinning-table
+	    db-shi/check-schema
+	    db-shi/create-complete-table
+	    db-shi/select-all
+	    db-shi/select-one
+	    db-shi/get
+	    db-shi/set
+	    db-shi/get-tuple
+	    db-shi/update
+	    db-shi/get-next-id
+	    db-shi/add
+	    db-shi/delete
+	    run-shinning-room-237-checks))
 
 
 (eval-when (compile load eval)

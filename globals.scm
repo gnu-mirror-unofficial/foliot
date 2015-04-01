@@ -23,10 +23,11 @@
 
 ;;; Code:
 
+
 (define-module (kise globals)
   ;; common
-  :use-module (macros reexport)
-  :use-module (system aglobs))
+  #:use-module (macros reexport)
+  #:use-module (system aglobs))
 
 
 (eval-when (compile load eval)
