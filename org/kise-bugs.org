@@ -6,6 +6,15 @@
 
 ** Bugs
 
+*** CLOSED [[48] 2] (kcfg/get 'reload)
+CLOSED: [2015-05-10 Sun 20:42]
+- State "CLOSED"     from "OPEN"       [2015-05-10 Sun 20:42]
+
+kise/config.scm:  Fixing (kcfg/get 'reload) missed to set! its shared
+persistent variable, hence althouh reading the user's config file again,
+Kisê itself would still refer to the version loaded at (expand load
+eval) time.
+
 *** CLOSED [[47] 3] connect: default database schema incomplete, cancel
 CLOSED: [2014-03-17 Mon 16:06]
 - State "CLOSED"     from "OPEN"       [2014-03-17 Mon 16:06]

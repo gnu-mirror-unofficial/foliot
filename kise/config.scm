@@ -55,7 +55,7 @@
 	      ((all)
 	       config)
 	      ((reload)
-	       (sys/read-config "kise")
+	       (set! config (sys/read-config "kise"))
 	       config)
 	      (else
 	       (assq-ref config what)))))))
