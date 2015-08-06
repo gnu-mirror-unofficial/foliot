@@ -1,6 +1,6 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012, 2013
+;;;; Copyright (C) 2011 - 2015
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -34,16 +34,20 @@
   (re-export-public-interface (system aglobs))
   (let* ((kisedir (dirname (search-path %load-path "kise/kise.scm")))
 	 (pofdir (string-append kisedir "/pof"))
+	 (gtkrcdir (string-append kisedir "/gtkrc"))
 	 (iconsdir (string-append kisedir "/icons"))
-	 (gladedir (string-append kisedir "/glade")))
+	 (gladedir (string-append kisedir "/glade"))
+	 (latexdir (string-append kisedir "/latex"))
+	 (printdir "/tmp"))
     (aglobs/set 'kisedir kisedir)
     (aglobs/set 'pofdir pofdir)
     (aglobs/set 'iconsdir iconsdir)
     (aglobs/set 'gladedir gladedir)
     (aglobs/set 'gladefile (string-append gladedir "/kise.glade"))
-    (aglobs/set 'gtkrcfile (string-append kisedir "/gtkrc.kise"))
-    (aglobs/set 'latexdir (string-append kisedir "/latex"))
-    (aglobs/set 'printdir "/tmp")
+    (aglobs/set 'gtkrcdir gtkrcdir)
+    (aglobs/set 'gtkrcfile (string-append gtkrcdir "/gtkrc.kise"))
+    (aglobs/set 'latexdir latexdir)
+    (aglobs/set 'printdir printdir)
     (aglobs/set 'imported-ids-delta 1000000)
     ;; release: kisê to common git tag alist
     (aglobs/set 'tags '(("0.9.1" . "0.1")
