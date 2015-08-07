@@ -3,7 +3,7 @@
 export G_SLICE=always-malloc
 export GUILE_WARN_DEPRECATED="detailed"
 # ( cd `dirname $0` && make `basename $0` >/dev/null ) || exit
-exec guile-gnome-2 -e main -s $0 "$@"
+exec @GUILE@ --no-auto-compile -e main -s "$0" "$@"
 !#
 
 ;;;; Copyright (C) 2011, 2012, 2013
@@ -45,6 +45,7 @@ exec guile-gnome-2 -e main -s $0 "$@"
 	     (system locale) ;; re-export aglobs
 	     (system passwd)
 	     (system i18n)
+	     (gnome-2) ;; sets guile-gnome gnome [site] path
 	     (kise globals))
 
 
@@ -132,7 +133,8 @@ details.")
 ;;; now we can import gnome modules and kise
 ;;;
 
-(use-modules (gnome gnome)
+(use-modules (gnome-2)
+	     (gnome gnome)
 	     (gnome gnome-ui) ;; <- uses $LANG
 	     (gnome gtk)
 	     (gnome glib)
