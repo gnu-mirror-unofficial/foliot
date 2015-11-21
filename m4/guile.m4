@@ -27,6 +27,7 @@
 ## GUILE_PROGS -- set paths to Guile interpreter, config and tool programs
 ## GUILE_FLAGS -- set flags for compiling and linking with Guile
 ## GUILE_SITE_DIR -- find path to Guile "site" directory
+## GUILE_GLOBAL_SITE_DIR -- find path to Guile "global site" directory
 ## GUILE_SITE_CCACHE_DIR -- find path to Guile "site-ccache" directory
 ## GUILE_CHECK -- evaluate Guile Scheme code and capture the return value
 ## GUILE_MODULE_CHECK -- check feature of a Guile Scheme module
@@ -156,13 +157,34 @@ AC_DEFUN([GUILE_FLAGS],
   AC_SUBST([GUILE_LTLIBS])
  ])
 
+# GUILE_PREFIX_DIR -- find path to Guile "prefix" directory
+#
+# Usage: GUILE_PREFIX_DIR
+#
+# This looks for Guile's "prefix" directory and sets var
+# @var{GUILE_PREFIX} to the path.  Note that the var name is different
+# from the macro name.
+#
+# The variable is marked for substitution, as by @code{AC_SUBST}.
+#
+AC_DEFUN([GUILE_PREFIX_DIR],
+ [AC_REQUIRE([GUILE_PKG])
+  AC_MSG_CHECKING(for Guile prefix directory)
+  GUILE_PREFIX=`$PKG_CONFIG --print-errors --variable=prefix guile-$GUILE_EFFECTIVE_VERSION`
+  AC_MSG_RESULT($GUILE_PREFIX)
+  if test "$GUILE_PREFIX" = ""; then
+     AC_MSG_FAILURE(prefix not found)
+  fi
+  AC_SUBST(GUILE_PREFIX)
+ ])
+
 # GUILE_SITE_DIR -- find path to Guile "site" directory
 #
 # Usage: GUILE_SITE_DIR
 #
 # This looks for Guile's "site" directory, usually something like
-# PREFIX/share/guile/site, and sets var @var{GUILE_SITE} to the path.
-# Note that the var name is different from the macro name.
+# PREFIX/share/guile/site/2.x, and sets var @var{GUILE_SITE} to the
+# path.  Note that the var name is different from the macro name.
 #
 # The variable is marked for substitution, as by @code{AC_SUBST}.
 #
@@ -175,6 +197,27 @@ AC_DEFUN([GUILE_SITE_DIR],
      AC_MSG_FAILURE(sitedir not found)
   fi
   AC_SUBST(GUILE_SITE)
+ ])
+
+# GUILE_GLOBAL_SITE_DIR -- find path to Guile global site directory
+#
+# Usage: GUILE_GLOBAL_SITE_DIR
+#
+# This looks for Guile's global site directory, usually something like
+# PREFIX/share/guile/site, and sets var @var{GUILE_GLOBAL_SITE} to the
+# path.  Note that the var name is different from the macro name.
+#
+# The variable is marked for substitution, as by @code{AC_SUBST}.
+#
+AC_DEFUN([GUILE_GLOBAL_SITE_DIR],
+ [AC_REQUIRE([GUILE_PKG])
+  AC_MSG_CHECKING(for Guile global site directory)
+  GUILE_GLOBAL_SITE=`$GUILE -c "(display (%global-site-dir))"`
+  AC_MSG_RESULT($GUILE_GLOBAL_SITE)
+  if test "$GUILE_GLOBAL_SITE" = ""; then
+     AC_MSG_FAILURE(global site dir not found)
+  fi
+  AC_SUBST(GUILE_GLOBAL_SITE)
  ])
 
 # GUILE_SITE_CCACHE_DIR -- find path to Guile "site-ccache" directory
