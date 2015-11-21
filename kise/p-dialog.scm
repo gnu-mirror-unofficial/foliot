@@ -1,6 +1,8 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012, 2013
+;;;;
+;;;; Copyright (C) 2011 - 2015
+
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -25,7 +27,6 @@
 
 
 (define-module (kise p-dialog)
-  ;; guile/guile-gnome
   #:use-module (ice-9 format)
   #:use-module (ice-9 receive)
   #:use-module (oop goops)
@@ -33,14 +34,10 @@
   #:use-module (gnome glade)
   #:use-module (gnome gtk)
   #:use-module (gnome gtk gdk-event)
-
-  ;; common
-  #:use-module (macros do)
-  #:use-module (system i18n)
-  #:use-module (system aglobs)
-  #:use-module (gtk all)
-
-  ;; kise
+  #:use-module (grip do)
+  #:use-module (grip i18n)
+  #:use-module (grip utils)
+  #:use-module (grip gnome)
   #:use-module (kise colours)
   #:use-module (kise db-kise)
   #:use-module (kise db-printing-templates)
@@ -59,9 +56,9 @@
 	    kp/get-core-ltx-field-specs))
 
 
-(eval-when (compile load eval)
+(eval-when (expand load eval)
   (textdomain "p-dialog")
-  (bindtextdomain "p-dialog" (aglobs/get 'pofdir)))
+  (bindtextdomain "p-dialog" (storage-get 'pofdir)))
 
 
 (define *kise-p-dialog-offsets*
@@ -921,11 +918,6 @@
 
 #!
 
-(use-modules (kise p-dialog))
-(reload-module (resolve-module '(kise p-dialog)))
-(module-filename (resolve-module '(kise p-dialog)))
-,m (kise p-dialog)
-
 (kp/set-debug-variables)
 
 ;;;
@@ -934,7 +926,7 @@
 
 (use-modules (kise tl-widget))
 (use-modules (kise p-dialog))
-(kp/make-dialog #f (string-append (aglobs/get 'glade-path) "/kise.glade"))
+(kp/make-dialog #f (string-append (storage-get 'glade-path) "/kise.glade"))
 (define kp-widget $1)
 (dialog kp-widget)
 
@@ -945,7 +937,7 @@
 
 (use-modules (kise p-dialog))
 (use-modules (kise tl-widget))
-(kp/make-dialog #f (string-append (aglobs/get 'glade-path) "/kise.glade"))
+(kp/make-dialog #f (string-append (storage-get 'glade-path) "/kise.glade"))
 (define kp-widget $1)
 (dialog kp-widget)
 

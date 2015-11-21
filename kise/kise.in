@@ -6,7 +6,8 @@ export GUILE_WARN_DEPRECATED="detailed"
 exec @GUILE@ --no-auto-compile -e main -s "$0" "$@"
 !#
 
-;;;; Copyright (C) 2011, 2012, 2013
+;;;;
+;;;; Copyright (C) 2011 - 2015
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -42,9 +43,10 @@ exec @GUILE@ --no-auto-compile -e main -s "$0" "$@"
 
 (use-modules (ice-9 getopt-long)
 	     (system repl server)
-	     (system locale) ;; re-export aglobs
-	     (system passwd)
-	     (system i18n)
+	     (grip utils)
+	     (grip locale)
+	     (grip passwd)
+	     (grip i18n)
 	     (gnome-2) ;; sets guile-gnome gnome [site] path
 	     (kise globals))
 
@@ -60,7 +62,7 @@ exec @GUILE@ --no-auto-compile -e main -s "$0" "$@"
 ;;;
 
 (define (copyright-message)
-  "Copyright (C) 2011, 2012, 2013, 2014  Free Software Foundation, Inc.
+  "Copyright (C) 2011 - 2015  Free Software Foundation, Inc.
 
 Kise comes with ABSOLUTELY NO WARRANTY.  This program is free
 software, and you are welcome to redistribute it under certain
@@ -81,23 +83,21 @@ details.")
 
 (define (display-welcome port)
   ;; 'GNU Kise', really nice! But let's wait GNU evaluation/acceptance
-  ;; (aglobs/display (string-append "GNU Kise " (aglobs/get 'version))
-  ;; port)
-  (aglobs/display (string-append "Kise " (aglobs/get 'version)) port)
-  (aglobs/display (copyright-message) port))
+  (displayln (string-append "Kise " (storage-get 'version)) port)
+  (displayln (copyright-message) port))
 
 (define (display-help port)
-  (aglobs/display (help-message) port))
+  (displayln (help-message) port))
 
 
 (eval-when (expand load eval)
 
   (define (display-uninstalled-lang port lang fallback)
-    (aglobs/display (format #f "~?" (uninstalled-lang-message)
-			    (list lang fallback)) port))
+    (displayln (format #f "~?" (uninstalled-lang-message)
+		       (list lang fallback)) port))
 
   (define (set-locale msg-port)
-    (let ((locale (aglobs/get 'lang)))
+    (let ((locale (storage-get 'lang)))
       (catch #t
 	(lambda () (setlocale LC_ALL "")) ;; gettext will not work otherwise
 	(lambda (key . parameters)
@@ -111,16 +111,16 @@ details.")
 	    (set! locale fallback)
 	    (setlocale LC_ALL fallback))
 	  #f))
-      (aglobs/set 'locale locale)
+      (storage-set 'locale locale)
       locale))
 
-  (aglobs/set 'command-synopsis
+  (storage-set 'command-synopsis
 	      '((debug (single-char #\d) (value #f))
 		(version (value #f))
 		(help (value #f))))
-  (aglobs/set 'version "0.9.4")
+  (storage-set 'version "@VERSION@")
   (textdomain "main")
-  (bindtextdomain "main" (aglobs/get 'pofdir))
+  (bindtextdomain "main" (storage-get 'pofdir))
 
   ;; these 2 must be executed before writting to the port _and_ loading
   ;; any gnome modules
@@ -146,22 +146,22 @@ details.")
 ;;;
 
 (define (main args)
-  (let* ((options (getopt-long args (aglobs/get 'command-synopsis)))
+  (let* ((options (getopt-long args (storage-get 'command-synopsis)))
 	 (help? (option-ref options 'help #f))
 	 (version? (option-ref options 'version #f))
 	 (debug? (option-ref options 'debug #f))
 	 (port (current-output-port))
 	 (uname (sys/get 'uname))
-	 (version (aglobs/get 'version)))
+	 (version (storage-get 'version)))
     (cond (version? (display-welcome port))
 	  (help? (display-help port))
 	  (else
 	   (display-welcome port)
-	   (aglobs/set 'debug debug?)
-	   (gtk-rc-parse (aglobs/get 'gtkrcfile))
+	   (storage-set 'debug debug?)
+	   (gtk-rc-parse (storage-get 'gtkrcfile))
 	   (load-user-init)
 	   (gnome-program-init "Kise" version)
 	   (gnome-authentication-manager-init)
-	   (kise/animate-ui uname (aglobs/get 'gladefile) version debug?)
+	   (kise/animate-ui uname (storage-get 'gladefile) version debug?)
 	   (if debug? (spawn-server (make-tcp-server-socket #:port 1969)))
 	   (g-main-loop-run (g-main-loop-new))))))

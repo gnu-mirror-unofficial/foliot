@@ -1,6 +1,8 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012, 2013
+;;;;
+;;;; Copyright (C) 2011 - 2015
+
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -25,15 +27,11 @@
 
 
 (define-module (kise import)
-  ;; guile/guile-gnome
   #:use-module (oop goops)
-
-  ;; common
-  #:use-module (macros reexport)
-  #:use-module (macros do)
-  #:use-module (gtk all)
-  #:use-module (system i18n)
-
+  #:use-module (grip reexport)
+  #:use-module (grip do)
+  #:use-module (grip i18n)
+  #:use-module (grip gnome)
   #:use-module (kise config)
   #:use-module (kise tl-widget)
   #:use-module (kise i-dialog)
@@ -42,7 +40,7 @@
   #:export (ki/select-gui))
 
 
-(eval-when (compile load eval)
+(eval-when (expand load eval)
   (re-export-public-interface (oop goops)
 			      (kise i-dialog)))
 
@@ -73,9 +71,12 @@
 					      (dirname (kcfg/get 'db-file))
 					      #f)))
     (if import-filename
-	(let ((pre-checks-failed? (cond ((string=? import-filename (kcfg/get 'db-file)) *importing-the-active-db-is-not-allowed-msg*)
-					((not (access? import-filename R_OK)) *no-read-perm-msg*)
-					((not (sqlite/sqlite-db-file? import-filename)) *not-an-sqlite-file-msg*)
+	(let ((pre-checks-failed? (cond ((string=? import-filename (kcfg/get 'db-file))
+					 *importing-the-active-db-is-not-allowed-msg*)
+					((not (access? import-filename R_OK))
+					 *no-read-perm-msg*)
+					((not (sqlite/sqlite-db-file? import-filename))
+					 *not-an-sqlite-file-msg*)
 					(else #f))))
 	  (if pre-checks-failed?
 	      (begin
@@ -98,13 +99,14 @@
 				       'dialog-warning)
 		      #f)
 		    (let* ((id (db-idb/get-next-id))
-			   (idb-cs (modulo id (length palette)))
+			   (idb-cs (modulo id (length %palette)))
 			   (idb-id (db-kise/import import-filename idb-cs id idb-con)))
-		      (if (>= id (length palette))
+		      (if (>= id (length %palette))
 			  (md1b/select-gui (dialog ki-widget)
 					   (_ "Warning!")
 					   (_ "Colour set:")
-					   (format #f "~?" *no-available-colour-set-msg* (list (colour-set-name idb-cs) idb-cs))
+					   (format #f "~?" *no-available-colour-set-msg*
+						   (list (colour-set-name idb-cs) idb-cs))
 					   (lambda () 'nothing)
 					   'dialog-warning))
 		      (set! (gui-callback? tl-widget) #f)
@@ -196,11 +198,3 @@
 		  (throw 'exit 'delete)))))
 	   (lambda (key value)
 	     value))))
-
-
-#!
-
-(use-modules (kise import))
-(reload-module (resolve-module '(kise import)))
-
-!#

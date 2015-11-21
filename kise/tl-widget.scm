@@ -1,7 +1,9 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 
-;;;; Copyright (C) 2011, 2012, 2013
+;;;;
+;;;; Copyright (C) 2011 - 2015
+
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -26,7 +28,6 @@
 
 
 (define-module (kise tl-widget)
-  ;; guile/guile-gnome
   #:use-module (ice-9 format)
   #:use-module (ice-9 receive)
   #:use-module (oop goops)
@@ -36,24 +37,19 @@
   #:use-module (gnome gtk gdk-event)
   #:use-module (gnome glade)
   #:use-module (gnome gnome-ui)
-
-  ;; common
-  #:use-module (macros reexport)
-  #:use-module (macros push)
-  #:use-module (macros do)
-  #:use-module (system dates)
-  #:use-module (system i18n)
-  #:use-module (system aglobs)
-  #:use-module (system xft)
-  #:use-module (strings strings)
-  #:use-module (nbs all)
-  #:use-module (gtk all)
-  #:use-module (db sqlite)
-
-  ;; kise
+  #:use-module (grip reexport)
+  #:use-module (grip push)
+  #:use-module (grip do)
+  #:use-module (grip dates)
+  #:use-module (grip i18n)
+  #:use-module (grip utils)
+  #:use-module (grip xft)
+  #:use-module (grip strings)
+  #:use-module (grip nbs)
+  #:use-module (grip gnome)
+  #:use-module (grip db sqlite)
   #:use-module (kise config)
   #:use-module (kise colours)
-
   #:use-module (kise db)
   #:use-module (kise iter)
   ;; #:use-module (kise what-tree)
@@ -202,14 +198,14 @@
 	    ktlw/filter-clear))
 
 
-(eval-when (compile load eval)
+(eval-when (expand load eval)
   (re-export-public-interface (oop goops)
 			      (gnome gobject)
 			      (gnome gtk)
 			      (gnome glade)
 			      (kise config))
   (textdomain "tl-widget")
-  (bindtextdomain "tl-widget" (aglobs/get 'pofdir)))
+  (bindtextdomain "tl-widget" (storage-get 'pofdir)))
 
 
 ;;;
@@ -390,8 +386,8 @@
     (values model (get-selection treeview))))
 
 (define (ktlw/add-columns tl-widget treeview)
-  (let* ((dpi-ratio (aglobs/get 'Xft.dpi.ratio))
-	 (apply-ratio? (aglobs/get 'apply-dpi-ratio?))
+  (let* ((dpi-ratio (storage-get 'Xft.dpi.ratio))
+	 (apply-ratio? (storage-get 'apply-dpi-ratio?))
 	 (model (get-model treeview))
 	 ;; IMPORTED ROW COLOUR
 	 (renderer0 (make <gtk-cell-renderer-text>))
@@ -810,7 +806,7 @@
       (get-position (dialog tl-widget))
     (receive (win-w win-h)
 	(get-size (dialog tl-widget))
-      (sys/write-config "kise"
+      (write-config "kise"
 			(if (null? rests)
 			    (list (cons 'db-file (kcfg/get 'db-file))
 				  (cons 'open-at-startup (kcfg/get 'open-at-startup))
@@ -939,7 +935,7 @@
 	(,whats ,what-combo what))))
 
 (define (ktlw/trace-combo-callback tl-widget combo entry db-fname in-store? signal)
-  (when (aglobs/get 'debug)
+  (when (storage-get 'debug)
     (let* ((row (current-row tl-widget))
 	   (db-tuple (ktlw/get-tuple tl-widget row))
 	   (id (db-kise/get db-tuple 'id)))
@@ -1064,8 +1060,8 @@
 	(db-tuples tl-widget))))
 
 (define (ktlw/apply-xft-dpi-ratio tl-widget)
-  (when (aglobs/get 'apply-dpi-ratio?)
-    (let* ((dpi-ratio (aglobs/get 'Xft.dpi.ratio))
+  (when (storage-get 'apply-dpi-ratio?)
+    (let* ((dpi-ratio (storage-get 'Xft.dpi.ratio))
 	   (widget-size-dates (inexact->exact (round (* dpi-ratio (get (date-entry tl-widget) 'width-request)))))
 	   (widget-size-whos (inexact->exact (round (* dpi-ratio (get (who-combo tl-widget) 'width-request))))))
       (set (reference-entry tl-widget) 'width-request widget-size-dates)
@@ -1440,10 +1436,10 @@ filter date: ~S~%"
 	(image (filter-icon tl-widget)))
     (case mode
       ((on)
-       (set-from-file image (string-append (aglobs/get 'iconsdir) "/pie-24x24-color-2.png"))
+       (set-from-file image (string-append (storage-get 'iconsdir) "/pie-24x24-color-2.png"))
        (set-tip t-tip image (_ "ON: your are working on a subset of your database.")))
       ((off)
-       (set-from-file image (string-append (aglobs/get 'iconsdir) "/full-pie-24x24-grey-2.png"))
+       (set-from-file image (string-append (storage-get 'iconsdir) "/full-pie-24x24-grey-2.png"))
        (set-tip t-tip image (_ "OFF: your are working on the entire database."))))))
 
 (define (ktlw/filter-apply tl-widget . force?)
@@ -1465,7 +1461,7 @@ filter date: ~S~%"
 	      (set! (id-set tl-widget) #f)
 	      (let* ((new-tuple-set (db-kise/select-some filter? #f))
 		     (new-pos (ktlw/filter-get-row-new-pos-if-any tl-widget new-tuple-set)))
-		(when (aglobs/get 'debug) (ktlw/-display-filter-apply-infos filter? (length new-tuple-set) new-pos))
+		(when (storage-get 'debug) (ktlw/-display-filter-apply-infos filter? (length new-tuple-set) new-pos))
 		(set! (db-tuples tl-widget) new-tuple-set)
 		(ktlw/fill-tv tl-widget)
 		(ktlw/update-totals-status-bars tl-widget)
@@ -1594,11 +1590,6 @@ The date must be a valid date between the 01.01.1970 and 31.12.2037.
 
 #!
 
-(use-modules (kise tl-widget))
-(reload-module (resolve-module '(kise tl-widget)))
-,m (kise tl-widget)
-
-
 ;;;
 ;;; Completion code example
 ;;;
@@ -1613,4 +1604,3 @@ The date must be a valid date between the 01.01.1970 and 31.12.2037.
 (set-completion (for-whom-entry tl-widget) for-whom-cpl)
 
 !#
-

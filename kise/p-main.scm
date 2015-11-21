@@ -1,6 +1,8 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012, 2013
+;;;;
+;;;; Copyright (C) 2011 - 2015
+
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -25,20 +27,15 @@
 
 
 (define-module (kise p-main)
-  ;; guile/guile-gnome
   #:use-module (oop goops)
   #:use-module (gnome gobject)
   #:use-module (gnome gtk)
-
-  ;; common
-  #:use-module (macros reexport)
-  #:use-module (system passwd)
-  #:use-module (system dates)
-  #:use-module (system i18n)
-  #:use-module (system aglobs)
-  #:use-module (gtk filechooser)
-
-  ;; kise
+  #:use-module (grip reexport)
+  #:use-module (grip passwd)
+  #:use-module (grip dates)
+  #:use-module (grip i18n)
+  #:use-module (grip utils)
+  #:use-module (grip gnome filechooser)
   #:use-module (kise p-dialog)
   #:use-module (kise p-common)
   #:use-module (kise p-lvars)
@@ -48,9 +45,9 @@
   #:export (kp/print))
 
 
-(eval-when (compile load eval)
+(eval-when (expand load eval)
   (textdomain "p-main")
-  (bindtextdomain "p-main" (aglobs/get 'pofdir)))
+  (bindtextdomain "p-main" (storage-get 'pofdir)))
 
 
 (define (kp/print-1 kp/widget tl-widget pdf-filename)
@@ -85,11 +82,3 @@
 						   proposed-name)))
 	    (if pdf-filename (kp/print-1 kp/widget tl-widget pdf-filename))))
      (kp/print-1 kp/widget tl-widget #f))))
-
-
-#!
-
-(use-modules (kise p-main))
-(reload-module (resolve-module '(kise p-main)))
-
-!#

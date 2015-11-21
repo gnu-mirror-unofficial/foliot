@@ -1,6 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012, 2013, 2014
+;;;;
+;;;; Copyright (C) 2011 - 2015
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -25,7 +26,6 @@
 
 
 (define-module (kise kise)
-  ;; guile/guile-gnome
   :use-module (ice-9 format)
   :use-module (ice-9 receive)
   :use-module (oop goops)
@@ -34,18 +34,14 @@
   :use-module (gnome gtk)
   :use-module (gnome gtk gdk-event)
   :use-module (gnome gnome-ui)
-
-  ;; common
-  :use-module (macros reexport)
-  :use-module (macros push)
-  :use-module (macros do)
-  :use-module (system dates)
-  :use-module (system i18n)
-  :use-module (db sqlite)
-  :use-module (nbs all)
-  :use-module (gtk all)
-
-  ;; kise
+  :use-module (grip reexport)
+  :use-module (grip push)
+  :use-module (grip do)
+  :use-module (grip dates)
+  :use-module (grip i18n)
+  :use-module (grip db sqlite)
+  :use-module (grip nbs)
+  :use-module (grip gnome)
   :use-module (kise db)
   :use-module (kise config)
   :use-module (kise colours)
@@ -69,19 +65,17 @@
 	   tuple))
 
 
-(eval-when (compile load eval)
+(eval-when (expand load eval)
   (re-export-public-interface (oop goops)
 			      (gnome gobject)
 			      (gnome gtk)
 			      (gnome gtk gdk-event)
 			      (gnome gnome-ui)
-			      ;; common
-			      (system dates)
-			      (system i18n)
-			      (db sqlite)
-			      (nbs all)
-			      (gtk all)
-			      ;; kise
+			      (grip dates)
+			      (grip i18n)
+			      (grip db sqlite)
+			      (grip nbs)
+			      (grip gnome)
 			      (kise db)
 			      (kise config)
 			      (kise colours)
@@ -92,7 +86,7 @@
 			      (kise import)
 			      (kise print))
   (textdomain "kise")
-  (bindtextdomain "kise" (aglobs/get 'pofdir)))
+  (bindtextdomain "kise" (storage-get 'pofdir)))
 
 
 ;;;
@@ -517,7 +511,7 @@
 
     (gtk2/set-sensitive `(,(reference-entry tl-widget)) #f)
     (show-all (dialog tl-widget))
-    (if (aglobs/get 'debug)
+    (if (storage-get 'debug)
 	(begin
 	  (set-flags (date-edit tl-widget) '(show-time))
 	  (set-flags (date-edit tl-widget) '())
@@ -537,10 +531,6 @@
 
 
 #!
-
-(use-modules (kise kise))
-(reload-module (resolve-module '(kise kise)))
-
 
 ;;;
 ;;;

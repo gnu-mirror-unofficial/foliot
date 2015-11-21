@@ -1,6 +1,8 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012, 2013
+;;;;
+;;;; Copyright (C) 2011 - 2015
+
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -25,15 +27,10 @@
 
 
 (define-module (kise db)
-  ;; from guile
-
-  ;; common
-  #:use-module (macros reexport)
-  ;#:use-module (system aglobs)
-  ;#:use-module (system dates)
-  ;#:use-module (db sqlite)
-
-  ;; kise
+  #:use-module (grip reexport)
+  ;; #:use-module (grip utils)
+  ;; #:use-module (grip dates)
+  ;; #:use-module (grip db sqlite)
   #:use-module (kise db-con)
   #:use-module (kise db-kise)
   #:use-module (kise db-imported-db)
@@ -45,7 +42,7 @@
 	    db/complete-schema))
 
 
-(eval-when (compile load eval)
+(eval-when (expand load eval)
   (re-export-public-interface (kise db-con)
 			      (kise db-kise)
 			      (kise db-imported-db)
@@ -86,11 +83,3 @@
   (db-pt/create-complete-table db)
   (db-idb/create-complete-table db)
   (db-shi/create-complete-table db))
-
-
-#!
-
-(use-modules (kise db))
-(reload-module (resolve-module '(kise db)))
-
-!#

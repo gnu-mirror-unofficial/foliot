@@ -1,6 +1,8 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012, 2013
+;;;;
+;;;; Copyright (C) 2011 - 2015
+
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -27,13 +29,8 @@
 
 
 (define-module (kise p-commercial)
-  ;; guile/guile-gnome
   #:use-module (oop goops)
   ;; #:use-module (gnome gw generics)
-
-  ;; common
-
-  ;; kise
 
   #:export (kp/print-commercial))
 
@@ -50,11 +47,3 @@
 (define (kp/print-commercial kp/widget tl-widget tex-files)
   (format #t "kp/print-commercial not implemented yet.~%")
   #t)
-
-
-#!
-
-(use-modules (kise p-commercial))
-(reload-module (resolve-module '(kise p-commercial)))
-
-!#

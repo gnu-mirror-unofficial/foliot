@@ -1,6 +1,8 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012, 2013
+;;;;
+;;;; Copyright (C) 2011 - 2015
+
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -25,7 +27,6 @@
 
 
 (define-module (kise p-draft)
-  ;; guile/guile-gnome
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-17)
   #:use-module (ice-9 receive)
@@ -33,17 +34,13 @@
   #:use-module (oop goops)
   #:use-module (gnome gobject)
   #:use-module (gnome gtk)
-
-  ;; common
-  #:use-module (macros do)
-  #:use-module (system dates)
-  #:use-module (system passwd)
-  #:use-module (system i18n)
-  #:use-module (nbs all)
-  #:use-module (tex common)
-  #:use-module (gtk all)
-
-  ;; kise
+  #:use-module (grip do)
+  #:use-module (grip dates)
+  #:use-module (grip passwd)
+  #:use-module (grip i18n)
+  #:use-module (grip nbs)
+  #:use-module (grip tex-utils)
+  #:use-module (grip gnome)
   #:use-module (kise globals)
   #:use-module (kise db)
   #:use-module (kise iter)
@@ -54,16 +51,14 @@
   #:export (kp/print-draft))
 
 
-(eval-when (compile load eval)
+(eval-when (expand load eval)
   (textdomain "p-draft")
-  (bindtextdomain "p-draft" (aglobs/get 'pofdir)))
+  (bindtextdomain "p-draft" (storage-get 'pofdir)))
 
 
 ;;;
 ;;; Globals
 ;;;
-
-
 
 
 ;;;
@@ -79,7 +74,7 @@
 {extarticle}~%"))
 
 (define (kp/write-draft-inputs ostream)
-  (let ((latexdir (aglobs/get 'latexdir)))
+  (let ((latexdir (storage-get 'latexdir)))
     (format ostream "
   \\input{~A/draft-packages}
   \\input{~A/draft-commandes}
@@ -502,7 +497,7 @@ Core fields: ~S
     (kp/write-ltx-offset ostream ltx-offset)
     (receive (preamble rowfmt nb-cols description?)
 	(kp/get-ltx-preamble-rowfmt-nb-cols core-fields)
-      (if (aglobs/get 'debug) (kp/display-ltx-preamble-debug-info groups core-fields preamble rowfmt nb-cols description?))
+      (if (storage-get 'debug) (kp/display-ltx-preamble-debug-info groups core-fields preamble rowfmt nb-cols description?))
       (if (null? groups)
 	  (begin
 	    (format ostream "\\bigskip~%")

@@ -1,6 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012, 2013
+;;;;
+;;;; Copyright (C) 2011 - 2015
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -25,15 +26,11 @@
 
 
 (define-module (kise print)
-  ;; guile/guile-gnome
   #:use-module (oop goops)
   #:use-module (gnome gobject)
   #:use-module (gnome gtk)
-
-  ;; common
-  ;; #:use-module (system reexport)
-  #:use-module (gtk all)
-
+  ;; #:use-module (grip reexport)
+  #:use-module (grip gnome)
   #:use-module (kise globals)
   #:use-module (kise tl-widget)
   #:use-module (kise p-dialog)
@@ -42,17 +39,15 @@
   #:export (kp/select-gui))
 
 
-#!
-(eval-when (compile load eval)
+#;(eval-when (expand load eval)
   (re-export-public-interface (oop goops)
 			      (gnome gobject)
 			      (gnome gtk)
-			      (gtk all)
+			      (gnome all)
 			      (kise globals)
 			      (kise tl-widget)
 			      (kise p-dialog)
 			      (kise p-main)))
-!#
 
 
 ;;;
@@ -83,9 +78,6 @@
 
 #!
 
-(use-modules (kise print))
-(reload-module (resolve-module '(kise print)))
-
 (kp/select-gui tl-widget)
 
 
@@ -93,11 +85,6 @@
 ;;; Other tests
 ;;;
 
-guile-gnome-2
-(use-modules (oop goops)
-	     (gnome gobject)
-	     (gnome gtk)
-	     (gnome glade))
 dialog	;; in guile-gnome?
 
 
@@ -105,10 +92,8 @@ dialog	;; in guile-gnome?
 ;;; 1.
 ;;;
 
-(use-modules (kise print))
-,m (kise print)
 (define tl-widget (make <kise/tl-widget>))
-(define p-widget (kp/make-dialog (dialog tl-widget) (aglobs/get 'gladefile)))
+(define p-widget (kp/make-dialog (dialog tl-widget) (storage-get 'gladefile)))
 
 (dialog tl-widget)
 (dialog p-widget)
@@ -118,9 +103,7 @@ dialog	;; in guile-gnome?
 ;;; 2.
 ;;;
 
-(use-modules (kise print))
-,m (kise print)
-(define p-widget (kp/make-dialog #f (aglobs/get 'gladefile)))
+(define p-widget (kp/make-dialog #f (storage-get 'gladefile)))
 
 (dialog p-widget)
 
@@ -129,10 +112,8 @@ dialog	;; in guile-gnome?
 ;;; 3.
 ;;;
 
-(use-modules (kise print))
-,m (kise print)
 (define tl-widget (make-tl-widget))
-(define p-widget (kp/make-dialog (dialog tl-widget) (aglobs/get 'gladefile)))
+(define p-widget (kp/make-dialog (dialog tl-widget) (storage-get 'gladefile)))
 
 (dialog p-widget)
 (dialog tl-widget)

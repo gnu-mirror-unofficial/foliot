@@ -1,6 +1,8 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012, 2013
+;;;;
+;;;; Copyright (C) 2011 - 2015
+
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -25,21 +27,16 @@
 
 
 (define-module (kise db-imported-db)
-  ;; guile
   #:use-module (ice-9 format)
   #:use-module (srfi srfi-1)
-
-  ;; common
-  #:use-module (macros reexport)
-  #:use-module (macros do)
-  #:use-module (db sqlite)
-  #:use-module (system dates)
-  #:use-module (system i18n)
-  #:use-module (system aglobs)
-  #:use-module (strings strings)
-  #:use-module (gtk colours)
-
-  ;; kise
+  #:use-module (grip reexport)
+  #:use-module (grip do)
+  #:use-module (grip db sqlite)
+  #:use-module (grip dates)
+  #:use-module (grip i18n)
+  #:use-module (grip utils)
+  #:use-module (grip strings)
+  #:use-module (grip gnome colours)
   #:use-module (kise globals)
   #:use-module (kise db-con)
 
@@ -61,16 +58,16 @@
 	    db-idb/get-colour-alist))
 
 
-(eval-when (compile load eval)
-  (re-export-public-interface (db sqlite)
-			      (system dates)
-			      (system i18n)
-			      (system aglobs)
-			      (strings strings)
+(eval-when (expand load eval)
+  (re-export-public-interface (grip db sqlite)
+			      (grip dates)
+			      (grip i18n)
+			      (grip utils)
+			      (grip strings)
 			      (kise globals)
 			      (kise db-con))
   (textdomain "db-imported-db")
-  (bindtextdomain "db-imported-db" (aglobs/get 'pofdir)))
+  (bindtextdomain "db-imported-db" (storage-get 'pofdir)))
 
 
 ;;;
@@ -314,9 +311,6 @@
 
 
 #!
-
-(use-modules (kise db-imported-db))
-(reload-module (resolve-module '(kise db-imported-db)))
 
 (db-con/open "/usr/alto/db/sqlite.alto.tests.db")
 (db-idb/select-all)

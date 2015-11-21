@@ -1,6 +1,8 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012, 2013
+;;;;
+;;;; Copyright (C) 2011 - 2015
+
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -25,21 +27,16 @@
 
 
 (define-module (kise db-shinning)
-  ;; guile
   #:use-module (ice-9 format)
   #:use-module (ice-9 threads)
   #:use-module (srfi srfi-1)
-
-  ;; common
-  #:use-module (macros reexport)
-  #:use-module (macros do)
-  #:use-module (db sqlite)
-  #:use-module (system i18n)
-  #:use-module (system aglobs)
-  #:use-module (nbs all)
-  #:use-module (strings strings)
-
-  ;; kise
+  #:use-module (grip reexport)
+  #:use-module (grip do)
+  #:use-module (grip db sqlite)
+  #:use-module (grip i18n)
+  #:use-module (grip utils)
+  #:use-module (grip nbs)
+  #:use-module (grip strings)
   #:use-module (kise globals)
   #:use-module (kise db-con)
   #:use-module (kise db-kise)
@@ -59,16 +56,16 @@
 	    run-shinning-room-237-checks))
 
 
-(eval-when (compile load eval)
-  (re-export-public-interface (macros do)
-			      (db sqlite)
-			      (system i18n)
-			      (system aglobs)
-			      (strings strings)
+(eval-when (expand load eval)
+  (re-export-public-interface (grip do)
+			      (grip db sqlite)
+			      (grip i18n)
+			      (grip utils)
+			      (grip strings)
 			      (kise globals)
 			      (kise db-con))
   (textdomain "db-shinning")
-  (bindtextdomain "db-shinning" (aglobs/get 'pofdir)))
+  (bindtextdomain "db-shinning" (storage-get 'pofdir)))
 
 
 ;;;
@@ -248,9 +245,6 @@
 
 
 #!
-
-(use-modules (kise db-shinning))
-(reload-module (resolve-module '(kise db-shinning)))
 
 (db-con/open "/usr/alto/db/sqlite.alto.tests.db")
 (db-con/open "/usr/alto/db/bryony.db")

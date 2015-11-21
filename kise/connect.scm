@@ -1,6 +1,8 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012, 2013
+;;;;
+;;;; Copyright (C) 2011 - 2015
+
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -25,17 +27,12 @@
 
 
 (define-module (kise connect)
-  ;; guile/guile-gnome
   #:use-module (oop goops)
   #:use-module (gnome gobject)
   #:use-module (gnome gtk)
-
-  ;; common
-  ;; #:use-module (macros reexport)
-  #:use-module (gtk all)
-  #:use-module (system i18n)
-
-  ;; kise
+  ;; #:use-module (grip reexport)
+  #:use-module (grip gnome)
+  #:use-module (grip i18n)
   #:use-module (kise db)
   #:use-module (kise tl-widget)
   #:use-module (kise config)
@@ -45,13 +42,13 @@
 
 
 #!
-(eval-when (compile load eval)
+(eval-when (expand load eval)
   (re-export-public-interface (oop goops)
 			      (gnome gobject)
 			      (gnome gtk)
 
-			      (gtk all)
-			      (system i18n)
+			      (grip gnome)
+			      (grip i18n)
 
 			      (kise db)
 			      (kise tl-widget)
@@ -173,15 +170,11 @@ create/connect to another Kisê database.
 
 #!
 
-(use-modules (kise connect))
-(reload-module (resolve-module '(kise connect)))
-,m (kise connect)
-
 (define tl-widget (make <kise/tl-widget>
-		    #:glade-file (aglobs/get 'gladefile)))
+		    #:glade-file (storage-get 'gladefile)))
 (kc/select-gui tl-widget "/usr/alto/db" "sqlite.alto.db")
 
-(define c-widget (kc/make-dialog (dialog tl-widget) (aglobs/get 'gladefile)))
+(define c-widget (kc/make-dialog (dialog tl-widget) (storage-get 'gladefile)))
 (dialog tl-widget)
 (dialog c-widget)
 

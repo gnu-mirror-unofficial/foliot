@@ -1,6 +1,8 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012, 2013
+;;;;
+;;;; Copyright (C) 2011 - 2015
+
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -25,20 +27,15 @@
 
 
 (define-module (kise p-lvars)
-  ;; guile
   #:use-module (oop goops)
-
-  ;; common
-  #:use-module (macros reexport)
-  #:use-module (system dates)
-  #:use-module (system passwd)
-  #:use-module (system i18n)
-  #:use-module (system aglobs)
-  #:use-module (nbs all)
-  #:use-module (tex common)
-  #:use-module (db sqlite)
-
-  ;; kise
+  #:use-module (grip reexport)
+  #:use-module (grip dates)
+  #:use-module (grip passwd)
+  #:use-module (grip i18n)
+  #:use-module (grip utils)
+  #:use-module (grip nbs)
+  #:use-module (grip tex-utils)
+  #:use-module (grip db sqlite)
   #:use-module (kise config)
   #:use-module (kise p-common)
   #:use-module (kise p-dialog)
@@ -46,12 +43,12 @@
   #:export (kp/write-local-variables))
 
 
-(eval-when (compile load eval)
-  (re-export-public-interface (system dates)
-			      (system i18n)
-			      (system aglobs))
+(eval-when (expand load eval)
+  (re-export-public-interface (grip dates)
+			      (grip i18n)
+			      (grip utils))
   (textdomain "p-lvars")
-  (bindtextdomain "p-lvars" (aglobs/get 'pofdir)))
+  (bindtextdomain "p-lvars" (storage-get 'pofdir)))
 
 
 ;;;
@@ -108,9 +105,6 @@
 
 
 #!
-
-(use-modules (kise p-lvars))
-(reload-module (resolve-module '(kise p-lvars)))
 
 (date/system-date "+%Y.%m.%d")
 

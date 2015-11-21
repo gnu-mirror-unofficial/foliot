@@ -1,6 +1,8 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012, 2013
+;;;;
+;;;; Copyright (C) 2011 - 2015
+
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -25,13 +27,10 @@
 
 
 (define-module (kise p-common)
-  ;; guile
   #:use-module (ice-9 format)
   #:use-module (oop goops)
-
-  ;; common
-  #:use-module (macros reexport)
-  #:use-module (system passwd)
+  #:use-module (grip reexport)
+  #:use-module (grip passwd)
   #:use-module (kise globals)
 
   #:export (show-me
@@ -57,12 +56,12 @@
 	    kp/write-printer))
 
 
-(eval-when (compile load eval)
+(eval-when (expand load eval)
   (re-export-public-interface (oop goops)
-			      (system passwd)
+			      (grip passwd)
 			      (kise globals))
   (textdomain "p-common")
-  (bindtextdomain "p-common" (aglobs/get 'pofdir)))
+  (bindtextdomain "p-common" (storage-get 'pofdir)))
 
 
 ;;;
@@ -131,7 +130,7 @@
        (format #f "~A/~A.ps" (dirname pdfname) (basename pdfname ".pdf"))))
 
 (define (kp/common-filenames reference pdfname)
-  (let* ((p-dir (aglobs/get 'printdir))
+  (let* ((p-dir (storage-get 'printdir))
 	 ;; (reference (gensym))
 	 (uname (sys/get 'uname))
 
@@ -249,10 +248,6 @@
 
 
 #!
-
-(use-modules (kise p-common))
-(reload-module (resolve-module '(kise p-common)))
-,m p-common
 
 (define tf
   (kp/common-filenames "kise-2011.10.31-draft"

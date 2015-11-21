@@ -1,6 +1,8 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012, 2013
+;;;;
+;;;; Copyright (C) 2011 - 2015
+
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -25,19 +27,14 @@
 
 
 (define-module (kise c-dialog)
-  ;; guile/guile-gnome
   #:use-module (ice-9 format)
   #:use-module (oop goops)
   #:use-module (gnome gobject)
   #:use-module (gnome glade)
   #:use-module (gnome gtk)
-
-  ;; common
-  #:use-module (system i18n)
-  #:use-module (gtk all)
-
-  ;; kise
-  #:use-module (kise colours) ;; <- later use aglobs/set/get and delete this file
+  #:use-module (grip i18n)
+  #:use-module (grip gnome)
+  #:use-module (kise colours) ;; <- later use storage-set/get and delete this file
 
   #:export (kc/close-dialog
 	    kc/make-dialog
@@ -137,11 +134,3 @@
 (define (kc/translate widget)
   ;; we will :)
   #f)
-
-
-#!
-
-(use-modules (kise c-dialog))
-(reload-module (resolve-module '(kise c-dialog)))
-
-!#

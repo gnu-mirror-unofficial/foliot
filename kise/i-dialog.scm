@@ -1,6 +1,8 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012, 2013
+;;;;
+;;;; Copyright (C) 2011 - 2015
+
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -25,7 +27,6 @@
 
 
 (define-module (kise i-dialog)
-  ;; guile/guile-gnome
   #:use-module (ice-9 format)
   #:use-module (ice-9 receive)
   #:use-module (oop goops)
@@ -33,14 +34,10 @@
   #:use-module (gnome glade)
   #:use-module (gnome gtk)
   #:use-module (gnome gtk gdk-event)
-
-  ;; common
-  #:use-module (macros do)
-  #:use-module (system i18n)
-  #:use-module (system aglobs)
-  #:use-module (gtk all)
-
-  ;; kise
+  #:use-module (grip do)
+  #:use-module (grip i18n)
+  #:use-module (grip utils)
+  #:use-module (grip gnome)
   #:use-module (kise colours)
   #:use-module (kise db)
 
@@ -61,9 +58,9 @@
 	    ki/fill-treeview))
 
 
-(eval-when (compile load eval)
+(eval-when (expand load eval)
   (textdomain "i-dialog")
-  (bindtextdomain "i-dialog" (aglobs/get 'pofdir)))
+  (bindtextdomain "i-dialog" (storage-get 'pofdir)))
 
 
 (define *kise-i-dialog-offset*
@@ -149,8 +146,8 @@
 	    (get-selection treeview))))
 
 (define (ki/add-columns ki-widget treeview)
-  (let* ((dpi-ratio (aglobs/get 'Xft.dpi.ratio))
-	 (apply-ratio? (aglobs/get 'apply-dpi-ratio?))
+  (let* ((dpi-ratio (storage-get 'Xft.dpi.ratio))
+	 (apply-ratio? (storage-get 'apply-dpi-ratio?))
 	 (model (get-model treeview))
 	 ;; IMPORTED ROW COLOUR
 	 (renderer0 (make <gtk-cell-renderer-text>))
@@ -182,7 +179,9 @@
 	 (column3   (make <gtk-tree-view-column>
 		      #:title       (_ "Date")
 		      #:sizing      'fixed
-		      #:fixed-width (if apply-ratio? (inexact->exact (round (* dpi-ratio 90))) 90)
+		      #:fixed-width (if apply-ratio?
+					(inexact->exact (round (* dpi-ratio 90)))
+					90)
 		      #:clickable   #f
 		      #:resizable   #f
 		      #:reorderable #f
@@ -193,7 +192,9 @@
 	 (column4   (make <gtk-tree-view-column>
 		      #:title       (_ "By")
 		      #:sizing      'fixed
-		      #:fixed-width (if apply-ratio? (inexact->exact (round (* dpi-ratio 65))) 65)
+		      #:fixed-width (if apply-ratio?
+					(inexact->exact (round (* dpi-ratio 65)))
+					65)
 		      #:clickable   #f
 		      #:resizable   #f
 		      #:reorderable #f
@@ -327,14 +328,3 @@
 		(format #f "<span foreground=\"darkblue\" size=\"x-large\"><b>~A</b></span>~%<b>~A</b>"
 			(_ "Kisê import dialog")
 			(_ "Add, remove and re-import other user's kisê database.")))))
-
-
-#!
-
-(use-modules (kise i-dialog))
-(reload-module (resolve-module '(kise i-dialog)))
-,m (kise i-dialog)
-
-
-
-!#

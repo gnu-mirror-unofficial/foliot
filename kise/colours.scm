@@ -1,6 +1,8 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012, 2013
+;;;;
+;;;; Copyright (C) 2011 - 2015
+
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -25,16 +27,18 @@
 
 
 (define-module (kise colours)
-  #:use-module (macros reexport)
-  #:use-module (gtk colours)
+  #:use-module (grip reexport)
+  #:use-module (grip gnome colours)
 
   #:export (*filters-fg*
 	    *filters-border*
 	    *filters-bg*
 	    *dialog-title-eb-bg*))
 
-(eval-when (compile load eval)
-  (re-export-public-interface (gtk colours)))
+
+(eval-when (expand load eval)
+  (re-export-public-interface (grip gnome colours)))
+
 
 (define *filters-bg* (colour-set-bg 60))
 (define *filters-border* (colour-set-border 60))
@@ -43,10 +47,6 @@
 
 
 #!
-
-(use-modules (kise colours))
-(reload-module (resolve-module '(kise colours)))
-
 
 ;; Gtk widget states
 

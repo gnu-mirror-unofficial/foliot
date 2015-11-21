@@ -1,6 +1,8 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012, 2013
+;;;;
+;;;; Copyright (C) 2011 - 2015
+
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -32,12 +34,9 @@
 
 
 (define-module (kise config)
-  ;; guile
-
-  ;; common
-  #:use-module (macros reexport)
-  #:use-module (system passwd)
-  #:use-module (system config)
+  #:use-module (grip reexport)
+  #:use-module (grip passwd)
+  #:use-module (grip config)
 
   #:export (kcfg/get))
 
@@ -46,16 +45,16 @@
 
 
 (eval-when (expand load eval)
-  (re-export-public-interface (system passwd)
-			      (system config))
-  (let ((config (sys/read-config "kise")))
+  (re-export-public-interface (grip passwd)
+			      (grip config))
+  (let ((config (read-config "kise")))
     (set! kcfg/get
 	  (lambda (what)
 	    (case what
 	      ((all)
 	       config)
 	      ((reload)
-	       (set! config (sys/read-config "kise"))
+	       (set! config (read-config "kise"))
 	       config)
 	      (else
 	       (assq-ref config what)))))))
@@ -67,22 +66,19 @@
 ;; below as an example, it could even help someone else :lo:.
 
 #;(define kcfg/get
-  (let ((config (sys/read-config "kise")))
+  (let ((config (read-config "kise")))
     (lambda (what)
       (case what
 	((all)
 	 config)
 	((reload)
-	 (sys/read-config "kise")
+	 (read-config "kise")
 	 config)
 	(else
 	 (assq-ref config what))))))
 
 
 #!
-
-(use-modules (kise config))
-(reload-module (resolve-module '(kise config)))
 
 (kcfg/get 'all)
 (kcfg/get 'reload)

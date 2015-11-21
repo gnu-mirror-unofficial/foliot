@@ -1,6 +1,8 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012, 2013
+;;;;
+;;;; Copyright (C) 2011 - 2015
+
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -25,23 +27,18 @@
 
 
 (define-module (kise db-kise)
-  ;; guile
   #:use-module (ice-9 format)
   #:use-module (ice-9 receive)
   #:use-module (oop goops)
-
-  ;; common
-  #:use-module (macros reexport)
-  #:use-module (macros do)
-  #:use-module (system dates)
-  #:use-module (system i18n)
-  #:use-module (system aglobs)
-  #:use-module (system passwd)
-  #:use-module (strings strings)
-  #:use-module (db sqlite)
-  #:use-module (gtk colours)
-
-  ;; kise
+  #:use-module (grip reexport)
+  #:use-module (grip do)
+  #:use-module (grip dates)
+  #:use-module (grip i18n)
+  #:use-module (grip utils)
+  #:use-module (grip passwd)
+  #:use-module (grip strings)
+  #:use-module (grip db sqlite)
+  #:use-module (grip gnome colours)
   #:use-module (kise globals)
   #:use-module (kise db-con)
   #:use-module (kise db-imported-db)
@@ -72,18 +69,18 @@
 	    db-kise/delete-imported-tuples))
 
 
-(eval-when (compile load eval)
-  (re-export-public-interface (db sqlite)
-			      (system dates)
-			      (system i18n)
-			      (system aglobs)
-			      (system passwd)
-			      (strings strings)
+(eval-when (expand load eval)
+  (re-export-public-interface (grip db sqlite)
+			      (grip dates)
+			      (grip i18n)
+			      (grip utils)
+			      (grip passwd)
+			      (grip strings)
 			      (kise globals)
 			      (kise db-con)
 			      (kise db-imported-db))
   (textdomain "db-kise")
-  (bindtextdomain "db-kise" (aglobs/get 'pofdir)))
+  (bindtextdomain "db-kise" (storage-get 'pofdir)))
 
 
 ;;;
@@ -393,7 +390,7 @@
     (if value (1+ value) 0)))
 
 (define (db-kise/get-next-id)
-  (let* ((delta (aglobs/get 'imported-ids-delta))
+  (let* ((delta (storage-get 'imported-ids-delta))
 	 (query (format #f "~?" (db-kise/get-next-id-str) (list delta)))
 	 (tuple (car (sqlite/query (db-con) query)))
 	 (max-id (vector-ref tuple 0)))
@@ -582,7 +579,7 @@
 
 (define (db-kise/import-2 tuples idb-id)
   ;; sql transaction must be started by the caller
-  (let ((ids-delta (* (1+ idb-id) (aglobs/get 'imported-ids-delta))))
+  (let ((ids-delta (* (1+ idb-id) (storage-get 'imported-ids-delta))))
     (for-each (lambda (tuple)
 		(let ((imported-id (db-kise/get tuple 'id)))
 		  (db-kise/add-from-other-db (+ imported-id ids-delta)
@@ -639,9 +636,6 @@
 
 
 #!
-
-(use-modules (kise db-kise))
-(reload-module (resolve-module '(kise db-kise)))
 
 (db-con/open "/tmp/new.db")
 (db-con/open "/usr/alto/db/sqlite.alto.tests.db")

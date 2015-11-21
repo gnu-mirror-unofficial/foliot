@@ -1,6 +1,8 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012, 2013
+;;;;
+;;;; Copyright (C) 2011 - 2015
+
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -25,21 +27,16 @@
 
 
 (define-module (kise db-printing-templates)
-  ;; guile
   #:use-module (ice-9 format)
   ;; #:use-module (ice-9 receive)
   ;; #:use-module (oop goops)
-
-  ;; common
-  #:use-module (macros reexport)
-  #:use-module (macros do)
-  #:use-module (db sqlite)
-  #:use-module (system dates)
-  #:use-module (system i18n)
-  #:use-module (system aglobs)
-  #:use-module (strings strings)
-
-  ;; kise
+  #:use-module (grip reexport)
+  #:use-module (grip do)
+  #:use-module (grip db sqlite)
+  #:use-module (grip dates)
+  #:use-module (grip i18n)
+  #:use-module (grip utils)
+  #:use-module (grip strings)
   #:use-module (kise globals)
   #:use-module (kise db-con)
 
@@ -62,16 +59,16 @@
 	    db-pt/delete))
 
 
-(eval-when (compile load eval)
-  (re-export-public-interface (db sqlite)
-			      (system dates)
-			      (system i18n)
-			      (system aglobs)
-			      (strings strings)
+(eval-when (expand load eval)
+  (re-export-public-interface (grip db sqlite)
+			      (grip dates)
+			      (grip i18n)
+			      (grip utils)
+			      (grip strings)
 			      (kise globals)
 			      (kise db-con))
   (textdomain "db-printing-templates")
-  (bindtextdomain "db-printing-templates" (aglobs/get 'pofdir)))
+  (bindtextdomain "db-printing-templates" (storage-get 'pofdir)))
 
 
 ;;;
@@ -288,9 +285,6 @@
 
 
 #!
-
-(use-modules (kise db-printing-templates))
-(reload-module (resolve-module '(kise db-printing-templates)))
 
 (db-kise/open "/usr/alto/db/sqlite.alto.db")
 (db-pt/select-all)

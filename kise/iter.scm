@@ -1,6 +1,8 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
-;;;; Copyright (C) 2011, 2012, 2013
+;;;;
+;;;; Copyright (C) 2011 - 2015
+
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of Kisê.
@@ -27,6 +29,7 @@
 (define-module (kise iter)
   #:use-module (oop goops)
   #:use-module (gnome gtk)
+
   #:export (kiter/get
 	    kiter/set
 	    kiter/append-fill
@@ -78,11 +81,3 @@
 (define (kiter/prepend-fill model date who for-whom duration to-be-charged what ibg ifg)
   (let ((iter (gtk-list-store-prepend model)))
     (kiter/fill-next model iter date who for-whom duration to-be-charged what ibg ifg)))
-
-
-#!
-
-(use-modules (kise iter))
-(reload-module (resolve-module '(kise iter)))
-
-!#
