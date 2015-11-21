@@ -110,8 +110,8 @@ proceed with the following steps:
 
 @example
 cd <download-path>
-tar zxf kise-0.9.5.tar.gz
-cd kise-0.9.5
+tar zxf kise-@value{VERSION}.tar.gz
+cd kise-@value{VERSION}
 ./configure [--prefix=/your/prefix]
 make
 make install
