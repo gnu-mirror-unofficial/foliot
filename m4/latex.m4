@@ -55,21 +55,21 @@
 
 ###
 ### LATEX_GUILE_M4_SUPPORT_CHECK
-###   -- check that Guile and the Guile (m4 support) module are
-###   -- available.  (m4 support) is part of grip [http://fixme]
+###   -- check that Guile and the (grip m4 support) module are
+###   -- available.
 ###
 
 # Usage: LATEX_GUILE_M4_SUPPORT_CHECK
 #
 AC_DEFUN([LATEX_GUILE_M4_SUPPORT_CHECK],
  [AC_REQUIRE([GUILE_PROGS])
-  GUILE_GNOME_MODULE_REQUIRED([m4 support])
+  GUILE_GNOME_MODULE_REQUIRED([grip m4 support])
  ])
 
 
 ###
 ### LATEX_CHECK
-###   -- using Guile, imports the grip (m4 support), evaluate the
+###   -- using Guile, imports (grip m4 support), evaluate the
 ###      guile scheme code and capture the return value
 ###
 
@@ -77,14 +77,14 @@ AC_DEFUN([LATEX_GUILE_M4_SUPPORT_CHECK],
 #
 # @var{var} is a shell variable name to be set to the return value.
 # @var{check} is a Guile Scheme expression, evaluated with "$GUILE -c",
-#    importing the (grip m4) module, and returning either 0 or
+#    importing the (grip m4 support) module, and returning either 0 or
 #    non-#f to indicate the check passed.  Non-0 number or #f
 #    indicates failure.  Avoid using the character "#" since that
 #    confuses autoconf.
 #
 AC_DEFUN([LATEX_CHECK],
  [AC_REQUIRE([LATEX_GUILE_M4_SUPPORT_CHECK])
-  $GUILE -c "(use-modules (m4 support)) $2" > /dev/null 2>&1
+  $GUILE -c "(use-modules (grip m4 support)) $2" > /dev/null 2>&1
   $1=$?
  ])
 
