@@ -527,7 +527,8 @@
 		 ,(get-widget (xml-code tl-widget) "kise/nav_tb_2")
 		 ,(db-name-lb2 tl-widget)
 		 ,(db-name-lb3 tl-widget)))
-    (kise/open-db tl-widget)))
+    (kise/open-db tl-widget)
+    tl-widget))
 
 
 #!
