@@ -26,6 +26,7 @@ configure
 env
 pre-inst-env
 kise-*.tar.gz
+kise-*.tar.gz.sig
 Makefile
 Makefile.in
 meta/guild

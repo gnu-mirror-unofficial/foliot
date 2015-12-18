@@ -96,6 +96,7 @@ distclean-local:
 	rm -f configure
 	rm -f *~
 	rm -f kise-*.tar.gz
+	rm -f kise-*.tar.gz.sig
 	rm -rf doc/kise
 	rm -f doc/*.info
 	rm -f doc/*.pdf
