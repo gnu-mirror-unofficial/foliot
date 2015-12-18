@@ -1,5 +1,6 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
+;;;;
 ;;;; Copyright (C) 2011 - 2015
 ;;;; Free Software Foundation, Inc.
 
@@ -47,12 +48,7 @@
     (storage-set 'gtkrcfile (string-append gtkrcdir "/gtkrc.kise"))
     (storage-set 'latexdir latexdir)
     (storage-set 'printdir printdir)
-    (storage-set 'imported-ids-delta 1000000)
-    ;; release: kisê to common git tag alist
-    #;(storage-set 'tags '(("0.9.1" . "0.1")
-			("0.9.2" . "0.2")
-			("0.9.3" . "0.3")
-			("0.9.4" . "0.4")))))
+    (storage-set 'imported-ids-delta 1000000)))
 
 
 #!
@@ -66,6 +62,5 @@
 (storage-get 'latexdir)
 (storage-get 'printdir)
 (storage-get 'imported-ids-delta)
-#;(storage-get 'tags)
 
 !#
