@@ -1437,10 +1437,10 @@ filter date: ~S~%"
     (case mode
       ((on)
        (set-from-file image (string-append (storage-get 'iconsdir) "/pie-24x24-color-2.png"))
-       (set-tip t-tip image (_ "ON: your are working on a subset of your database.")))
+       (set-tip t-tip image (_ "ON: you are working on a subset of your database.")))
       ((off)
        (set-from-file image (string-append (storage-get 'iconsdir) "/full-pie-24x24-grey-2.png"))
-       (set-tip t-tip image (_ "OFF: your are working on the entire database."))))))
+       (set-tip t-tip image (_ "OFF: you are working on the entire database."))))))
 
 (define (ktlw/filter-apply tl-widget . force?)
   ;; (format #t "applying filter: ~S~%" force?)
