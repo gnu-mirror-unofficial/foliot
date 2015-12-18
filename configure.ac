@@ -36,7 +36,7 @@ AC_CONFIG_MACRO_DIR([m4])
 dnl Use `serial-tests' so the output `check-guile' is not hidden
 dnl (`parallel-tests' is the default in Automake 1.13.)
 dnl `serial-tests' was introduced in Automake 1.12.
-AM_INIT_AUTOMAKE([1.12 gnu -Wall -Werror -Wno-portability -Wno-syntax \
+AM_INIT_AUTOMAKE([1.14 gnu -Wall -Werror -Wno-portability -Wno-syntax \
   color-tests serial-tests foreign])
 AM_MAINTAINER_MODE([enable])
 AM_SILENT_RULES([yes])
@@ -79,7 +79,7 @@ GUILE_GNOME_MODULE_REQUIRED([gnome glade])
 # PKG_CHECK_MODULES(SQLite3, sqlite3 >= 3.7)
 # PKG_CHECK_MODULES(libpcre, libpcre)
 
-PKG_CHECK_MODULES([Grip], [grip-1.0 >= 0.0.0])
+PKG_CHECK_MODULES([Grip], [grip-1.0 >= 0.1.0])
 PKG_CHECK_MODULES([Grip_Gnome], [grip-gnome-1.0 >= 0.0.0])
 PKG_CHECK_MODULES([Grip_SQLite], [grip-sqlite-1.0 >= 0.0.0])
 
