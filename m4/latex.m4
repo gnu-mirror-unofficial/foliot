@@ -1,6 +1,6 @@
 ## Autoconf macros for working with latex.
 ##
-##   Copyright (C) 2015 Free Software Foundation, Inc.
+##   Copyright (C) 2015 - 2016 Free Software Foundation, Inc.
 ##
 ## This library is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License

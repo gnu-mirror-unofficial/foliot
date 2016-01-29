@@ -1,6 +1,6 @@
 
 ####
-#### Copyright (C) 2015
+#### Copyright (C) 2015 - 2016
 #### Free Software Foundation, Inc.
 
 #### This file is part of Kisê.
