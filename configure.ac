@@ -7,7 +7,7 @@ dnl
 define(KISE_CONFIGURE_COPYRIGHT,[[
 
 
-Copyright (C) 2015
+Copyright (C) 2015 - 2016
 Free Software Foundation, Inc.
 
 This file is part of Kisê.
@@ -58,7 +58,7 @@ GUILE_SITE_DIR
 GUILE_SITE_CCACHE_DIR
 GUILE_MODULE_REQUIRED([gnome-2])
 
-GUILE_GNOME_PROGS([2.16.3])
+GUILE_GNOME_PROGS([2.16.4])
 GUILE_GNOME_FLAGS
 GUILE_GNOME_INST_DIR
 GUILE_GNOME_LIBS_PATH
@@ -76,12 +76,12 @@ GUILE_GNOME_MODULE_REQUIRED([gnome gnome-ui])
 GUILE_GNOME_MODULE_REQUIRED([gnome glade])
 
 # Checks are in Grip_SQLite
-# PKG_CHECK_MODULES(SQLite3, sqlite3 >= 3.7)
-# PKG_CHECK_MODULES(libpcre, libpcre)
+PKG_CHECK_MODULES(SQLite3, sqlite3 >= 3.7)
+PKG_CHECK_MODULES(libpcre, libpcre)
 
 PKG_CHECK_MODULES([Grip], [grip-1.0 >= 0.1.0])
-PKG_CHECK_MODULES([Grip_Gnome], [grip-gnome-1.0 >= 0.0.0])
-PKG_CHECK_MODULES([Grip_SQLite], [grip-sqlite-1.0 >= 0.0.0])
+PKG_CHECK_MODULES([Grip_Gnome], [grip-gnome-1.0 >= 0.1.0])
+PKG_CHECK_MODULES([Grip_SQLite], [grip-sqlite-1.0 >= 0.1.0])
 
 AC_CHECK_PROG(PDFLATEX, pdflatex, yes)
 if test -z "$PDFLATEX"; then
