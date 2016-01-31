@@ -29,7 +29,7 @@ along with Kisê.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_PREREQ(2.69)
 
-AC_INIT([kise], [0.9.5-dev.1], [david at altosw dot be])
+AC_INIT([kise], [0.9.5], [david at altosw dot be])
 
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
