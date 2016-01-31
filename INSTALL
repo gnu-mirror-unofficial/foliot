@@ -10,11 +10,20 @@ a small and easy to use time keeping application
 
 Kisê needs the following software to run:
 
-	guile >= 2.0.5
-	guile-gnome >= 2.16.2
-    SQLte >= 3.7
-	sqlite3-pcre: perl compatible regular expression support for SQLite
-	LaTeX: any recent latex 2e version will do
+	Autoconf	>= 2.69
+	Automake	>= 1.14
+	Guile 		>= 2.0.11
+	Guile-Gnome	>= 2.16.4, the following wrappers:
+
+		Gobject, Glib, Pango, Pangocairo, libgnome, lingnomeui,
+		libglade, Gtk
+
+    SQLite		>= 3.7
+	libpcre
+	Grip		>= 0.1.0
+	Grip-Gnome	>= 0.1.0
+	Grip-Sqlite	>= 0.1.0
+	LaTeX
 
 Kisê reports needs the following font:
 
@@ -36,7 +45,7 @@ proceed with the following steps:
 	make
 	make install
 
-To start Kisê [3]:
+To start Kisê:
 
 	kise
 
@@ -61,14 +70,19 @@ Happy Kisê!
     directory.  If you want to know its location, enter the following
     expression in a terminal:
 
-	guile -c "(display (%site-ccache-dir)) (newline)"
+		guile -c "(display (%site-ccache-dir)) (newline)"
 
-[5] Unless already done, add /usr/local/bin or /your/prefix/bin to the
-	  PATH variable of your default shell configuration file.  As an
-	  example, using bash, you would add the following line at the
-	  end of your .bashrc file [assuming --prefix=/opt]:
+[5] Unless already done, add $prefix/bin to the PATH variable of your
+	  default shell configuration file.  As an example, using bash,
+	  you would add the following line at the end of your .bashrc
+	  file [assuming --prefix=/opt]:
 
-	export PATH=/opt/bin:$PATH
+		export PATH=/opt/bin:$PATH
+
+[6] Like for any other GNU Tool Chain compatible software, you may
+    install the documentation locally using make install-info, make
+    install-html and/or make install-pdf. Note that as it is, Kisê’s
+    documentation still is a mock-up.
 
 * ( the GNU standard INSTALL file content )
 
