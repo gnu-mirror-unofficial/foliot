@@ -1,11 +1,26 @@
 ;; -*- mode: org; coding: utf-8 -*-
 
+
+#+BEGIN_COMMENT
+
+This document is part of Kisê.
+Copyright (C)  2011 - 2016 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.  A
+copy of the license is included in the section entitled ``GNU Free
+Documentation License.''
+
+#+END_COMMENT
+
+
 #+TITLE: kise TODO file
 
 * GUI
 
 ** Work in progress
-
 *** import/unimport
 
 **** DONE reimporting -> the imported date must be updated
@@ -30,28 +45,22 @@ CLOSED: [2013-09-15 Sun 19:47]
 associated with this db [per default - later we should provide a mechanism to
 let the user select its perefered colour for each of his imported databases.
 
-
 ** Other important stuff
 
+*** TODO kise -d needs a message 'à la guile-clutter 'examples'
+*** TODO all Copyright (C) need to become Copyright (C) 2011 - 2015
 *** DONE delete: binding the delete key to remove row
 CLOSED: [2014-02-27 Thu 16:02]
 - State "DONE"       from "TODO"       [2014-02-27 Thu 16:02]
 *** DONE hidding the preferences button untill further developped
 CLOSED: [2014-02-25 Tue 17:03]
 - State "DONE"       from "TODO"       [2014-02-25 Tue 17:03]
-*** TODO import.scm need to check multiple imported fields are all properly handled
-
-goops implementation is a nightmare.  it does not re-export accessor per
-default, it hides the imported one(s) instead.  check the emails exchanged with
-devel for this matter [which i still need to reply to].
-
 *** TODO the duration callback is slow, i need to investigate
 
 why this is the case: maybe it's lacking a (set! (gui-callback tl-widget) #f)
 somewhere ...
 
 *** TODO adding a license header to kise.glade
-
 *** DONE memorize the last window pos and size
 CLOSED: [2012-12-29 Sat 15:47]
 - State "DONE"       from "TODO"       [2012-12-29 Sat 15:47]
@@ -119,10 +128,6 @@ CLOSED: [2011-12-07 Tue 17:38]
 
 *** TODO need to catch latex compilation errors !!
 
-*** TODO adding uspaper and a4paper to the printing options
-
-or get them from locale too ...
-
 *** DONE p-common uses 'topdfg' which is not distributed !!
 CLOSED: [2011-12-09 Fri 17:25]
 - State "DONE"       from "TODO"       [2011-12-09 Fri 17:25]
@@ -147,12 +152,14 @@ CLOSED: [2011-12-23 Fri 15:36]
 
 *** TODO implementing a search & replace tool
 
-*** TODO printing [50%]
+*** TODO printing [37%]
 
+- [ ] adding uspaper and a4paper [or from locale?]
 - [ ] npthousand must use locales
 - [X] adding a reference entry, defaut Ymd
 - [X] better grouping p-widget
 - [ ] pdfname using version if more then 1/day
+- [ ] raise a 'replace dialog confirmation if replacing
 - [X] p-draft basic functionality
 - [ ] do we need a p-commercial functionality ?
 
@@ -198,7 +205,6 @@ CLOSED: [2011-08-24 Wed 19:43]
 *** DONE str/prep-str-for-pg
 CLOSED: [2011-06-21 Tue 20:04]
 - State "DONE"       from "STARTED"    [2011-06-21 Tue 20:04]
-
 
 ** Secondary stuff
 
@@ -270,8 +276,58 @@ CLOSED: [2011-05-25 Fri 13:20]
 - State "DONE"       from "TODO"       [2011-06-24 Fri 13:20]
 
 
+* Autotools chain
+
+** misc
+
+- [ ] get pre-inst-env.in ready, then git add, update the doc
+- [X] gtkrc.kise is missing
+
+** sqlite3-pcre
+
+- [ ] license: public domain
+- [ ] no warning if not found
+- [ ] the path it looks for is harcoded [in ./db-con.scm], use the
+  autotools chain instead, or maybe I should add pcre to Kisê, the code
+  is here:	https://github.com/ralight/sqlite3-pcre
+
+** doc
+
+- [X] introduction.texi to reflect INSTALL
+
 * Internal
 
+** TODO all eval-when calls should use expand, not compile
+
+these were all written before [i think] guile proposed the expand
+clause.
+
+** TODO use (g-export) and (g-export ...), everywhere in the code
+
+goops interaction with the guile module system is not easy :), not only
+does it not offer, at least as an option, a specific name space for
+generics, but also does not re-export getters, setters, accessors and
+methods per default.  instead it hides the imported one(s), leading to
+heisenbugs.  It hides them even if the user adds 'merge-generics to his
+default duplicate binding handler set of options, which is a serious
+bug, I wrote a bug report, here:
+
+http://lists.gnu.org/archive/html/bug-guile/2014-12/msg00044.html
+
+It may and probably will take ages to be solved, since (a) there are
+strong [maintainers] reluctance to provide solutions that somehow
+override the default guile's module system 'behavior', even when these
+are proposed as options, and (b) somehow a consequence of (a) as well,
+fixing goops bug reports is definitely not a [maintainer's] priority,
+too bad, but that's how it has been for years, still is now [March
+2015].  I hope to fix that this year though, let's see.
+
+Right now I don't want to 'fight' right, beside there is a way to deal
+with this locally.  Indeed I already solved this problem and wrote
+(g-export), for clus, a clutter support library for guile-clutter that
+I am writing as well, so now we should it everywhere in Kisê and Grip.
+
+** TODO printing: use pdflatex, not ps2pdf
 ** DONE db-kise/fields-offsets: extending with tex table info
 CLOSED: [2011-12-07 Tue 14:59]
 - State "DONE"       from "TODO"       [2011-12-07 Tue 14:59]
@@ -283,7 +339,7 @@ this is now in db-printing-templates
 because as implemented, if there is at least a grouped item, it is the
 first row [per definition, the application reorganize and places
 grouped items before others. Obviously, callers need not to use it,
-which is the case right now and until this is done.
+which is the case right now and until this is done].
 
 ** TODO converting libglade from 3.7 to 3.10
 

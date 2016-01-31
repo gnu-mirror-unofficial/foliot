@@ -1,0 +1,62 @@
+
+####
+#### Copyright (C) 2011 - 2016
+#### Free Software Foundation, Inc.
+
+#### This file is part of Kisê.
+
+#### Kisê is free software: you can redistribute it and/or modify it
+#### under the terms of the GNU General Public License as published by
+#### the Free Software Foundation, either version 3 of the License, or
+#### (at your option) any later version.
+
+#### Kisê is distributed in the hope that it will be useful, but
+#### WITHOUT ANY WARRANTY; without even the implied warranty of
+#### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#### General Public License for more details.
+
+#### You should have received a copy of the GNU General Public License
+#### along with Kisê.  If not, see <http://www.gnu.org/licenses/>.
+####
+
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE 0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-11-25 10:44+0100\n"
+"PO-Revision-Date: 2011-10-28 15:23-0300\n"
+"Last-Translator: David Pirotte <david@altosw.be>\n"
+"Language-Team: French\n"
+"Language: fr_BE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: kise.scm:202
+msgid "DB connection problem:"
+msgstr "Problème de connexion à la base de données"
+
+#: kise.scm:189
+#, scheme-format
+msgid ""
+"Some problem occured while trying to open your default Kisê database: ~A. It "
+"could be that the file has been deleted, moved, that it exists but you don't "
+"have 'write permission' over it, or that, for some reason you'll have to "
+"determine, it is not a Kisê database file anymore. Please check all of the "
+"above and start again or create/connect to another Kisê database."
+msgstr ""
+"Un problème est survenu lors de l'ouverture de votre base de données Kisê "
+"par défaut: ~A. Il se peut que le fichier ait été détruit, déplacé, qu'il "
+"existe mais vous ne disposez plus de son autorisation d'accès en écriture, "
+"ou que, pour une raison qu'il vous appartient de déterminer, ce n'est plus "
+"un fichier de base de données Kisê. Contrôler ces divers aspects et "
+"réessayer ou sélectionner une autre base de données Kisê."
+
+#: kise.scm:290
+msgid "The date can not be empty. It has been reset to its previous value."
+msgstr "La date ne peut pas être vide. La valeur précédente a été restaurée."
+
+#: kise.scm:201
+msgid "Warning!"
+msgstr "Alerte!"

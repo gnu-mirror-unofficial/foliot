@@ -1,0 +1,50 @@
+# ;; -*- mode: org; coding: utf-8 -*-
+
+#+TITLE: Kisê README
+
+* ( Kisê )
+
+a small and easy to use time keeping application
+
+** ( about )
+
+Kisê is a small and easy to use time keeping application.
+
+It can be used in a single user mode or by small organizations. Starting
+with version 0.9.4, it can import other user's database, an essential
+feature for remote collaborators.
+
+The fields it handles are: a date, who, for whom, what, a duration,
+whether or not to be charged and a description.
+
+It includes, on the main application screen, a powerful dynamic filters
+criteria mechanism, which lets you visualize, work on and print a subset
+of your time keeping entries.
+
+A printing templates system allows you to (pre)define, reuse and hence
+quickly generate the pdf files and/or printed reports of your needs.
+
+A version which will let users export an active filter based subset of
+their time keeping entries is under work.
+
+*** ( latest news )
+
+1 Feb 2016 Kisê version 0.9.5 is released, see Kisê's NEWS file for
+details.
+
+** ( the name )
+
+Kisê comes from the language Tupi-Guarani. It means 'an old and/or
+rusty knife'. It should be pronounced ki-c. However, if you pronounce
+it key-say, it would come close to the french expression 'qui sait',
+which means 'who knows'. Then comes why the name: 'qui sait? kisê!' -
+'who knows? Kisê!'. Neat dont you think ? Finally, this kind of
+application is (also) used to, in the end, produce invoices, quite a
+pain, which could (too) well be caused by 'an old and/or rusty
+knife'...
+
+** ( what else )
+
+Kisê is written in guile, an interpreter and compiler for the scheme
+programming language. It uses guile-gnome for its graphical interface,
+SQLite for its database backend and LaTeX for the reports.

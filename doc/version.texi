@@ -1,7 +1,0 @@
-@c -*-texinfo ; coding: utf-8 -*-
-@set UPDATED-DAY 10
-@set UPDATED-MONTH Octobre 2013
-@set UPDATED @value{UPDATED-DAY} @value{UPDATED-MONTH}
-@set EDITION 1
-@set VERSION 0.9.4
-@set EFFECTIVE-VERSION 0.9
