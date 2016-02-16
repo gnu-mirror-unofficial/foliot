@@ -1,35 +1,35 @@
 dnl -*- Autoconf -*-
 dnl
-dnl   configuration script for Kisê
+dnl   configuration script for GNU Foliot
 dnl   Process this file with autoconf to produce configure.
 dnl
 
-define(KISE_CONFIGURE_COPYRIGHT,[[
+define(FOLIOT_CONFIGURE_COPYRIGHT,[[
 
 
 Copyright (C) 2015 - 2016
 Free Software Foundation, Inc.
 
-This file is part of Kisê.
+This file is part of GNU Foliot.
 
-Kisê is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+GNU Foliot is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your
+option) any later version.
 
-Kisê is distributed in the hope that it will be useful, but
+GNU Foliot is distributed in the hope that it will be useful, but
 WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Kisê.  If not, see <http://www.gnu.org/licenses/>.
+along with GNU Foliot.  If not, see <http://www.gnu.org/licenses/>.
 
 ]])
 
 AC_PREREQ(2.69)
 
-AC_INIT([kise], [0.9.5], [david at altosw dot be])
+AC_INIT([foliot], [0.9.6-dev], [david at altosw dot be])
 
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
@@ -46,8 +46,8 @@ dnl AC_PROG_CC
 dnl AC_STDC_HEADERS
 dnl LT_INIT([disable-static])
 
-AC_COPYRIGHT(KISE_CONFIGURE_COPYRIGHT)
-AC_CONFIG_SRCDIR([kise])
+AC_COPYRIGHT(FOLIOT_CONFIGURE_COPYRIGHT)
+AC_CONFIG_SRCDIR([foliot])
 
 AC_CHECK_PROG(have_makeinfo, makeinfo, yes, no)
 AM_CONDITIONAL(HAVE_MAKEINFO, test "$have_makeinfo" = yes)
@@ -63,7 +63,7 @@ GUILE_GNOME_FLAGS
 GUILE_GNOME_INST_DIR
 GUILE_GNOME_LIBS_PATH
 dnl guile-gnome is a set of wrappers, we need to check that the user
-dnl has wrapped the gnome libraries kise needs.  strictly speaking,
+dnl has wrapped the gnome libraries foliot needs.  strictly speaking,
 dnl the list below is 'too much' because some guile-gnome modules are
 dnl always part of guile-gnome, but hey, no arm and nice to see all
 dnl the checks.
@@ -120,6 +120,6 @@ LATEX_PACKAGE_REQUIRED([geometry])
 
 AC_CONFIG_FILES([env], [chmod +x env])
 AC_CONFIG_FILES([meta/guild], [chmod +x meta/guild])
-AC_CONFIG_FILES([kise/kise], [chmod +x kise/kise])
+AC_CONFIG_FILES([foliot/foliot], [chmod +x foliot/foliot])
 AC_CONFIG_FILES([Makefile doc/Makefile])
 AC_OUTPUT
