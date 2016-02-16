@@ -6,8 +6,10 @@ exec @GUILE@ --no-auto-compile -e '(@@ (guild) main)' -s "$0" "$@"
 ;;;;
 ;;;; guild --- running scripts bundled with Guile
 ;;;; Andy Wingo <wingo@pobox.com> --- April 2009
+;;;; David Pirotte <david at altosw dot be> --- 2015
 ;;;; 
-;;;; 	Copyright (C) 2009, 2010, 2011, 2013, 2014 Free Software Foundation, Inc.
+;;;; 	Copyright (C) 2009 - 2011, 2013 - 2014, 2016
+;;;;    Free Software Foundation, Inc.
 ;;;; 
 ;;;; This library is free software; you can redistribute it and/or
 ;;;; modify it under the terms of the GNU Lesser General Public
@@ -30,10 +32,11 @@ exec @GUILE@ --no-auto-compile -e '(@@ (guild) main)' -s "$0" "$@"
 ;; This is a copy of guile's guild script, enhanced with a specific
 ;; global setting for default-duplicate-binding-handler [see below].
 ;; Writing a module ? No way, wrong idea, bug prune [high risk] and this
-;; global setting is mandatory afaic, and should even be the default
-;; imo.  Anyway, Guild [the guild script installed as part of Guile]
-;; does not 'allow' nor 'read', neither has --option(s) for global
-;; settings in general, and this one in particular, hence this appraoch.
+;; global setting is mandatory for us, and should even be the default
+;; for guile, imo.  Anyway, Guild [the guild script installed as part of
+;; Guile] does not 'allow' nor 'read', neither has --option(s) for
+;; global settings in general, and this one in particular, hence this
+;; appraoch.
 
 ;;; Code:
 
