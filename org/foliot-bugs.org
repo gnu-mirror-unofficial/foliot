@@ -1,0 +1,453 @@
+;; -*- mode: org; coding: utf-8 -*-
+
+
+#+BEGIN_COMMENT
+
+This document is part of GNU Foliot.
+Copyright (C)  2011 - 2016 Free Software Foundation, Inc.
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation; with no
+Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.  A
+copy of the license is included in the section entitled ``GNU Free
+Documentation License.''
+
+#+END_COMMENT
+
+
+#+TITLE: GNU Foliot BUGS file
+
+* GNU Foliot
+
+** Bugs
+
+*** CLOSED [[48] 2] (kcfg/get 'reload)
+CLOSED: [2015-05-10 Sun 20:42]
+- State "CLOSED"     from "OPEN"       [2015-05-10 Sun 20:42]
+
+foliot/config.scm:  Fixing (kcfg/get 'reload) missed to set! its shared
+persistent variable, hence althouh reading the user's config file again,
+Foliot itself would still refer to the version loaded at (expand load
+eval) time.
+
+*** CLOSED [[47] 3] connect: default database schema incomplete, cancel
+CLOSED: [2014-03-17 Mon 16:06]
+- State "CLOSED"     from "OPEN"       [2014-03-17 Mon 16:06]
+
+When the default [~/.config/foliot.conf db filename] database needs its schema to
+be upgraded, but the cancels, -> then tries to connect to the same database ->
+foliot would wrongly state that 'Db is already in use'.  this is because in
+kc/connect, active-db-file was bound to (kcfg/get 'db-file): that should only be
+the case if the user is connected to a db, in which case (db-con) is _not_ #f.
+so the correct let binding is:
+
+	... (active-db-file (and (db-con) (kcfg/get 'db-file))) ...
+
+*** CLOSED [[46] 4] duplicate: created_by, modified_by now correct
+CLOSED: [2014-02-26 Wed 19:34]
+- State "CLOSED"     from "OPEN"       [2014-02-26 Wed 19:34]
+
+until this fix, a duplicated record was setting the created_by, modified_by
+value as of 'who' instead of the username.
+
+*** CLOSED [[45] 4] sys/write-config: creating foliot.conf fails
+CLOSED: [2014-02-24 Mon 15:48]
+- State "CLOSED"     from "OPEN"       [2014-02-24 Mon 15:48]
+
+creating foliot.conf [in ~user/.config] failed due to a wrong filename permission
+check.  now changed to 'if the file exists, it must be writable, otherwise the
+parent directory must be writable'.
+
+*** CLOSED [[44] 4] connect: no active-db [no .conf/foliot.conf]
+CLOSED: [2014-02-24 Mon 15:38]
+- State "CLOSED"     from "OPEN"       [2014-02-24 Mon 15:38]
+
+when no active-db [no .config/foliot.conf], creating opening a db raised a bug,
+recently 'introduced', while rewriting kc/connect [did miss to check
+active-db-file not being false before comparing it with other values, was tired
+i guess :)]
+
+*** CLOSED [[43] 3] destroy with parent does _not_ call the destroy-event callback
+CLOSED: [2013-11-05 Mon 13:07]
+- State "CLOSED"     from "OPEN"       [2013-11-04 Mon 13:07]
+
+this actually is a guile-gnome problem, I think, and common/gtk related problem
+[rather then foliot related], but I don't have a common-bugs.org file [yet].
+
+the common/gtk/glade file had all message dialogs [1, 2 and 3 buttons]
+'destroy-with-parent option set to true, which works fine _but_ guile-gnome [or
+is it gtk2] does not trigger the expected destroy-event signal.  this causes a
+bug in our code which expects the signal to unset a couple of things, including
+<md1[2|3]b-widget> instance pointers|variables.
+
+*** CLOSED [[42] 4] ktlw/open-db-checks should not set the global active db-con
+CLOSED: [2013-11-04 Mon 12:25]
+- State "CLOSED"     from "OPEN"       [2013-11-04 Mon 12:25]
+
+ktlw/open-db-checks _should_ call (db-con/open db-file #f), which prevents the
+global active db connector to be set.  indeed it should only be set if all
+checks passed: if the user cancel its connect operation in the middle [this is
+possible when the db he's opening has an old schema, in which case foliot opens a
+dialog and asks him if he wants to update it or not], then having set db-con [and
+not restoring the previous ative one] -> ERROR...
+
+*** CLOSED [[41] 4] sqlite/table-names, sqlite/table-exists?
+CLOSED: [2013-10-28 Mon 10:28]
+- State "CLOSED"     from "OPEN"       [2013-10-28 Mon 10:28]
+
+table names are _not_ properly cached: although the db copnector is passed as an
+argument, I managed to forget to use it while cashing.  this will always trigger
+an error, if you import a db which is an sqlite file but does not contain a foliot
+table.
+
+*** OPEN [[40] 2] write-config: when not permitted, it is not possible to quit Foliot
+
+that's it, you can't quit Foliot, haha!  i set the sererity level of this bug to 2
+because it highly improbable.  indeed, someone with permission to do so should
+deliberately withdraw the user's one on this/his foliot.conf [hidden] file.  i
+could 'not raise' an error, but i think it's better, of course now i need to
+catch it in order to let the user quit Foliot not writing his config file ...
+
+*** CLOSED [[39] 3] reimporting db: the date is coded in clear
+CLOSED: [2013-07-10 Mon 07:21]
+- State "CLOSED"     from "TODO"       [2013-07-10 Mon 07:21]
+
+and it shouldn't: the scheme update function code was missing to treat this as a
+special sql update case [set ~A = strftime('%s','~A')]
+
+*** CLOSED [[38] 2] db connect: when the user connects to another db
+CLOSED: [2013-08-06 Tue 17:27]
+- State "CLOSED"     from "TODO"       [2013-08-06 Tue 17:27]
+
+the selected row after connection is wrong [it's one of the last row, don't why
+yet], it should be the first row.
+
+*** CLOSED [[36] 4] config - not reloaded when it should
+CLOSED: [2013-01-18 Fri 19:40]
+- State "CLOSED"     from "OPEN"       [2013-01-18 Fri 19:40]
+
+~/.config/foliot.conf is written when there is no such file, when the user
+opens/creates another database and when he quits, to store the window's
+position. this last case revealed a weird bug: while the actual writting of the
+foliot.conf file was correct, ktlw/write-config missed to reload the config in
+memory, and since that these are the values used by ktlw/write-config, it was
+actually writting back the values loaded at startup time!
+
+*** CLOSED [[35] 2] gui - incorrect filter icon in some cases
+CLOSED: [2013-01-18 Fri 18:37]
+- State "CLOSED"     from "DONE"       [2013-01-18 Fri 19:14]
+- State "DONE"       from "OPEN"       [2013-01-18 Fri 18:37]
+
+the glade file still has a [trial purposes] filter icon = gtk-apply. it is now
+set to the full-pie-24x24-grey-2.png at dialog creation, so there is no more
+cases where it would display this [trial purposes] gtk-apply icon. one of the
+cases were when it is the very first time foliot is launched and the user would
+cancel the creation/open database dialog.
+
+*** CLOSED [[34] 2] gui - incorrect database name in some cases
+CLOSED: [2013-01-18 Fri 18:37]
+- State "CLOSED"     from "DONE"       [2013-01-18 Fri 19:14]
+- State "DONE"       from "OPEN"       [2013-01-18 Fri 18:37]
+
+the glade file still has a [trial purposes] value in the label widget used to
+display the user's database name. it is now set to an empty string at dialog
+creation, so there is no more cases where it would display this [trial purposes]
+value. one of the cases were when it is the very first time foliot is launched and
+the user would cancel the creation/open database dialog.
+
+*** CLOSED [[33] 4] filters: wrong selection, in some cases
+CLOSED: [2013-01-20 Sun 23:05]
+- State "CLOSED"     from "OPEN"       [2013-01-20 Sun 23:05]
+
+when several fields are involved and one uses 'or', such as in:
+
+		date > 01.10.2012
+		who = lpdi|dema
+
+the date is not correctly applied to the dema records. presumably because the
+select clause looks like
+
+		where date > 01.10.2012
+		  and who = lpdi
+		   or who = dema
+
+instead of
+
+		where date > 01.10.2012
+		  and (who = lpdi or who = dema)
+
+*** CLOSED [[32] 3] to-be-charged now implies sorting the database
+CLOSED: [2012-06-17 Sun 14:48]
+- State "CLOSED"     from "OPEN"       [2012-06-17 Sun 14:48]
+
+it does not and should, which will trigger a db reload, _and_ set the
+g_reselect_path? to the new-path, which must be used inside the tv-sel 'changed
+signal [otherwise, due to the 'toggle preseance on the signals chain, a wrong
+row is selected ... [see printing g_reselect_path? as well]]
+
+*** CLOSED [[31] 3] ktlw/duplicate was not working properly
+CLOSED: [2012-04-22 Sun 14:54]
+- State "CLOSED"     from "OPEN"       [2012-04-22 Sun 14:54]
+
+due to a wrong 'order by' in select, missing to_be_charged -> wrong row
+selection in certain situations; db-foliot/select* all modified for the
+above.
+
+*** CLOSED [[30] 3] date: sqlite3 strfmtime date range _limitation_
+CLOSED: [2012-04-22 Sun 13:24]
+- State "CLOSED"     from "OPEN"       [2012-04-22 Sun 13:24]
+
+has we anyway _have to_ limit the valid date range, for strfmtime passing
+'unixepoch' modifier in its arg list, we now do it properly and from 01.01.1970
+till 31.12.2037 [unpredictable behavior has been detected ouside a _larger_
+range.
+
+*** CLOSED [[29] 3] date: years as more then 4 digits did cause a _hidden_ problem
+CLOSED: [2012-04-22 Sun 12:21]
+- State "CLOSED"     from "OPEN"       [2012-04-03 Sun 12:21]
+
+sqlite3 strfmtime _only_ accept ISO dates [yyyy-mm-dd], foliot did accept more
+then 5 digits, but the database field would then be empty.
+
+*** CLOSED [[28] 3] date allows '22.02.20bli'
+CLOSED: [2012-02-26 Sun 14:26]
+- State "CLOSED"     from "OPEN"       [2012-02-26 Sun 14:26]
+
+*** CLOSED [[27] 3] printing: grouping on duration crashes
+CLOSED: [2012-02-02 Thu 11:31]
+- State "CLOSED"     from "OPEN"       [2012-02-02 Thu 11:31]
+
+this is because kp/group-compare-current, in p-dratf.scm, used string=? on all
+arguments, oh dear...  now uses fp/=? on floats :lo:
+
+*** STARTED [[26] 3] foliot.conf should not define any logo per default
+
+which it did by mistake.  still, we will need to modify the existing code as
+soon as we'll have implemented preferences.  indeed, as it is right now, the
+system writes back to the config file what it gave/has/had at load time, which
+now is correctly initially set to #f
+
+*** CLOSED [[25] 3] printing: grouping items only crashes
+CLOSED: [2012-02-02 Thu 11:25]
+- State "CLOSED"     from "OPEN"       [2012-02-02 Thu 11:25]
+
+*** CANCELLED [[24] 3] escape char for LaTeX
+CLOSED: [2011-12-19 Mon 10:24]
+- State "CANCELLED"  from "OPEN"       [2011-12-19 Mon 10:24] \\
+  this is not a bug but a malformed string, scheme wize, which contains
+  a single \ instead of \\. this only happens when the string is
+  manually written, probably due to a tipo.
+
+in /usr/local/share/guile/alto/2.0/tex/tex.scm
+
+(tex/prep-str-for-tbx-env "date\_" 1 #t)
+While reading expression:
+ERROR: In procedure scm_lreadr: #<unknown port>:7:34: illegal character in escape sequence: #\_
+
+*** CLOSED [[23] 3] description modifs not saved on filter-* clicked
+CLOSED: [2011-11-25 Fri 22:29]
+- State "CLOSED"     from "OPEN"       [2011-11-25 Fri 22:29]
+
+while in a filter mode, editing a description [or any other entry],
+then clicking filter-clear was the symptom: filter was cleared and the
+row reselected, but content added and/or modified was lost.
+
+foliot/on-tv-row-change added on all filter-* button 'clicked signals
+as already the case for printing, nav buttons ...
+
+*** CLOSED [[22] 3] connect: database schema incomplete, cancel
+CLOSED: [2013-11-01 Fri 19:09]
+- State "CLOSED"     from "OPEN"       [2013-11-01 Fri 19:09]
+
+When the user tries to connect to another database, that its schema needs to be
+upgraded, but cancels, -> bug
+
+*** CLOSED [[21] 3] gui - filter-clear not restoring gui-callback
+CLOSED: [2011-11-16 Wed 11:34]
+- State "CLOSED"     from "OPEN"       [2011-11-16 Wed 11:34]
+
+of the main interface to [t. Then, user's modification were not saved
+neither updated in the store!
+
+*** CLOSED [[20] 3] gui - filechooser: klicking upper left delete window
+CLOSED: [2011-11-16 Wed 11:14]
+- State "CLOSED"     from "OPEN"       [2011-11-16 Wed 11:14]
+
+button leads to a bug. This already has been corrected in other
+dialogs, such as connect -> see c-dialog.scm
+
+*** CLOSED [[19] 3] gui - kc/connect called 2x in create db mode
+CLOSED: [2011-10-25 Tue 16:32]
+- State "CLOSED"     from "OPEN"       [2011-10-25 Tue 16:32]
+
+for some very obscure reasons, when in 'create' mode, kc/connect is
+called 2x x by the number of times connect dialog has been opened and
+ok clicked [in creation mode] to avoid these erroneous muliple attemps
+to create the same new db, we use the modal characteristic of the
+dialog and only performs the code when #t. we should then report a bug
+to the gtk and/or guile-gnome list.
+
+*** CANCELLED [[18] 3] gui - duplicate: wrong row is selected
+CLOSED: [2011-11-16 Wed 11:35]
+- State "CANCELLED"  from "OPEN"       [2011-11-16 Wed 11:35] \\
+  This bug was actually later reported as #21: the apparent wrong row
+  selection from the user's perspective was actually due to the #21 bug
+  which at the time had not yet been identified.
+
+I can not reproduce it so far, but a certain manipulation, which I
+can't remember, did show this bug: a wrong database tuple subset or
+something like that did cause and probably still causes this
+inadequate row selection after duplication in 'some circumstances'
+
+*** OPEN [[17] 3] gui - open-db: clicking 'Ok' while on a folder
+
+should open the folder and not running the open db callback
+
+*** CLOSED [[16] 3] gui - text: charged time of 1 hour writes '1 hours'
+CLOSED: [2011-12-03 Sat 19:03]
+- State "CLOSED"     from "OPEN"       [2011-12-03 Sat 19:03]
+
+We need to use ngettext anyway, but even before that this simple case
+should be corrected.
+
+*** CLOSED [[15] 4] ktlw/delete and duplicate not calling update-totals
+CLOSED: [2011-09-11 Sun 19:46]
+- State "CLOSED"     from "OPEN"       [2011-09-11 Sun 19:46]
+
+*** CLOSED [[14] 4] are properly updated after delete
+CLOSED: [2011-09-11 Sun 19:47]
+- State "CLOSED"     from "OPEN"       [2011-09-11 Sun 19:47]
+
+Especially when deleting the only record of a selection
+
+*** CLOSED [[13] 4] to-be-charged callback incomplete when active-filter
+CLOSED: [2011-09-01 Thu 01:41]
+- State "CLOSED"     from "OPEN"       [2011-09-01 Thu 01:41]
+
+When there is an active filter, 1. without 'to-be-charged, then
+clicking one of the checkbox to set one of the record as
+to-be-charged, 2. activate the to-be-charged filter condition [then
+only one record remains in the list-store, 3. deselect its
+to-be-charged field +> crashed the application: this is because both
+to-be-charged callback [the details and the list-store] did not add
+the id of the tuple to the id-set if and when there was an
+active-filter.
+
+*** CLOSED [[12] 4] clicking to-be-charged in the list-store
+CLOSED: [2011-09-01 Thu 01:34]
+- State "CLOSED"     from "OPEN"       [2011-09-01 Thu 01:34]
+
+When clicking the checkbox of another row then the active one, the
+callback of the checkbox is called before the row-changed! => it is
+the previously selected row that is being used and gets updated: both
+the database and consequently the charged time / days status bar are
+wrong.
+
+ktlw/a-facturer-toggle-set-callback needs to be changed accordingly
+
+*** CLOSED [     4] bad ordering [lacking 'what'] db-foliot.scm
+CLOSED: [2011-07-05 Tue 12:20]
+- State "CLOSED"       from "OPEN"       [2011-07-05 Tue 12:20]
+
+I did not include 'activity' [what] in the select all ordering clause
+but this [obviously] leads to a bad in memory order when several
+entries are equal in terms of fields used in the list-store, which
+itself leads to wrong gtk entries settings displayed values in the
+detailed view.
+
+*** CLOSED [     3] clicking a row does not update the statusbar ratio
+CLOSED: [2011-08-04 Thu 17:08]
+- State "CLOSED"       from "OPEN"       [2011-08-04 Thu 17:08]
+
+*** CLOSED [[11] 4] text filters not calling str/prep-str-for-pg
+CLOSED: [2011-09-11 Sun 20:13]
+- State "CLOSED"     from "OPEN"       [2011-09-11 Sun 20:13]
+
+*** CLOSED [[10] 4] ktlw/entry-std-cb crashed foliot when old-pos was -1
+CLOSED: [2011-08-25 Thu 22:52]
+- State "CLOSED"     from "OPEN"  [2011-08-25 Thu 22:53]
+
+*** CLOSED [[9] 4] characters in date filter crashes foliot
+CLOSED: [2011-08-24 Wed 20:50]
+- State "CLOSED"       from "OPEN"       [2011-08-24 Wed 20:50]
+
+*** CLOSED [[8] 4] alto.br in who and reentering who crashes foliot
+CLOSED: [2011-08-24 Wed 19:42]
+- State "CLOSED"       from "OPEN"       [2011-08-24 Wed 19:42]
+
+*** CLOSED [[7] 4] a date 'only' [no operator] crashes foliot
+CLOSED: [2011-08-04 Thu 18:42]
+- State "CLOSED"       from "OPEN"       [2011-08-04 Thu 18:42]
+
+*** CLOSED [[6] 3] ktlw/filter-clear should select previously selected row if possible
+CLOSED: [2011-08-23 Tue 18:58]
+- State "CLOSED"       from "OPEN"       [2011-08-23 Tue 18:58]
+
+*** CLOSED [[5] 3] ktlw/filter-apply should select previously selected row if possible
+CLOSED: [2011-08-23 Tue 19:15]
+- State "CLOSED"       from "OPEN"       [2011-08-23 Tue 19:15]
+
+*** CLOSED [[4] 3] same filter conditions should not trigger apply-filter
+CLOSED: [2011-08-24 Wed 20:50]
+- State "CLOSED"       from "OPEN"       [2011-08-24 Wed 20:50]
+
+*** CLOSED [[3] 3] empty set does not empty entry fields and combo selection
+CLOSED: [2011-08-10 Wed 12:05]
+- State "CLOSED"       from "OPEN"       [2011-08-10 Wed 12:05]
+
+*** CLOSED [[2] 3] empty set does not grey inapropriate actions
+CLOSED: [2011-08-10 Wed 12:05]
+- State "CLOSED"       from "OPEN"       [2011-08-10 Wed 12:05]
+
+*** CLOSED [[1] 3] empty set - statusbar says 'Record 1/0'
+CLOSED: [2011-08-10 Wed 12:05]
+- State "CLOSED"       from "OPEN"       [2011-08-10 Wed 12:05]
+
+
+
+
+** Wishlist
+
+*** NEXT [[0] 1] nothing yet
+
+
+* Severity levels
+
+** 7 critical
+
+makes unrelated software on the system (or the whole system) break, or
+causes serious data loss, or introduces a security hole on systems
+where you install the package.
+
+** 6 grave
+
+makes the package in question unusable or mostly so, or causes data
+loss, or introduces a security hole allowing access to the accounts of
+users who use the package.
+
+** 5 serious
+
+is a severe violation of Debian policy (roughly, it violates a "must"
+or "required" directive), or, in the package maintainer's or release
+manager's opinion, makes the package unsuitable for release.
+
+** 4 important
+
+a bug which has a major effect on the usability of a package, without
+rendering it completely unusable to everyone.
+
+** 3 normal
+
+the default value, applicable to most bugs.
+
+** 2 minor
+
+a problem which doesn't affect the package's usefulness, and is
+presumably trivial to fix.
+
+** 1 wishlist
+
+for any feature request, and also for any bugs that are very difficult
+to fix due to major design considerations.
+

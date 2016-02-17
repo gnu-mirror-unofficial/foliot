@@ -1,34 +1,35 @@
 -- -*- mode: sql; coding: utf-8 -*-
 
----- Copyright (C) 2011, 2012, 2013
+---- Copyright (C) 2011, 2012, 2013, 2016
 ---- Free Software Foundation, Inc.
 
----- This file is part of Kisê.
+---- This file is part of GNU Foliot.
 
----- Kisê is free software: you can redistribute it and/or modify it
----- under the terms of the GNU General Public License as published by
----- the Free Software Foundation, either version 3 of the License, or
----- (at your option) any later version.
+---- GNU Foliot is free software: you can redistribute it and/or
+---- modify it under the terms of the GNU General Public License as
+---- published by the Free Software Foundation, either version 3 of
+---- the License, or (at your option) any later version.
 
----- Kisê is distributed in the hope that it will be useful, but
+---- GNU Foliot is distributed in the hope that it will be useful, but
 ---- WITHOUT ANY WARRANTY; without even the implied warranty of
 ---- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ---- General Public License for more details.
 
 ---- You should have received a copy of the GNU General Public License
----- along with Kisê.  If not, see <http://www.gnu.org/licenses/>.
+---- along with GNU Foliot.  If not, see
+---- <http://www.gnu.org/licenses/>.
 ----
 
 --- Commentary:
 
 -- this file is actually not 'called' nor 'used' but given here as the
--- effective Kisê database schema 'in use' by the application.
+-- effective GNU Foliot database schema 'in use' by the application.
 
 --- Code:
 
-drop table kise;
+drop table foliot;
 
-create table kise (
+create table foliot (
   id             integer primary key not null,
   date_          integer,
   who            text,
@@ -46,12 +47,12 @@ create table kise (
   imported_db    integer
 );
 
---  alter table kise add imported_id integer default '-1' not null;
---  alter table kise add imported_db integer default '-1' not null;
+--  alter table foliot add imported_id integer default '-1' not null;
+--  alter table foliot add imported_db integer default '-1' not null;
 
-drop table kise_printing_templates;
+drop table foliot_printing_templates;
 
-create table kise_printing_templates (
+create table foliot_printing_templates (
   id               integer primary key not null,
   name             text,
   items            text,
@@ -64,9 +65,9 @@ create table kise_printing_templates (
 --- Import
 ---
 
-drop table if exists kise_imported_db;
+drop table if exists foliot_imported_db;
 
-create table kise_imported_db (
+create table foliot_imported_db (
   id               integer primary key not null,
   name             text, -- actually it is the filename
   imported_the     integer,
@@ -75,16 +76,16 @@ create table kise_imported_db (
 );
 
 -- 2013/09/04
--- alter table kise_imported_db add column colour_set text;
+-- alter table foliot_imported_db add column colour_set text;
 
 
 ---
 --- Db infos
 ---
 
-drop table if exists kise_shinning;
+drop table if exists foliot_shinning;
 
-create table kise_shinning (
+create table foliot_shinning (
   id         integer primary key not null,
   room_237   text,
 );
