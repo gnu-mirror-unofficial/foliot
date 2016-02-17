@@ -34,8 +34,7 @@
 	    db-name
 	    db-con/set-db-con
 	    db-con/open
-	    db-con/close
-	    db-con/add-schema))
+	    db-con/close))
 
 
 (eval-when (expand load eval)
