@@ -97,7 +97,7 @@ details.")
 
   -] the following global variables have been defined:
 
-       *foliot*      an instance of the <foliot/tl-widget> class, see the
+       *foliot*    an instance of the <foliot/tl-widget> class, see the
                    (foliot tl-widget) module for its definition.")
 
 (define %debug-help-2
@@ -108,7 +108,7 @@ details.")
 
 
 (define (welcome port)
-  (displayln (string-append "Foliot " %version) port)
+  (displayln (string-append "GNU Foliot " %version) port)
   (displayln %copyright port))
 
 (define (help port)
