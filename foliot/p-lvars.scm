@@ -4,20 +4,20 @@
 ;;;; Copyright (C) 2011 - 2016
 ;;;; Free Software Foundation, Inc.
 
-;;;; This file is part of Kisê.
+;;;; This file is part of GNU Foliot.
 
-;;;; Kisê is free software: you can redistribute it and/or modify it
-;;;; under the terms of the GNU General Public License as published by
-;;;; the Free Software Foundation, either version 3 of the License, or
-;;;; (at your option) any later version.
+;;;; GNU Foliot is free software: you can redistribute it and/or modify
+;;;; it under the terms of the GNU General Public License as published
+;;;; by the Free Software Foundation, either version 3 of the License,
+;;;; or (at your option) any later version.
 
-;;;; Kisê is distributed in the hope that it will be useful, but
+;;;; GNU Foliot is distributed in the hope that it will be useful, but
 ;;;; WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;;;; General Public License for more details.
 
 ;;;; You should have received a copy of the GNU General Public License
-;;;; along with Kisê.  If not, see <http://www.gnu.org/licenses/>.
+;;;; along with GNU Foliot.  If not, see <http://www.gnu.org/licenses/>.
 ;;;;
 
 ;;; Commentary:
@@ -25,7 +25,7 @@
 ;;; Code:
 
 
-(define-module (kise p-lvars)
+(define-module (foliot p-lvars)
   #:use-module (oop goops)
   #:use-module (grip reexport)
   #:use-module (grip dates)
@@ -35,9 +35,9 @@
   #:use-module (grip nbs)
   #:use-module (grip tex-utils)
   #:use-module (grip db sqlite)
-  #:use-module (kise config)
-  #:use-module (kise p-common)
-  #:use-module (kise p-dialog)
+  #:use-module (foliot config)
+  #:use-module (foliot p-common)
+  #:use-module (foliot p-dialog)
 
   #:export (kp/write-local-variables))
 

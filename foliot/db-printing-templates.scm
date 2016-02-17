@@ -4,20 +4,20 @@
 ;;;; Copyright (C) 2011 - 2016
 ;;;; Free Software Foundation, Inc.
 
-;;;; This file is part of Kisê.
+;;;; This file is part of GNU Foliot.
 
-;;;; Kisê is free software: you can redistribute it and/or modify it
-;;;; under the terms of the GNU General Public License as published by
-;;;; the Free Software Foundation, either version 3 of the License, or
-;;;; (at your option) any later version.
+;;;; GNU Foliot is free software: you can redistribute it and/or modify
+;;;; it under the terms of the GNU General Public License as published
+;;;; by the Free Software Foundation, either version 3 of the License,
+;;;; or (at your option) any later version.
 
-;;;; Kisê is distributed in the hope that it will be useful, but
+;;;; GNU Foliot is distributed in the hope that it will be useful, but
 ;;;; WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;;;; General Public License for more details.
 
 ;;;; You should have received a copy of the GNU General Public License
-;;;; along with Kisê.  If not, see <http://www.gnu.org/licenses/>.
+;;;; along with GNU Foliot.  If not, see <http://www.gnu.org/licenses/>.
 ;;;;
 
 ;;; Commentary:
@@ -25,7 +25,7 @@
 ;;; Code:
 
 
-(define-module (kise db-printing-templates)
+(define-module (foliot db-printing-templates)
   #:use-module (ice-9 format)
   ;; #:use-module (ice-9 receive)
   ;; #:use-module (oop goops)
@@ -36,8 +36,8 @@
   #:use-module (grip i18n)
   #:use-module (grip utils)
   #:use-module (grip strings)
-  #:use-module (kise globals)
-  #:use-module (kise db-con)
+  #:use-module (foliot globals)
+  #:use-module (foliot db-con)
 
   #:export (db-pt/add-printing-templates-table
 	    db-pt/create-complete-table
@@ -64,8 +64,8 @@
 			      (grip i18n)
 			      (grip utils)
 			      (grip strings)
-			      (kise globals)
-			      (kise db-con))
+			      (foliot globals)
+			      (foliot db-con))
   (textdomain "db-printing-templates")
   (bindtextdomain "db-printing-templates" (storage-get 'pofdir)))
 
@@ -75,7 +75,7 @@
 ;;;
 
 (define (db-pt/add-printing-templates-table-str)
-  "create table kise_printing_templates (
+  "create table foliot_printing_templates (
      id               integer primary key not null,
      name             text,
      items            text,
@@ -87,7 +87,7 @@
   (sqlite/command db (db-pt/add-printing-templates-table-str)))
 
 (define (db-pt/create-complete-table db)
-  (unless (sqlite/table-exists? db "kise_printing_templates") (db-pt/add-printing-templates-table db)))
+  (unless (sqlite/table-exists? db "foliot_printing_templates") (db-pt/add-printing-templates-table db)))
 
 
 ;;;
@@ -96,7 +96,7 @@
 
 (define (db-pt/select-one-str)
   "select *
-     from kise_printing_templates
+     from foliot_printing_templates
     where id='~A';")
 
 (define (db-pt/select-one reference)
@@ -106,7 +106,7 @@
 
 (define (db-pt/select-all-str)
   "select *
-     from kise_printing_templates
+     from foliot_printing_templates
  order by name;")
 
 (define (db-pt/select-all)
@@ -114,7 +114,7 @@
 
 (define (db-pt/select-some-str)
   "select *
-     from kise_printing_templates
+     from foliot_printing_templates
     where ~A
  order by name;")
 
@@ -160,7 +160,7 @@
 ;;;
 
 (define (db-pt/set-str)
-  "update kise_printing_templates
+  "update foliot_printing_templates
       set ~A = '~A'
     where id = '~A';")
 
@@ -199,7 +199,7 @@
 ;;;
 
 (define (db-pt/get-next-id-str)
-  "select max(id) from kise_printing_templates;")
+  "select max(id) from foliot_printing_templates;")
 
 (define (db-pt/get-next-id)
   (let* ((next (sqlite/query (db-con)
@@ -209,7 +209,7 @@
     (if value (1+ value) 0)))
 
 (define (db-pt/add-str)
-  "insert into kise_printing_templates (id, name, items, mode, group_and_sort)
+  "insert into foliot_printing_templates (id, name, items, mode, group_and_sort)
    values ('~A', '~A', '~A', '~A', '~A');")
 
 (define (db-pt/add name items mode group-and-sort)
@@ -274,7 +274,7 @@
 ;;;
 
 (define (db-pt/delete-str)
-  "delete from kise_printing_templates
+  "delete from foliot_printing_templates
     where id = '~A';")
 
 (define (db-pt/delete reference)
@@ -285,7 +285,7 @@
 
 #!
 
-(db-kise/open "/usr/alto/db/sqlite.alto.db")
+(db-foliot/open "/usr/alto/db/sqlite.alto.db")
 (db-pt/select-all)
 
 (define gr 

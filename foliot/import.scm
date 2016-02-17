@@ -4,20 +4,20 @@
 ;;;; Copyright (C) 2011 - 2016
 ;;;; Free Software Foundation, Inc.
 
-;;;; This file is part of Kisê.
+;;;; This file is part of GNU Foliot.
 
-;;;; Kisê is free software: you can redistribute it and/or modify it
-;;;; under the terms of the GNU General Public License as published by
-;;;; the Free Software Foundation, either version 3 of the License, or
-;;;; (at your option) any later version.
+;;;; GNU Foliot is free software: you can redistribute it and/or modify
+;;;; it under the terms of the GNU General Public License as published
+;;;; by the Free Software Foundation, either version 3 of the License,
+;;;; or (at your option) any later version.
 
-;;;; Kisê is distributed in the hope that it will be useful, but
+;;;; GNU Foliot is distributed in the hope that it will be useful, but
 ;;;; WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;;;; General Public License for more details.
 
 ;;;; You should have received a copy of the GNU General Public License
-;;;; along with Kisê.  If not, see <http://www.gnu.org/licenses/>.
+;;;; along with GNU Foliot.  If not, see <http://www.gnu.org/licenses/>.
 ;;;;
 
 ;;; Commentary:
@@ -25,23 +25,23 @@
 ;;; Code:
 
 
-(define-module (kise import)
+(define-module (foliot import)
   #:use-module (oop goops)
   #:use-module (grip reexport)
   #:use-module (grip do)
   #:use-module (grip i18n)
   #:use-module (grip gnome)
-  #:use-module (kise config)
-  #:use-module (kise tl-widget)
-  #:use-module (kise i-dialog)
-  #:use-module (kise db)
+  #:use-module (foliot config)
+  #:use-module (foliot tl-widget)
+  #:use-module (foliot i-dialog)
+  #:use-module (foliot db)
 
   #:export (ki/select-gui))
 
 
 (eval-when (expand load eval)
   (re-export-public-interface (oop goops)
-			      (kise i-dialog)))
+			      (foliot i-dialog)))
 
 
 (define *no-available-colour-set-msg*
@@ -56,8 +56,8 @@
 (define *not-an-sqlite-file-msg*
   (_ "not an sqlite file"))
 
-(define *not-kise-table-msg*
-  (_ "no kise table"))
+(define *not-foliot-table-msg*
+  (_ "no foliot table"))
 
 (define (ki/add tl-widget ki-widget)
   (let ((model (tv-model ki-widget))
@@ -87,19 +87,19 @@
 				 'dialog-warning)
 		#f)
 	      (let* ((idb-con (db-con/open import-filename #f))
-		     (kise? (sqlite/table-exists? idb-con "kise")))
-		(if (not kise?)
+		     (foliot? (sqlite/table-exists? idb-con "foliot")))
+		(if (not foliot?)
 		    (begin
 		      (md1b/select-gui (dialog ki-widget)
 				       (_ "Warning!")
 				       (_ "Import db pre checks failed:")
-				       (format #f "~A: ~A" import-filename *not-kise-table-msg*)
+				       (format #f "~A: ~A" import-filename *not-foliot-table-msg*)
 				       (lambda () 'nothing)
 				       'dialog-warning)
 		      #f)
 		    (let* ((id (db-idb/get-next-id))
 			   (idb-cs (modulo id (length %palette)))
-			   (idb-id (db-kise/import import-filename idb-cs id idb-con)))
+			   (idb-id (db-foliot/import import-filename idb-cs id idb-con)))
 		      (if (>= id (length %palette))
 			  (md1b/select-gui (dialog ki-widget)
 					   (_ "Warning!")
@@ -126,7 +126,7 @@
       (when (iter-is-selected selection (get-iter model i))
 	(let* ((iter (get-iter model i))
 	       (idb-id (kiiter/get 'id model iter)))
-	  (db-kise/delete-imported-tuples idb-id #:delete-imported-db-tuple? #t))))
+	  (db-foliot/delete-imported-tuples idb-id #:delete-imported-db-tuple? #t))))
     (set! (gui-callback? tl-widget) #f)
     (set! (active-filter tl-widget) #t)
     (ktlw/filter-clear tl-widget 'fillcombos)
@@ -151,7 +151,7 @@
 	       (filename (kiiter/get 'filename model iter))
 	       (tuple (db-idb/get-tuple tuples (db-idb/find-pos tuples 'id id =)))
 	       (colour-set-id (db-idb/get tuple 'colour_set)))
-	  (db-kise/import filename colour-set-id)
+	  (db-foliot/import filename colour-set-id)
 	  (kiiter/set 'date model iter (date/system-date)))))
     ;; (set! (gui-callback? tl-widget) #f)
     (if prev-active-filter

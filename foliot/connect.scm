@@ -4,20 +4,20 @@
 ;;;; Copyright (C) 2011 - 2016
 ;;;; Free Software Foundation, Inc.
 
-;;;; This file is part of Kisê.
+;;;; This file is part of GNU Foliot.
 
-;;;; Kisê is free software: you can redistribute it and/or modify it
-;;;; under the terms of the GNU General Public License as published by
-;;;; the Free Software Foundation, either version 3 of the License, or
-;;;; (at your option) any later version.
+;;;; GNU Foliot is free software: you can redistribute it and/or modify
+;;;; it under the terms of the GNU General Public License as published
+;;;; by the Free Software Foundation, either version 3 of the License,
+;;;; or (at your option) any later version.
 
-;;;; Kisê is distributed in the hope that it will be useful, but
+;;;; GNU Foliot is distributed in the hope that it will be useful, but
 ;;;; WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;;;; General Public License for more details.
 
 ;;;; You should have received a copy of the GNU General Public License
-;;;; along with Kisê.  If not, see <http://www.gnu.org/licenses/>.
+;;;; along with GNU Foliot.  If not, see <http://www.gnu.org/licenses/>.
 ;;;;
 
 ;;; Commentary:
@@ -25,17 +25,17 @@
 ;;; Code:
 
 
-(define-module (kise connect)
+(define-module (foliot connect)
   #:use-module (oop goops)
   #:use-module (gnome gobject)
   #:use-module (gnome gtk)
   ;; #:use-module (grip reexport)
   #:use-module (grip gnome)
   #:use-module (grip i18n)
-  #:use-module (kise db)
-  #:use-module (kise tl-widget)
-  #:use-module (kise config)
-  #:use-module (kise c-dialog)
+  #:use-module (foliot db)
+  #:use-module (foliot tl-widget)
+  #:use-module (foliot config)
+  #:use-module (foliot c-dialog)
 
   #:export (kc/select-gui))
 
@@ -49,10 +49,10 @@
 			      (grip gnome)
 			      (grip i18n)
 
-			      (kise db)
-			      (kise tl-widget)
-			      (kise config)
-			      (kise c-dialog)))
+			      (foliot db)
+			      (foliot tl-widget)
+			      (foliot config)
+			      (foliot c-dialog)))
 !#
 
 
@@ -69,13 +69,13 @@
   (_ "is the active database."))
 
 (define (kc/connect-cant-connect-str)
-  (_ "I can not open ~A: or it is not a Kisê database file, or you don't have writing permissions over it."))
+  (_ "I can not open ~A: or it is not a GNU Foliot database file, or you don't have writing permissions over it."))
 
 #!
 Some problem occured while trying to open ~A. It could be that you
-don't have writing permissions over it, or that it is not a Kisê
+don't have writing permissions over it, or that it is not a GNU Foliot
 database file. Please check all of the above and start again or
-create/connect to another Kisê database.
+create/connect to another GNU Foliot database.
 !#
 
 (define (kc/connect-cant-create-str)
@@ -115,7 +115,7 @@ create/connect to another Kisê database.
 		(kc/close-dialog kc-dialog)))))
 	  ((create)
 	   ;; for some very obscure reasons, when in 'create' mode, kc/connect is called 2x ... see
-	   ;; kise-bugs for details.  (format #t "modal?: ~S // New db for kise in ~A~%" (get-modal
+	   ;; foliot-bugs for details.  (format #t "modal?: ~S // New db for foliot in ~A~%" (get-modal
 	   ;; kc-dialog) filename)
 	   (when (get-modal kc-dialog)
 	     (let ((checks-result (ktlw/create-db-checks filename)))
@@ -169,7 +169,7 @@ create/connect to another Kisê database.
 
 #!
 
-(define tl-widget (make <kise/tl-widget>
+(define tl-widget (make <foliot/tl-widget>
 		    #:glade-file (storage-get 'gladefile)))
 (kc/select-gui tl-widget "/usr/alto/db" "sqlite.alto.db")
 

@@ -4,20 +4,20 @@
 ;;;; Copyright (C) 2011 - 2016
 ;;;; Free Software Foundation, Inc.
 
-;;;; This file is part of Kisê.
+;;;; This file is part of GNU Foliot.
 
-;;;; Kisê is free software: you can redistribute it and/or modify it
-;;;; under the terms of the GNU General Public License as published by
-;;;; the Free Software Foundation, either version 3 of the License, or
-;;;; (at your option) any later version.
+;;;; GNU Foliot is free software: you can redistribute it and/or modify
+;;;; it under the terms of the GNU General Public License as published
+;;;; by the Free Software Foundation, either version 3 of the License,
+;;;; or (at your option) any later version.
 
-;;;; Kisê is distributed in the hope that it will be useful, but
+;;;; GNU Foliot is distributed in the hope that it will be useful, but
 ;;;; WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;;;; General Public License for more details.
 
 ;;;; You should have received a copy of the GNU General Public License
-;;;; along with Kisê.  If not, see <http://www.gnu.org/licenses/>.
+;;;; along with GNU Foliot.  If not, see <http://www.gnu.org/licenses/>.
 ;;;;
 
 ;;; Commentary:
@@ -25,12 +25,12 @@
 ;;; Code:
 
 
-(define-module (kise p-common)
+(define-module (foliot p-common)
   #:use-module (ice-9 format)
   #:use-module (oop goops)
   #:use-module (grip reexport)
   #:use-module (grip passwd)
-  #:use-module (kise globals)
+  #:use-module (foliot globals)
 
   #:export (show-me
 	    <tex-file>
@@ -58,7 +58,7 @@
 (eval-when (expand load eval)
   (re-export-public-interface (oop goops)
 			      (grip passwd)
-			      (kise globals))
+			      (foliot globals))
   (textdomain "p-common")
   (bindtextdomain "p-common" (storage-get 'pofdir)))
 
@@ -249,8 +249,8 @@
 #!
 
 (define tf
-  (kp/common-filenames "kise-2011.10.31-draft"
-		       (string-append (sys/get 'udir) "/kise/kise-2011.10.31-draft.pdf")))
+  (kp/common-filenames "foliot-2011.10.31-draft"
+		       (string-append (sys/get 'udir) "/foliot/foliot-2011.10.31-draft.pdf")))
 (show-me tf)
 
 !#

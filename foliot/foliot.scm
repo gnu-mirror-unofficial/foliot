@@ -6,10 +6,10 @@
 
 ;;;; This file is part of GNU Foliot.
 
-;;;; GNU Foliot is free software: you can redistribute it and/or modify it
-;;;; under the terms of the GNU General Public License as published by
-;;;; the Free Software Foundation, either version 3 of the License, or
-;;;; (at your option) any later version.
+;;;; GNU Foliot is free software: you can redistribute it and/or modify
+;;;; it under the terms of the GNU General Public License as published
+;;;; by the Free Software Foundation, either version 3 of the License,
+;;;; or (at your option) any later version.
 
 ;;;; GNU Foliot is distributed in the hope that it will be useful, but
 ;;;; WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -25,7 +25,7 @@
 ;;; Code:
 
 
-(define-module (kise kise)
+(define-module (foliot foliot)
   :use-module (ice-9 format)
   :use-module (ice-9 receive)
   :use-module (oop goops)
@@ -42,19 +42,19 @@
   :use-module (grip db sqlite)
   :use-module (grip nbs)
   :use-module (grip gnome)
-  :use-module (kise db)
-  :use-module (kise config)
-  :use-module (kise colours)
-  :use-module (kise globals)
-  :use-module (kise iter)
-  :use-module (kise tl-widget)
-  :use-module (kise connect)
-  :use-module (kise import)
-  :use-module (kise print)
+  :use-module (foliot db)
+  :use-module (foliot config)
+  :use-module (foliot colours)
+  :use-module (foliot globals)
+  :use-module (foliot iter)
+  :use-module (foliot tl-widget)
+  :use-module (foliot connect)
+  :use-module (foliot import)
+  :use-module (foliot print)
 
   :export (*tl-widget*
-	   kise/animate-ui
-	   kise/set-debug-variables ;; debug mode
+	   foliot/animate-ui
+	   foliot/set-debug-variables ;; debug mode
 	   tl-widget ;; debug
 	   model
 	   treeview
@@ -76,17 +76,17 @@
 			      (grip db sqlite)
 			      (grip nbs)
 			      (grip gnome)
-			      (kise db)
-			      (kise config)
-			      (kise colours)
-			      (kise globals)
-			      (kise iter)
-			      (kise tl-widget)
-			      (kise connect)
-			      (kise import)
-			      (kise print))
-  (textdomain "kise")
-  (bindtextdomain "kise" (storage-get 'pofdir)))
+			      (foliot db)
+			      (foliot config)
+			      (foliot colours)
+			      (foliot globals)
+			      (foliot iter)
+			      (foliot tl-widget)
+			      (foliot connect)
+			      (foliot import)
+			      (foliot print))
+  (textdomain "foliot")
+  (bindtextdomain "foliot" (storage-get 'pofdir)))
 
 
 ;;;
@@ -108,7 +108,7 @@
 (define ref-lb #f)
 (define duration-sp #f)
 
-(define (kise/set-debug-variables)
+(define (foliot/set-debug-variables)
   (set! tl-widget *tl-widget*)
   (set! treeview (tv tl-widget))
   (set! model (tv-model tl-widget))
@@ -123,8 +123,8 @@
 
 #!
 
-,m (kise kise))
-(kise/set-debug-variables)
+,m (foliot foliot))
+(foliot/set-debug-variables)
 
 (define acti-combo (what-combo tl-widget))
 (define acti-entry (what-combo-entry tl-widget))
@@ -136,9 +136,9 @@
 ;;; row selection related stuff
 ;;;
 
-(define (kise/set-gtk-entries tl-widget row iter)
+(define (foliot/set-gtk-entries tl-widget row iter)
   (let* ((tuple (ktlw/get-tuple tl-widget row))
-	 (idb (db-kise/get tuple 'imported_db))
+	 (idb (db-foliot/get tuple 'imported_db))
 	 (model (tv-model tl-widget)))
     ;; (format #t "~S~%" tuple)
     (if (= idb -1)
@@ -154,20 +154,20 @@
 	  (show (reference-eb tl-widget))
 	  (modify-bg (reference-eb tl-widget) 'normal (kiter/get 'ibg model iter))))
     (set-text (date-entry tl-widget) (kiter/get 'date model iter))
-    (let ((who? (gtk2/combo-find-row (who-combo tl-widget) (db-kise/get tuple 'who))))
+    (let ((who? (gtk2/combo-find-row (who-combo tl-widget) (db-foliot/get tuple 'who))))
       (if who?
 	  (set-active (who-combo tl-widget) who?)
 	  (begin
 	    ;; (gtk2/set-text (who-entry tl-widget) "")
 	    (set-active (who-combo tl-widget) -1))))
-    (let ((for-whom? (gtk2/combo-find-row (for-whom-combo tl-widget) (db-kise/get tuple 'for_whom))))
+    (let ((for-whom? (gtk2/combo-find-row (for-whom-combo tl-widget) (db-foliot/get tuple 'for_whom))))
       (if for-whom?
 	  (set-active (for-whom-combo tl-widget) for-whom?)
 	  (begin
 	    ;; (gtk2/set-text (for-whom-entry tl-widget) "")
 	    (set-active (for-whom-combo tl-widget) -1))))
     (set-value (duration-sb tl-widget) (kiter/get 'duration model iter))
-    (let ((what? (gtk2/combo-find-row (what-combo tl-widget) (db-kise/get tuple 'what))))
+    (let ((what? (gtk2/combo-find-row (what-combo tl-widget) (db-foliot/get tuple 'what))))
       (if what?
 	  (set-active (what-combo tl-widget) what?)
 	  (begin
@@ -181,11 +181,11 @@
 ;;; User interface
 ;;;
 
-(define (kise/on-delete-window tl-widget)
-  (kise/on-tv-row-change tl-widget)
+(define (foliot/on-delete-window tl-widget)
+  (foliot/on-tv-row-change tl-widget)
   (exit 0))
 
-(define (kise/on-tv-row-change tl-widget)
+(define (foliot/on-tv-row-change tl-widget)
   ;; (format #t "On TV row change~%")
   (when (gui-callback? tl-widget)
     (let* ((main-window (dialog tl-widget))
@@ -206,10 +206,10 @@
 ;;; Animate GUI
 ;;;
 
-(define (kise/open-db-cant-open-str)
-  (_ "Some problem occured while trying to open your default Kisê database: ~A. It could be that the file has been deleted, moved, that it exists but you don't have 'write permission' over it, or that, for some reason you'll have to determine, it is not a Kisê database file anymore. Please check all of the above and start again or create/connect to another Kisê database."))
+(define (foliot/open-db-cant-open-str)
+  (_ "Some problem occured while trying to open your default GNU Foliot database: ~A. It could be that the file has been deleted, moved, that it exists but you don't have 'write permission' over it, or that, for some reason you'll have to determine, it is not a GNU Foliot database file anymore. Please check all of the above and start again or create/connect to another GNU Foliot database."))
 
-(define (kise/open-db tl-widget)
+(define (foliot/open-db tl-widget)
   (let ((db-file (kcfg/get 'db-file))
 	(open-at-startup (kcfg/get 'open-at-startup)))
     (if (and db-file open-at-startup)
@@ -222,7 +222,7 @@
 	     (md1b/select-gui (dialog tl-widget)
 			      (_ "Warning!")
 			      (_ "DB connection problem:")
-			      (format #f "~?" (kise/open-db-cant-open-str) (list db-file))
+			      (format #f "~?" (foliot/open-db-cant-open-str) (list db-file))
 			      (lambda () (ktlw/no-db-mode tl-widget))
 			      'dialog-warning))
 	    ((opened opened-partial-schema opened-no-schema)
@@ -231,18 +231,18 @@
 	  (ktlw/no-db-mode tl-widget)
 	  (emit (con-bt tl-widget) 'clicked)))))
 
-(define (kise/exit tl-widget)
+(define (foliot/exit tl-widget)
   (md2b/select-gui (dialog tl-widget)
 		   (_ "Exit")
 		   (_ "Exit")
-		   (_ "Exit Kisê ?")
+		   (_ "Exit GNU Foliot ?")
 		   (lambda ()
-		     (kise/on-tv-row-change tl-widget)
+		     (foliot/on-tv-row-change tl-widget)
 		     (ktlw/write-config tl-widget)
 		     (exit 0))
 		   (lambda () 'nothing)))
 
-(define (kise/animate-ui uname gfile version debug-mode)
+(define (foliot/animate-ui uname gfile version debug-mode)
   (let ((tl-widget (ktlw/make-tl-widget uname gfile))
 	(win-x (kcfg/get 'win-x))
 	(win-y (kcfg/get 'win-y))
@@ -260,7 +260,7 @@
     (connect (dialog tl-widget)
 	     'delete-event
 	     (lambda (. args)
-	       (kise/exit tl-widget)
+	       (foliot/exit tl-widget)
 	       #t)) ;; stop the event propagation
     #;(connect (dialog tl-widget)
 	     'configure-event
@@ -285,25 +285,25 @@
     (connect (con-bt tl-widget)
 	     'clicked
 	     (lambda (button)
-	       (kise/on-tv-row-change tl-widget)
+	       (foliot/on-tv-row-change tl-widget)
 	       (kc/select-gui tl-widget)))
     (connect (import-bt tl-widget)
 	     'clicked
 	     (lambda (button)
-	       (kise/on-tv-row-change tl-widget)
+	       (foliot/on-tv-row-change tl-widget)
 	       (ki/select-gui tl-widget)))
     (connect (quit-bt tl-widget)
 	     'clicked
-	     (lambda (button) (kise/exit tl-widget)))
+	     (lambda (button) (foliot/exit tl-widget)))
     (connect (dup-bt tl-widget)
 	     'clicked
 	     (lambda (button)
-	       (kise/on-tv-row-change tl-widget)
+	       (foliot/on-tv-row-change tl-widget)
 	       (ktlw/duplicate tl-widget)))
     (connect (add-bt tl-widget)
 	     'clicked
 	     (lambda (button)
-	       (kise/on-tv-row-change tl-widget)
+	       (foliot/on-tv-row-change tl-widget)
 	       (ktlw/add tl-widget)))
     (connect (del-bt tl-widget)
 	     'clicked
@@ -312,7 +312,7 @@
     (connect (print-bt tl-widget)
 	     'clicked
 	     (lambda (button)
-	       (kise/on-tv-row-change tl-widget)
+	       (foliot/on-tv-row-change tl-widget)
 	       (kp/select-gui tl-widget)))
     (connect (first-bt tl-widget)
 	     'clicked
@@ -372,7 +372,7 @@
 		 (let* ((model (tv-model tl-widget))
 			(row (current-row tl-widget))
 			(tuple (ktlw/get-tuple tl-widget row))
-			(id (db-kise/get tuple 'id))
+			(id (db-foliot/get tuple 'id))
 			(iter (current-iter tl-widget))
 			(new-value (get-active widget)))
 		   ;; do it on the toggle in the list store too ...
@@ -401,19 +401,19 @@
     (connect (filter-apply-bt tl-widget)
 	     'clicked
 	     (lambda (button)
-	       (kise/on-tv-row-change tl-widget)
+	       (foliot/on-tv-row-change tl-widget)
 	       (gtk2/status-pop (status-bar-2 tl-widget) "")
 	       (ktlw/filter-apply tl-widget 'force)))
     (connect (filter-clear-bt tl-widget)
 	     'clicked
 	     (lambda (button)
-	       (kise/on-tv-row-change tl-widget)
+	       (foliot/on-tv-row-change tl-widget)
 	       (gtk2/status-pop (status-bar-2 tl-widget) "")
 	       (ktlw/filter-clear tl-widget)))
     (connect (filter-select-bt tl-widget)
 	     'clicked
 	     (lambda (button)
-	       (kise/on-tv-row-change tl-widget)
+	       (foliot/on-tv-row-change tl-widget)
 	       (gtk2/status-pop (status-bar-2 tl-widget) "")))
     (connect (filter-date-entry tl-widget)
 	     'focus-out-event
@@ -470,7 +470,7 @@
     (connect (tv tl-widget)
 	     'row-activated
 	     (lambda (tview path col)
-	       (kise/on-tv-row-change tl-widget)
+	       (foliot/on-tv-row-change tl-widget)
 	       (let* ((model (get-model tview))
 		      (iter  (get-iter model path)))
 		 ;; (format #t "  ~S row activated~%" (car path))
@@ -479,7 +479,7 @@
 	     'changed
 	     (lambda (selection)
 	       ;; (dimfi "row-changed " (g-reselect-path? tl-widget))
-	       (kise/on-tv-row-change tl-widget)
+	       (foliot/on-tv-row-change tl-widget)
 	       (unless (g-reselect-path? tl-widget)
 		 (receive (model iter)
 		     (get-selected selection)
@@ -491,7 +491,7 @@
 			 (gtk2/status-pop (status-bar-2 tl-widget) "")
 			 (ktlw/set-cur-globals tl-widget row iter)
 			 (set! (gui-callback? tl-widget) #f)
-			 (kise/set-gtk-entries tl-widget row iter)
+			 (foliot/set-gtk-entries tl-widget row iter)
 			 (set! (gui-callback? tl-widget) guicbpv?)
 			 (ktlw/check-nav-tb-sensitive-needs tl-widget (1+ row))
 			 (ktlw/update-status-bar-1 tl-widget)))))))
@@ -519,15 +519,15 @@
 	(gtk2/hide `(,(date-edit tl-widget)))) ;; experimental stuff
     (gtk2/hide `(,(menubar tl-widget)
 		 ,(date-icon tl-widget)
-		 ,(get-widget (xml-code tl-widget) "kise/mb_sep3")
+		 ,(get-widget (xml-code tl-widget) "foliot/mb_sep3")
 		 ,(prefs-bt tl-widget)
-		 ,(get-widget (xml-code tl-widget) "kise/idb_tb2")
-		 ,(get-widget (xml-code tl-widget) "kise/idb_bt2")
-		 ,(get-widget (xml-code tl-widget) "kise/nav_tb_1")
-		 ,(get-widget (xml-code tl-widget) "kise/nav_tb_2")
+		 ,(get-widget (xml-code tl-widget) "foliot/idb_tb2")
+		 ,(get-widget (xml-code tl-widget) "foliot/idb_bt2")
+		 ,(get-widget (xml-code tl-widget) "foliot/nav_tb_1")
+		 ,(get-widget (xml-code tl-widget) "foliot/nav_tb_2")
 		 ,(db-name-lb2 tl-widget)
 		 ,(db-name-lb3 tl-widget)))
-    (kise/open-db tl-widget)
+    (foliot/open-db tl-widget)
     tl-widget))
 
 
@@ -537,7 +537,7 @@
 ;;;
 ;;;
 
-(kise/set-debug-variables)
+(foliot/set-debug-variables)
 (get-property-names <gtk-label>)
 (get (filter-date tl-widget) 'width-request)
 (get-allocation (description-sw tl-widget))
@@ -565,7 +565,7 @@
 	 'focus-in-event
 	 (lambda (entry event)
 	   (let* ((completion (who-completion tl-widget))
-		  (completion-values (db-kise/select-distinct-who))
+		  (completion-values (db-foliot/select-distinct-who))
 		  (completion-model (gtk2/create-completion-model completion-values)))
 	     (set-model completion completion-model)
 	     ;; (complete completion)
@@ -577,7 +577,7 @@
 	 'focus-in-event
 	 (lambda (entry event)
 	   (let* ((completion (for-whom-completion tl-widget))
-		  (completion-values (db-kise/select-distinct-for-whom))
+		  (completion-values (db-foliot/select-distinct-for-whom))
 		  (completion-model (gtk2/create-completion-model completion-values)))
 	     (set-model completion completion-model))
 	   ;; gtk2 requirement ...

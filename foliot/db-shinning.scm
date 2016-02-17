@@ -4,20 +4,20 @@
 ;;;; Copyright (C) 2011 - 2016
 ;;;; Free Software Foundation, Inc.
 
-;;;; This file is part of Kisê.
+;;;; This file is part of GNU Foliot.
 
-;;;; Kisê is free software: you can redistribute it and/or modify it
-;;;; under the terms of the GNU General Public License as published by
-;;;; the Free Software Foundation, either version 3 of the License, or
-;;;; (at your option) any later version.
+;;;; GNU Foliot is free software: you can redistribute it and/or modify
+;;;; it under the terms of the GNU General Public License as published
+;;;; by the Free Software Foundation, either version 3 of the License,
+;;;; or (at your option) any later version.
 
-;;;; Kisê is distributed in the hope that it will be useful, but
+;;;; GNU Foliot is distributed in the hope that it will be useful, but
 ;;;; WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;;;; General Public License for more details.
 
 ;;;; You should have received a copy of the GNU General Public License
-;;;; along with Kisê.  If not, see <http://www.gnu.org/licenses/>.
+;;;; along with GNU Foliot.  If not, see <http://www.gnu.org/licenses/>.
 ;;;;
 
 ;;; Commentary:
@@ -25,7 +25,7 @@
 ;;; Code:
 
 
-(define-module (kise db-shinning)
+(define-module (foliot db-shinning)
   #:use-module (ice-9 format)
   #:use-module (ice-9 threads)
   #:use-module (srfi srfi-1)
@@ -36,9 +36,9 @@
   #:use-module (grip utils)
   #:use-module (grip nbs)
   #:use-module (grip strings)
-  #:use-module (kise globals)
-  #:use-module (kise db-con)
-  #:use-module (kise db-kise)
+  #:use-module (foliot globals)
+  #:use-module (foliot db-con)
+  #:use-module (foliot db-foliot)
 
   #:export (db-shi/add-shinning-table
 	    db-shi/check-schema
@@ -61,8 +61,8 @@
 			      (grip i18n)
 			      (grip utils)
 			      (grip strings)
-			      (kise globals)
-			      (kise db-con))
+			      (foliot globals)
+			      (foliot db-con))
   (textdomain "db-shinning")
   (bindtextdomain "db-shinning" (storage-get 'pofdir)))
 
@@ -104,7 +104,7 @@
 ;;;
 
 (define (db-shi/add-shinning-table-str)
-  "create table kise_shinning (
+  "create table foliot_shinning (
      id               integer primary key not null,
      room_237         text
 );")
@@ -114,8 +114,8 @@
 
 (define (db-shi/check-schema db)
   ;; 'none, 'partial, 'complete
-  (if (sqlite/table-exists? db "kise_shinning")
-      (let* ((table-info (sqlite/table-info db "kise_shinning"))
+  (if (sqlite/table-exists? db "foliot_shinning")
+      (let* ((table-info (sqlite/table-info db "foliot_shinning"))
 	     (cols-nb (length table-info)))
 	(cond ((= cols-nb 1) ;; impossible, just holding the code for 'partial case
 	       'partial)     ;; for a possible future need...
@@ -124,7 +124,7 @@
       'none))
 
 (define (db-shi/create-complete-table db)
-  (if (sqlite/table-exists? db "kise_shinning")
+  (if (sqlite/table-exists? db "foliot_shinning")
       #t
       (db-shi/add-shinning-table db)))
 
@@ -135,7 +135,7 @@
 
 (define (db-shi/select-one-str)
   "select *
-     from kise_shinning
+     from foliot_shinning
     where id = '~A';")
 
 (define (db-shi/select-one reference)
@@ -147,7 +147,7 @@
 
 (define (db-shi/select-all-str)
   "select *
-     from kise_shinning;")
+     from foliot_shinning;")
 
 (define (db-shi/select-all)
   (sqlite/query (db-con) (db-shi/select-all-str)))
@@ -158,7 +158,7 @@
 ;;;
 
 (define *update-str*
-  "update kise_shinning
+  "update foliot_shinning
       set ~A = '~A'
     where id = '~A';")
 
@@ -176,7 +176,7 @@
 ;;;
 
 (define (db-shi/get-next-id-str)
-  "select max(id) from kise_shinning;")
+  "select max(id) from foliot_shinning;")
 
 (define (db-shi/get-next-id)
   (let* ((next (sqlite/query (db-con)
@@ -185,7 +185,7 @@
     (if value (1+ value) 0)))
 
 (define (db-shi/add-str)
-  "insert into kise_shinning (id, room_237)
+  "insert into foliot_shinning (id, room_237)
           values ('~A','~A');")
 
 (define* (db-shi/add room-237 #:optional (id #f))
@@ -202,7 +202,7 @@
 ;;;
 
 (define (db-shi/delete-str)
-  "delete from kise_shinning
+  "delete from foliot_shinning
     where id = '~A';")
 
 (define (db-shi/delete reference)
@@ -225,10 +225,10 @@
 (define (room-237-check-floats-1dec-only flags tuple db)
   (unless (assq-ref flags 'floats-1dec-only)
     (sqlite/begin-transaction db)
-    (let ((tuples (db-kise/select-all)))
+    (let ((tuples (db-foliot/select-all)))
       (par-map (lambda (tuple)
-		 (db-kise/update tuple 'duration
-				 (fp/round (db-kise/get tuple 'duration) 1)))
+		 (db-foliot/update tuple 'duration
+				 (fp/round (db-foliot/get tuple 'duration) 1)))
 	  tuples))
     (sqlite/commit db)
     (db-shi/update-flag 'floats-1dec-only flags tuple db)))

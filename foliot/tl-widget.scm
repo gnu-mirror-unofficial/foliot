@@ -5,20 +5,20 @@
 ;;;; Copyright (C) 2011 - 2016
 ;;;; Free Software Foundation, Inc.
 
-;;;; This file is part of Kisê.
+;;;; This file is part of GNU Foliot.
 
-;;;; Kisê is free software: you can redistribute it and/or modify it
-;;;; under the terms of the GNU General Public License as published by
-;;;; the Free Software Foundation, either version 3 of the License, or
-;;;; (at your option) any later version.
+;;;; GNU Foliot is free software: you can redistribute it and/or modify
+;;;; it under the terms of the GNU General Public License as published
+;;;; by the Free Software Foundation, either version 3 of the License,
+;;;; or (at your option) any later version.
 
-;;;; Kisê is distributed in the hope that it will be useful, but
+;;;; GNU Foliot is distributed in the hope that it will be useful, but
 ;;;; WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;;;; General Public License for more details.
 
 ;;;; You should have received a copy of the GNU General Public License
-;;;; along with Kisê.  If not, see <http://www.gnu.org/licenses/>.
+;;;; along with GNU Foliot.  If not, see <http://www.gnu.org/licenses/>.
 ;;;;
 
 ;;; Commentary:
@@ -26,7 +26,7 @@
 ;;; Code:
 
 
-(define-module (kise tl-widget)
+(define-module (foliot tl-widget)
   #:use-module (ice-9 format)
   #:use-module (ice-9 receive)
   #:use-module (oop goops)
@@ -47,13 +47,13 @@
   #:use-module (grip nbs)
   #:use-module (grip gnome)
   #:use-module (grip db sqlite)
-  #:use-module (kise config)
-  #:use-module (kise colours)
-  #:use-module (kise db)
-  #:use-module (kise iter)
-  ;; #:use-module (kise what-tree)
+  #:use-module (foliot config)
+  #:use-module (foliot colours)
+  #:use-module (foliot db)
+  #:use-module (foliot iter)
+  ;; #:use-module (foliot what-tree)
 
-  #:export (<kise/tl-widget>
+  #:export (<foliot/tl-widget>
 	    gui-callback?
 	    user-name
 
@@ -94,8 +94,8 @@
 
 	    date-lb
 	    date-entry
-	    date-icon ;; exported because currently hidden in kise.scm
-	    date-edit ;; exported because currently hidden in kise.scm
+	    date-icon ;; exported because currently hidden in foliot.scm
+	    date-edit ;; exported because currently hidden in foliot.scm
 
 	    who-lb
 	    who-entry
@@ -125,7 +125,7 @@
 	    db-name-lb2
 	    db-name-lb3
 
-	    filter-icon ;; exported because currently hidden in kise.scm
+	    filter-icon ;; exported because currently hidden in foliot.scm
 	    filter-apply-bt
 	    filter-clear-bt
 	    filter-select-bt
@@ -202,16 +202,16 @@
 			      (gnome gobject)
 			      (gnome gtk)
 			      (gnome glade)
-			      (kise config))
+			      (foliot config))
   (textdomain "tl-widget")
   (bindtextdomain "tl-widget" (storage-get 'pofdir)))
 
 
 ;;;
-;;; <kise/tl-widget>
+;;; <foliot/tl-widget>
 ;;;
 
-(define-class <kise/tl-widget> () ;; (<kise/config>)
+(define-class <foliot/tl-widget> () ;; (<foliot/config>)
   (user-name #:accessor user-name #:init-keyword #:user-name #:init-value #f)
   (gui-callback? #:accessor gui-callback? #:init-keyword #:gui-callback? #:init-value #t)
 
@@ -310,7 +310,7 @@
   (status-bar-3 #:accessor status-bar-3 #:init-keyword #:status-bar-3 #:init-value #f)
   (status-bar-4 #:accessor status-bar-4 #:init-keyword #:status-bar-4 #:init-value #f))
 
-(define-method (show-me (widget <kise/tl-widget>))
+(define-method (show-me (widget <foliot/tl-widget>))
   (format #t "Widget: ~S~%" widget)
   (values))
 
@@ -349,7 +349,7 @@
 	 ;; user may click the checkbox of another iter AND this
 	 ;; callback seems to be called before the row-changed one!
 	 (tuple (ktlw/get-tuple tl-widget row))
-	 (id (db-kise/get tuple 'id))
+	 (id (db-foliot/get tuple 'id))
 	 (iter (get-iter model path))
 	 (iter-get (lambda (model iter) (kiter/get 'to-be-charged model iter)))
 	 (iter-set (lambda (model iter value) (kiter/set 'to-be-charged model iter value)))
@@ -598,7 +598,7 @@
 	(gtk2/status-push status-bar "Record: none" ""))))
 
 (define (ktlw/select-ctime tl-widget)
-  ;; Kise not only allows the user to define and activate a filter,
+  ;; Foliot not only allows the user to define and activate a filter,
   ;; but to work from there [on the subset] and in particular he may
   ;; add entries and/or delete/modify them. As he does this, we keep
   ;; track of the ids of these added/modified 'records' and
@@ -615,7 +615,7 @@
   ;; 	 where (for_whom like '%lpdi%' or id in (100, 101, 102))
   ;;	   and to_be_charged = 't'
 
-  ;; So, in order to be able to reuse the same db-kise/select-some
+  ;; So, in order to be able to reuse the same db-foliot/select-some
   ;; function we rebuild the where clause here.
 
   (let* ((filter? (active-filter tl-widget))
@@ -641,9 +641,9 @@
     (if clause
 	(begin
 	  ;; (format #t "select-ctime: ~S~%" clause)
-	  (db-kise/select-some clause #f "sum(duration)"))
+	  (db-foliot/select-some clause #f "sum(duration)"))
 	;; no clause can always return (#(#f)) which is
-	;; what db-kise/select-some would return
+	;; what db-foliot/select-some would return
 	;; anyway
 	(list (make-vector 1 #f)))))
 
@@ -660,7 +660,7 @@
   ;; tresult, returned by guile-sqlite, is a list of 1 vector
   ;; of 1 value. the value is a float or #f [when the db or the
   ;; subset upon which the query is performed is empty].
-  (let* ((tresult (db-kise/select-some (active-filter tl-widget) (id-set tl-widget) "sum(duration)"))
+  (let* ((tresult (db-foliot/select-some (active-filter tl-widget) (id-set tl-widget) "sum(duration)"))
 	 (tduration (vector-ref (car tresult) 0))
 	 (ttime (and tduration (fp/round tduration 1)))
 	 (tdays (and ttime (fp/round (/ ttime 8) 1)))
@@ -725,10 +725,10 @@
 	 (old-pos (if row row (current-row tl-widget)))
 	 (old-iter (get-iter model (list old-pos)))
 	 (db-tuple (and old-pos (ktlw/get-tuple tl-widget old-pos)))
-	 (reference (db-kise/get db-tuple 'id))
+	 (reference (db-foliot/get db-tuple 'id))
 	 (old-entry (and db-tuple (ktlw/get what tl-widget old-pos)))
-	 (tuples (db-kise/select-some (active-filter tl-widget) (id-set tl-widget)))
-	 (new-pos (db-kise/find-pos tuples 'id reference =))
+	 (tuples (db-foliot/select-some (active-filter tl-widget) (id-set tl-widget)))
+	 (new-pos (db-foliot/find-pos tuples 'id reference =))
 	 (reordered? (not (= old-pos new-pos)))
 	 (prev-gui-cb? (gui-callback? tl-widget)))
     ;; (dimfi "old / new pos / current-row: " old-pos new-pos (current-row tl-widget))
@@ -740,7 +740,7 @@
 	     (new-iter (get-iter model new-path))
 	     (new-tuple (list-ref tuples new-pos)))
 	;; (dimfi "reordered " new-tuple)
-	(db-kise/set new-tuple what new-value) ;; ?!? to-be-charged maybe...
+	(db-foliot/set new-tuple what new-value) ;; ?!? to-be-charged maybe...
 	(set! (db-tuples tl-widget) tuples)
 	(set! (gui-callback? tl-widget) #t)
 	(if (< new-pos old-pos)
@@ -759,7 +759,7 @@
 	 (db-tuple (and old-pos
 			(>= old-pos 0)
 			(ktlw/get-tuple tl-widget old-pos)))
-	 (reference (and db-tuple (db-kise/get db-tuple 'id)))
+	 (reference (and db-tuple (db-foliot/get db-tuple 'id)))
 	 (old-entry (and db-tuple (ktlw/get what tl-widget old-pos)))
 	 (new-entry (gtk2/get-text entry)))
     ;; (format #t "Old: ~S, New: ~S~%Date?: ~S~%" old-entry new-entry date?)
@@ -775,9 +775,9 @@
 	      (gtk2/set-text entry old-entry))
 	    (receive (updated?)
 		(if (null? date?)
-		    (db-kise/update db-tuple what new-entry)
+		    (db-foliot/update db-tuple what new-entry)
 		    (if (date/valid-date? new-entry)
-			(db-kise/update db-tuple what (date/iso-date new-entry) new-entry)
+			(db-foliot/update db-tuple what (date/iso-date new-entry) new-entry)
 			#f))
 	      (gtk2/status-pop (status-bar-2 tl-widget) "")
 	      (if updated?
@@ -805,7 +805,7 @@
       (get-position (dialog tl-widget))
     (receive (win-w win-h)
 	(get-size (dialog tl-widget))
-      (write-config "kise"
+      (write-config "foliot"
 			(if (null? rests)
 			    (list (cons 'db-file (kcfg/get 'db-file))
 				  (cons 'open-at-startup (kcfg/get 'open-at-startup))
@@ -837,12 +837,12 @@
 
 (define (ktlw/open-db-checks db-file)
   ;; this will be called by kc/connect 'open mode or ktlw/open-db
-  ;; based on kise.config infos. in both of these cases, it must
+  ;; based on foliot.config infos. in both of these cases, it must
   ;; check that:
   ;;   a. the file [still] exists;
   ;;   b. that it is W_OK;
   ;;   c. that it is an sqlite db;
-  ;;   d. which does have the kise schema
+  ;;   d. which does have the foliot schema
   (let ((db #f))
     (values (cond ((not (access? db-file F_OK)) 'does-not-exist)
 		  ((not (access? db-file W_OK)) 'wrong-perm)
@@ -881,14 +881,14 @@
 	(md2b/select-gui (dialog tl-widget)
 			 (_ "Confirm dialog")
 			 (_ "Complete schema")
-			 (_ (format #f "This database [~A] has an incomplete Kisê schema, would you like to complete it now?"
+			 (_ (format #f "This database [~A] has an incomplete GNU Foliot schema, would you like to complete it now?"
 				    (basename db-filename)))
 			 (lambda ()
 			   (db/complete-schema db)
 			   (ktlw/post-open-db-ops tl-widget db-filename open-at-startup? (kcfg/get 'ulogo) db))
 			 (lambda ()
 			   ;; Notes: [a] an open at start-up incomplete schema db cancel operation must set
-			   ;; kisê to its no db mode; [b] a connect to an incomplete schema db cancel is
+			   ;; GNU Foliot to its no db mode; [b] a connect to an incomplete schema db cancel is
 			   ;; ok, [dialogs closed, prev connected db in use].
 			   (if (db-con)
 			       'nothing
@@ -898,7 +898,7 @@
 	(md2b/select-gui (dialog tl-widget)
 			 (_ "Confirm dialog")
 			 (_ "Add schema")
-			 (_ "This database does not contain the Kisê schema, would you like to add it now?")
+			 (_ "This database does not contain the GNU Foliot schema, would you like to add it now?")
 			 (lambda ()
 			   (db/add-schema db)
 			   (ktlw/post-open-db-ops tl-widget db-filename open-at-startup? (kcfg/get 'ulogo) db))
@@ -922,7 +922,7 @@
 ;;;
 
 (define (ktlw/fill-combo tl-widget values-acc combo-acc db-field)
-  (let ((values (db-kise/select-distinct db-field 'add-empty)))
+  (let ((values (db-foliot/select-distinct db-field 'add-empty)))
     (set! (values-acc tl-widget) values)
     (gtk2/fill-combo (combo-acc tl-widget) values)))
 
@@ -937,7 +937,7 @@
   (when (storage-get 'debug)
     (let* ((row (current-row tl-widget))
 	   (db-tuple (ktlw/get-tuple tl-widget row))
-	   (id (db-kise/get db-tuple 'id)))
+	   (id (db-foliot/get db-tuple 'id)))
       (dimfi (format #f "id ~A" id) db-fname signal (get-active combo) (get-text entry) in-store?))))
 
 (define (ktlw/connect-combos-1 combos-defs)
@@ -957,7 +957,7 @@
 			   (when (gui-callback? tl-widget)
 			     (let* ((row (current-row tl-widget))
 				    (tuple (ktlw/get-tuple tl-widget row))
-				    (id (db-kise/get tuple 'id))
+				    (id (db-foliot/get tuple 'id))
 				    (value (get-text entry)))
 			       (ktlw/trace-combo-callback tl-widget combo entry db-fname in-store? 'changed)
 			       (ktlw/set db-fname tl-widget value row)
@@ -996,11 +996,11 @@
 
 (define (ktlw/connect-combos tl-widget)
   (ktlw/connect-combos-1 `((,tl-widget ,who-combo ,who-entry who #t ,whos
-				       ,(lambda () (db-kise/select-distinct 'who #t)))
+				       ,(lambda () (db-foliot/select-distinct 'who #t)))
 			   (,tl-widget ,for-whom-combo ,for-whom-entry for_whom #t ,for-whoms
-				       ,(lambda () (db-kise/select-distinct 'for_whom #t)))
+				       ,(lambda () (db-foliot/select-distinct 'for_whom #t)))
 			   (,tl-widget ,what-combo ,what-entry what #t ,whats
-				       ,(lambda () (db-kise/select-distinct 'what #t))))))
+				       ,(lambda () (db-foliot/select-distinct 'what #t))))))
 
 
 ;;;
@@ -1018,13 +1018,13 @@
   (let* ((which-row (if (null? row) (current-row tl-widget) (car row)))
 	 (db-tuple (ktlw/get-tuple tl-widget which-row)))
     ;; (format #t "ktlw/get: row: ~S, what: ~S, tuple: ~S~%" which-row what db-tuple)
-    (db-kise/get db-tuple what)))
+    (db-foliot/get db-tuple what)))
 
 (define (ktlw/set what tl-widget value . row)
   (let* ((which-row (if (null? row) (current-row tl-widget) (car row)))
 	 (db-tuple (ktlw/get-tuple tl-widget which-row)))
     ;; (format #t "~S~%" db-tuple)
-    (db-kise/update db-tuple what value)))
+    (db-foliot/update db-tuple what value)))
 
 (define (ktlw/fill-tv tl-widget)
   ;; note that icolors alist is like this [example]:
@@ -1033,24 +1033,24 @@
 	(icolours (db-idb/get-colour-alist)))
     (gtk-list-store-clear model)
     (for-each (lambda (tuple)
-		(let ((idb (db-kise/get tuple 'imported_db)))
+		(let ((idb (db-foliot/get tuple 'imported_db)))
 		  (if (= idb -1)
 		      (kiter/append-fill model
-					 (db-kise/get tuple 'date_)
-					 (db-kise/get tuple 'who)
-					 (db-kise/get tuple 'for_whom)
-					 (db-kise/get tuple 'duration)
-					 (sqlite/true? (db-kise/get tuple 'to_be_charged))
-					 (db-kise/get tuple 'what)
+					 (db-foliot/get tuple 'date_)
+					 (db-foliot/get tuple 'who)
+					 (db-foliot/get tuple 'for_whom)
+					 (db-foliot/get tuple 'duration)
+					 (sqlite/true? (db-foliot/get tuple 'to_be_charged))
+					 (db-foliot/get tuple 'what)
 					 #f
 					 #f)
 		      (kiter/append-fill model
-					 (db-kise/get tuple 'date_)
-					 (db-kise/get tuple 'who)
-					 (db-kise/get tuple 'for_whom)
-					 (db-kise/get tuple 'duration)
-					 (sqlite/true? (db-kise/get tuple 'to_be_charged))
-					 (db-kise/get tuple 'what)
+					 (db-foliot/get tuple 'date_)
+					 (db-foliot/get tuple 'who)
+					 (db-foliot/get tuple 'for_whom)
+					 (db-foliot/get tuple 'duration)
+					 (sqlite/true? (db-foliot/get tuple 'to_be_charged))
+					 (db-foliot/get tuple 'what)
 					 ;; "#60a8a8" ;; sobe
 					 ;; "#784800" ;; dirt
 					 ;; "#000000"
@@ -1090,90 +1090,90 @@ filter date: ~S~%"
 	      ))))
 
 (define (ktlw/make-tl-widget uname gfile)
-  (let* ((xmlc (glade-xml-new gfile  #f "kise"))
+  (let* ((xmlc (glade-xml-new gfile  #f "foliot"))
 	 (t-tip (gtk-tooltips-new))
-	 (tl-widget (make <kise/tl-widget>
+	 (tl-widget (make <foliot/tl-widget>
 		      #:user-name uname
 		      #:glade-file gfile
 		      #:xml-code xmlc
-		      #:dialog (get-widget xmlc "kise")
-		      #:menubar (get-widget xmlc "kise/menubar")
+		      #:dialog (get-widget xmlc "foliot")
+		      #:menubar (get-widget xmlc "foliot/menubar")
 		      #:tooltip t-tip
-		      #:sorting-lb (get-widget xmlc "kise/sorting_lb")
-		      #:sorting-combo (get-widget xmlc "kise/sorting_combo")
+		      #:sorting-lb (get-widget xmlc "foliot/sorting_lb")
+		      #:sorting-combo (get-widget xmlc "foliot/sorting_combo")
 
-		      #:con-bt (get-widget xmlc "kise/con_bt")
-		      #:import-bt (get-widget xmlc "kise/import_bt")
-		      #:quit-bt (get-widget xmlc "kise/quit_bt")
-		      #:dup-bt (get-widget xmlc "kise/dup_bt")
-		      #:add-bt (get-widget xmlc "kise/add_bt")
-		      #:del-bt (get-widget xmlc "kise/del_bt")
-		      #:print-bt (get-widget xmlc "kise/print_bt")
+		      #:con-bt (get-widget xmlc "foliot/con_bt")
+		      #:import-bt (get-widget xmlc "foliot/import_bt")
+		      #:quit-bt (get-widget xmlc "foliot/quit_bt")
+		      #:dup-bt (get-widget xmlc "foliot/dup_bt")
+		      #:add-bt (get-widget xmlc "foliot/add_bt")
+		      #:del-bt (get-widget xmlc "foliot/del_bt")
+		      #:print-bt (get-widget xmlc "foliot/print_bt")
 
-		      #:first-bt (get-widget xmlc "kise/first_bt")
-		      #:prev-bt (get-widget xmlc "kise/prev_bt")
-		      #:next-bt (get-widget xmlc "kise/next_bt")
-		      #:last-bt (get-widget xmlc "kise/last_bt")
-		      ;; #:help-bt (get-widget xmlc "kise/help_bt")
-		      #:prefs-bt (get-widget xmlc "kise/prefs_bt")
-		      #:reference-lb (get-widget xmlc "kise/reference_lb")
-		      #:reference-entry (get-widget xmlc "kise/reference_entry")
-		      #:reference-eb (get-widget xmlc "kise/reference_eb")
-		      #:date-lb (get-widget xmlc "kise/date_lb")
-		      #:date-entry (get-widget xmlc "kise/date_entry")
-		      #:date-icon (get-widget xmlc "kise/date_icon")
-		      #:date-edit (get-widget xmlc "kise/date_edit")
+		      #:first-bt (get-widget xmlc "foliot/first_bt")
+		      #:prev-bt (get-widget xmlc "foliot/prev_bt")
+		      #:next-bt (get-widget xmlc "foliot/next_bt")
+		      #:last-bt (get-widget xmlc "foliot/last_bt")
+		      ;; #:help-bt (get-widget xmlc "foliot/help_bt")
+		      #:prefs-bt (get-widget xmlc "foliot/prefs_bt")
+		      #:reference-lb (get-widget xmlc "foliot/reference_lb")
+		      #:reference-entry (get-widget xmlc "foliot/reference_entry")
+		      #:reference-eb (get-widget xmlc "foliot/reference_eb")
+		      #:date-lb (get-widget xmlc "foliot/date_lb")
+		      #:date-entry (get-widget xmlc "foliot/date_entry")
+		      #:date-icon (get-widget xmlc "foliot/date_icon")
+		      #:date-edit (get-widget xmlc "foliot/date_edit")
 
-		      #:who-lb (get-widget xmlc "kise/who_lb")
-		      #:who-combo (get-widget xmlc "kise/who_combo")
-		      #:who-entry (gtk-bin-get-child (get-widget xmlc "kise/who_combo"))
+		      #:who-lb (get-widget xmlc "foliot/who_lb")
+		      #:who-combo (get-widget xmlc "foliot/who_combo")
+		      #:who-entry (gtk-bin-get-child (get-widget xmlc "foliot/who_combo"))
 
-		      #:for-whom-lb (get-widget xmlc "kise/for_whom_lb")
-		      #:for-whom-combo (get-widget xmlc "kise/for_whom_combo")
-		      #:for-whom-entry (gtk-bin-get-child (get-widget xmlc "kise/for_whom_combo"))
+		      #:for-whom-lb (get-widget xmlc "foliot/for_whom_lb")
+		      #:for-whom-combo (get-widget xmlc "foliot/for_whom_combo")
+		      #:for-whom-entry (gtk-bin-get-child (get-widget xmlc "foliot/for_whom_combo"))
 
-		      #:duration-lb (get-widget xmlc "kise/duration_lb")
-		      #:duration-sb (get-widget xmlc "kise/duration_sb")
+		      #:duration-lb (get-widget xmlc "foliot/duration_lb")
+		      #:duration-sb (get-widget xmlc "foliot/duration_sb")
 
-		      #:what-lb (get-widget xmlc "kise/what_lb")
-		      #:what-combo (get-widget xmlc "kise/what_combo")
-		      #:what-entry (gtk-bin-get-child (get-widget xmlc "kise/what_combo"))
-		      ;;#:what-tv (get-widget xmlc "kise/what_tv")
+		      #:what-lb (get-widget xmlc "foliot/what_lb")
+		      #:what-combo (get-widget xmlc "foliot/what_combo")
+		      #:what-entry (gtk-bin-get-child (get-widget xmlc "foliot/what_combo"))
+		      ;;#:what-tv (get-widget xmlc "foliot/what_tv")
 
-		      #:to-be-charged-cb (get-widget xmlc "kise/to_be_charged_cb")
-		      #:description-lb (get-widget xmlc "kise/description_lb")
-		      #:description-sw (get-widget xmlc "kise/description_sw")
-		      #:description-entry (get-widget xmlc "kise/description_entry")
+		      #:to-be-charged-cb (get-widget xmlc "foliot/to_be_charged_cb")
+		      #:description-lb (get-widget xmlc "foliot/description_lb")
+		      #:description-sw (get-widget xmlc "foliot/description_sw")
+		      #:description-entry (get-widget xmlc "foliot/description_entry")
 
-		      #:db-name-lb1 (get-widget xmlc "kise/db_name_lb1")
-		      #:db-name-lb2 (get-widget xmlc "kise/db_name_lb2")
-		      #:db-name-lb3 (get-widget xmlc "kise/db_name_lb3")
+		      #:db-name-lb1 (get-widget xmlc "foliot/db_name_lb1")
+		      #:db-name-lb2 (get-widget xmlc "foliot/db_name_lb2")
+		      #:db-name-lb3 (get-widget xmlc "foliot/db_name_lb3")
 
-		      #:filter-icon (get-widget xmlc "kise/filter_icon")
-		      #:filter-criteria-lb (get-widget xmlc "kise/filter_criteria_lb")
-		      #:filter-apply-bt (get-widget xmlc "kise/filter_apply_bt")
-		      #:filter-clear-bt (get-widget xmlc "kise/filter_clear_bt")
-		      #:filter-select-bt (get-widget xmlc "kise/filter_select_bt")
+		      #:filter-icon (get-widget xmlc "foliot/filter_icon")
+		      #:filter-criteria-lb (get-widget xmlc "foliot/filter_criteria_lb")
+		      #:filter-apply-bt (get-widget xmlc "foliot/filter_apply_bt")
+		      #:filter-clear-bt (get-widget xmlc "foliot/filter_clear_bt")
+		      #:filter-select-bt (get-widget xmlc "foliot/filter_select_bt")
 
-		      #:filter-date-lb (get-widget xmlc "kise/filter_date_lb")
-		      #:filter-date-entry (get-widget xmlc "kise/filter_date")
-		      #:filter-who-lb (get-widget xmlc "kise/filter_who_lb")
-		      #:filter-who-entry (get-widget xmlc "kise/filter_who")
-		      #:filter-for-whom-lb (get-widget xmlc "kise/filter_for_whom_lb")
-		      #:filter-for-whom-entry (get-widget xmlc "kise/filter_for_whom")
-		      #:filter-what-lb (get-widget xmlc "kise/filter_what_lb")
-		      #:filter-what-entry (get-widget xmlc "kise/filter_what")
-		      #:filter-description-lb (get-widget xmlc "kise/filter_description_lb")
-		      #:filter-description-entry (get-widget xmlc "kise/filter_description")
-		      #:filter-to-be-charged-lb (get-widget xmlc "kise/filter_to_be_charged_lb")
-		      #:filter-to-be-charged-combo (get-widget xmlc "kise/filter_to_be_charged_combo")
+		      #:filter-date-lb (get-widget xmlc "foliot/filter_date_lb")
+		      #:filter-date-entry (get-widget xmlc "foliot/filter_date")
+		      #:filter-who-lb (get-widget xmlc "foliot/filter_who_lb")
+		      #:filter-who-entry (get-widget xmlc "foliot/filter_who")
+		      #:filter-for-whom-lb (get-widget xmlc "foliot/filter_for_whom_lb")
+		      #:filter-for-whom-entry (get-widget xmlc "foliot/filter_for_whom")
+		      #:filter-what-lb (get-widget xmlc "foliot/filter_what_lb")
+		      #:filter-what-entry (get-widget xmlc "foliot/filter_what")
+		      #:filter-description-lb (get-widget xmlc "foliot/filter_description_lb")
+		      #:filter-description-entry (get-widget xmlc "foliot/filter_description")
+		      #:filter-to-be-charged-lb (get-widget xmlc "foliot/filter_to_be_charged_lb")
+		      #:filter-to-be-charged-combo (get-widget xmlc "foliot/filter_to_be_charged_combo")
 
-		      #:sw (get-widget xmlc "kise/sw")
-		      #:tv (get-widget xmlc "kise/tv")
-		      #:status-bar-1 (get-widget xmlc "kise/status_bar_1")
-		      #:status-bar-2 (get-widget xmlc "kise/status_bar_2")
-		      #:status-bar-3 (get-widget xmlc "kise/status_bar_3")
-		      #:status-bar-4 (get-widget xmlc "kise/status_bar_4"))))
+		      #:sw (get-widget xmlc "foliot/sw")
+		      #:tv (get-widget xmlc "foliot/tv")
+		      #:status-bar-1 (get-widget xmlc "foliot/status_bar_1")
+		      #:status-bar-2 (get-widget xmlc "foliot/status_bar_2")
+		      #:status-bar-3 (get-widget xmlc "foliot/status_bar_3")
+		      #:status-bar-4 (get-widget xmlc "foliot/status_bar_4"))))
     (ktlw/setup-treeview tl-widget)
     ;; the combos need to be cleared since some example items
     ;; are defined in the glade file
@@ -1201,7 +1201,7 @@ filter date: ~S~%"
 	 (uname (user-name tl-widget))
 	 (filter? (active-filter tl-widget))
 	 (restore-mode? (null? (db-tuples tl-widget)))
-	 (new-id (db-kise/add iso-today
+	 (new-id (db-foliot/add iso-today
 			      uname	;; who
 			      ""	;; for_whom
 			      "" 	;; what
@@ -1210,8 +1210,8 @@ filter date: ~S~%"
 			      ""))	;; description
 	 (ids? (if filter? (ktlw/add-id new-id tl-widget) (id-set tl-widget)))
 	 (new-iter (kiter/prepend-fill model today uname "" 0 #f "" #f #f))
-	 (tuples (db-kise/select-some filter? ids?))
-	 (new-pos (db-kise/find-pos tuples 'id new-id =)))
+	 (tuples (db-foliot/select-some filter? ids?))
+	 (new-pos (db-foliot/find-pos tuples 'id new-id =)))
     (set! (db-tuples tl-widget) tuples)
     (unless (sqlite/tuple-pos uname (whos tl-widget) string=? 0)
       (let ((prev-gui-cb? (gui-callback? tl-widget))
@@ -1235,7 +1235,7 @@ filter date: ~S~%"
 	 (iter (current-iter tl-widget))
 	 (tuple (ktlw/get-tuple tl-widget row))
 	 (filter? (active-filter tl-widget))
-	 (new-id (db-kise/duplicate (db-kise/get tuple 'id) tuple))
+	 (new-id (db-foliot/duplicate (db-foliot/get tuple 'id) tuple))
 	 (ids? (if filter? (ktlw/add-id new-id tl-widget) (id-set tl-widget)))
 	 (new-iter (kiter/prepend-fill model
 				       (kiter/get 'date model iter)
@@ -1246,8 +1246,8 @@ filter date: ~S~%"
 				       (kiter/get 'what model iter)
 				       #f
 				       #f))
-	 (tuples (db-kise/select-some filter? ids?))
-	 (new-pos (db-kise/find-pos tuples 'id new-id =)))
+	 (tuples (db-foliot/select-some filter? ids?))
+	 (new-pos (db-foliot/find-pos tuples 'id new-id =)))
     #;(dimfi row new-id new-pos)
     (set! (db-tuples tl-widget) tuples)
     (unselect-all (tv-sel tl-widget))
@@ -1274,20 +1274,20 @@ filter date: ~S~%"
 	 (last-row (1- (gtk-tree-model-iter-n-children model #f)))
 	 (iter (current-iter tl-widget))
 	 (tuple (ktlw/get-tuple tl-widget row))
-	 (reference (db-kise/get tuple 'id)))
+	 (reference (db-foliot/get tuple 'id)))
     (md2b/select-gui (dialog tl-widget)
 		     (_ "Confirm dialog")
 		     (_ "Deletion")
 		     (format #f "~?" (ktlw/delete-msg-str)
 			     (list "Reference" reference
-				   "Date" (db-kise/get tuple 'date_)
-				   "Who" (db-kise/get tuple 'who)
-				   "for whom" (db-kise/get tuple 'for_whom)))
+				   "Date" (db-foliot/get tuple 'date_)
+				   "Who" (db-foliot/get tuple 'who)
+				   "for whom" (db-foliot/get tuple 'for_whom)))
 		     (lambda ()
-		       (db-kise/delete reference)
+		       (db-foliot/delete reference)
 		       (let* ((a-filter? (active-filter tl-widget))
 			      (new-id-set (and a-filter? (ktlw/del-id reference tl-widget)))
-			      (tuples (db-kise/select-some a-filter? new-id-set))
+			      (tuples (db-foliot/select-some a-filter? new-id-set))
 			      (its-length (length tuples)))
 			 (set! (db-tuples tl-widget) tuples)
 			 (remove model iter)
@@ -1420,9 +1420,9 @@ filter date: ~S~%"
 (define (ktlw/filter-get-row-new-pos-if-any tl-widget new-tuple-set)
   (let* ((row (current-row tl-widget))
 	 (tuple (and row (>= row 0) (ktlw/get-tuple tl-widget row)))
-	 (reference (and tuple (db-kise/get tuple 'id))))
+	 (reference (and tuple (db-foliot/get tuple 'id))))
     (and reference
-	 (db-kise/find-pos new-tuple-set 'id reference =))))
+	 (db-foliot/find-pos new-tuple-set 'id reference =))))
 
 (define (ktlw/-display-filter-apply-infos filter tuple-set-length new-pos)
   (format #t "Filter is: ~S~%" filter)
@@ -1458,7 +1458,7 @@ filter date: ~S~%"
 	      (ktlw/set-filter-icon tl-widget 'on)
 	      (set! (active-filter tl-widget) filter?)
 	      (set! (id-set tl-widget) #f)
-	      (let* ((new-tuple-set (db-kise/select-some filter? #f))
+	      (let* ((new-tuple-set (db-foliot/select-some filter? #f))
 		     (new-pos (ktlw/filter-get-row-new-pos-if-any tl-widget new-tuple-set)))
 		(when (storage-get 'debug) (ktlw/-display-filter-apply-infos filter? (length new-tuple-set) new-pos))
 		(set! (db-tuples tl-widget) new-tuple-set)
@@ -1492,7 +1492,7 @@ filter date: ~S~%"
     (when (active-filter tl-widget)
       (set! (active-filter tl-widget) #f)
       (set! (id-set tl-widget) #f)
-      (let* ((new-tuple-set (db-kise/select-all))
+      (let* ((new-tuple-set (db-foliot/select-all))
 	     (new-pos (ktlw/filter-get-row-new-pos-if-any tl-widget new-tuple-set)))
 	(set! (db-tuples tl-widget) new-tuple-set)
 	(if (not (null? fillcombos?)) (ktlw/fill-combos tl-widget))
@@ -1516,7 +1516,7 @@ filter date: ~S~%"
 ;;;
 
 (define (ktlw/dates-tooltip-str)
-  (_ "In its current version, Kisê only supports the following date format: dd-mm-yyyy [*]
+  (_ "In its current version, GNU Foliot only supports the following date format: dd-mm-yyyy [*]
 
 The date must be a valid date between the 01.01.1970 and 31.12.2037.
 

@@ -4,20 +4,20 @@
 ;;;; Copyright (C) 2011 - 2016
 ;;;; Free Software Foundation, Inc.
 
-;;;; This file is part of Kisê.
+;;;; This file is part of GNU Foliot.
 
-;;;; Kisê is free software: you can redistribute it and/or modify it
-;;;; under the terms of the GNU General Public License as published by
-;;;; the Free Software Foundation, either version 3 of the License, or
-;;;; (at your option) any later version.
+;;;; GNU Foliot is free software: you can redistribute it and/or modify
+;;;; it under the terms of the GNU General Public License as published
+;;;; by the Free Software Foundation, either version 3 of the License,
+;;;; or (at your option) any later version.
 
-;;;; Kisê is distributed in the hope that it will be useful, but
+;;;; GNU Foliot is distributed in the hope that it will be useful, but
 ;;;; WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;;;; General Public License for more details.
 
 ;;;; You should have received a copy of the GNU General Public License
-;;;; along with Kisê.  If not, see <http://www.gnu.org/licenses/>.
+;;;; along with GNU Foliot.  If not, see <http://www.gnu.org/licenses/>.
 ;;;;
 
 ;;; Commentary:
@@ -25,16 +25,16 @@
 ;;; Code:
 
 
-(define-module (kise db)
+(define-module (foliot db)
   #:use-module (grip reexport)
   ;; #:use-module (grip utils)
   ;; #:use-module (grip dates)
   ;; #:use-module (grip db sqlite)
-  #:use-module (kise db-con)
-  #:use-module (kise db-kise)
-  #:use-module (kise db-imported-db)
-  #:use-module (kise db-printing-templates)
-  #:use-module (kise db-shinning)
+  #:use-module (foliot db-con)
+  #:use-module (foliot db-foliot)
+  #:use-module (foliot db-imported-db)
+  #:use-module (foliot db-printing-templates)
+  #:use-module (foliot db-shinning)
 
   #:export (db/add-schema
 	    db/check-schema
@@ -42,11 +42,11 @@
 
 
 (eval-when (expand load eval)
-  (re-export-public-interface (kise db-con)
-			      (kise db-kise)
-			      (kise db-imported-db)
-			      (kise db-printing-templates)
-			      (kise db-shinning)))
+  (re-export-public-interface (foliot db-con)
+			      (foliot db-foliot)
+			      (foliot db-imported-db)
+			      (foliot db-printing-templates)
+			      (foliot db-shinning)))
 
 
 ;;;
@@ -54,31 +54,31 @@
 ;;;
 
 (define (db/add-schema db)
-  (db-kise/add-kise-table db)
+  (db-foliot/add-foliot-table db)
   (db-pt/add-printing-templates-table db)
   (db-idb/add-imported-db-table db)
   (db-shi/add-shinning-table db))
 
 (define (db/check-schema db)
-  (let ((kise? (sqlite/table-exists? db "kise"))
-	(kise-printing-templates? (sqlite/table-exists? db "kise_printing_templates"))
-	(kise-imported-db? (db-idb/check-schema db))
-	(kise-shinning? (db-shi/check-schema db)))
-    (cond ((and kise? ;; not good yet we should still check the defs
-		kise-printing-templates? ;; not good yet we should still check the defs
-		(eq? kise-imported-db? 'complete)
-		(eq? kise-shinning? 'complete))
+  (let ((foliot? (sqlite/table-exists? db "foliot"))
+	(foliot-printing-templates? (sqlite/table-exists? db "foliot_printing_templates"))
+	(foliot-imported-db? (db-idb/check-schema db))
+	(foliot-shinning? (db-shi/check-schema db)))
+    (cond ((and foliot? ;; not good yet we should still check the defs
+		foliot-printing-templates? ;; not good yet we should still check the defs
+		(eq? foliot-imported-db? 'complete)
+		(eq? foliot-shinning? 'complete))
 	   'complete)
-	  ((or kise?
-	       kise-printing-templates?
-	       (eq? kise-imported-db? 'partial)
-	       (eq? kise-shinning? 'partial))
+	  ((or foliot?
+	       foliot-printing-templates?
+	       (eq? foliot-imported-db? 'partial)
+	       (eq? foliot-shinning? 'partial))
 	   'partial)
 	  (else
 	   'none))))
 
 (define (db/complete-schema db)
-  (db-kise/create-complete-table db)
+  (db-foliot/create-complete-table db)
   (db-pt/create-complete-table db)
   (db-idb/create-complete-table db)
   (db-shi/create-complete-table db))

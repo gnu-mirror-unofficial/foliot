@@ -4,20 +4,20 @@
 ;;;; Copyright (C) 2011 - 2016
 ;;;; Free Software Foundation, Inc.
 
-;;;; This file is part of Kisê.
+;;;; This file is part of GNU Foliot.
 
-;;;; Kisê is free software: you can redistribute it and/or modify it
-;;;; under the terms of the GNU General Public License as published by
-;;;; the Free Software Foundation, either version 3 of the License, or
-;;;; (at your option) any later version.
+;;;; GNU Foliot is free software: you can redistribute it and/or modify
+;;;; it under the terms of the GNU General Public License as published
+;;;; by the Free Software Foundation, either version 3 of the License,
+;;;; or (at your option) any later version.
 
-;;;; Kisê is distributed in the hope that it will be useful, but
+;;;; GNU Foliot is distributed in the hope that it will be useful, but
 ;;;; WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;;;; General Public License for more details.
 
 ;;;; You should have received a copy of the GNU General Public License
-;;;; along with Kisê.  If not, see <http://www.gnu.org/licenses/>.
+;;;; along with GNU Foliot.  If not, see <http://www.gnu.org/licenses/>.
 ;;;;
 
 ;;; Commentary:
@@ -25,7 +25,7 @@
 ;;; Code:
 
 
-(define-module (kise p-draft)
+(define-module (foliot p-draft)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-17)
   #:use-module (ice-9 receive)
@@ -40,12 +40,12 @@
   #:use-module (grip nbs)
   #:use-module (grip tex-utils)
   #:use-module (grip gnome)
-  #:use-module (kise globals)
-  #:use-module (kise db)
-  #:use-module (kise iter)
-  #:use-module (kise tl-widget)
-  #:use-module (kise p-dialog)
-  #:use-module (kise p-common)
+  #:use-module (foliot globals)
+  #:use-module (foliot db)
+  #:use-module (foliot iter)
+  #:use-module (foliot tl-widget)
+  #:use-module (foliot p-dialog)
+  #:use-module (foliot p-common)
 
   #:export (kp/print-draft))
 
@@ -228,7 +228,7 @@
 
 (define (kp/write-draft-abstract-used-columns ostream core-fields)
   (format ostream "~A\\footnote{~A}: ~A.~%"
-	  (_ "In the core of this report, printed kisê's fields are")
+	  (_ "In the core of this report, printed GNU Foliot's fields are")
 	  (kp/get-abstract-footnote-text)
 	  (kp/get-core-fields-text core-fields)))
 
@@ -236,7 +236,7 @@
   (format ostream "
 \\kabstract{~A}{" (_ "Summary"))
   (format ostream "~A:\\\\[-1mm]~%"
-	  (_ "This \\kise report was produced using the following criteria"))
+	  (_ "This \\foliot report was produced using the following criteria"))
   (kp/write-draft-abstract-table ostream tl-widget db-name where group-by order-by)
   (kp/write-draft-abstract-used-columns ostream core-fields)
   (format ostream "}~%~%"))
@@ -288,7 +288,7 @@
 		(let* ((field (db-pt/df-get 'name item))
 		       (its-symb (string->symbol field)))
 		  (set! levels
-			(cons (cons its-symb (db-kise/get-pos its-symb)) levels))))
+			(cons (cons its-symb (db-foliot/get-pos its-symb)) levels))))
 	group-by)
     (reverse! levels)))
 
@@ -300,7 +300,7 @@
   (let ((values (list)))
     (dotimes (i (length groups))
       (set! values
-	    (cons (db-kise/get tuple (car (list-ref groups i)))
+	    (cons (db-foliot/get tuple (car (list-ref groups i)))
 		  values)))
     (reverse! values)))
 
@@ -326,7 +326,7 @@
 
 (define (kp/write-draft-section-title ostream group level tuple)
   (let* ((accessor (car group))
-	 (value (db-kise/get tuple (car group)))
+	 (value (db-foliot/get tuple (car group)))
 	 (title (if (eq? accessor 'to_be_charged)
 		    (case (string->symbol value)
 		      ((f) "not charged")
@@ -402,7 +402,7 @@ reactivated within the table via the \showrowcolors command.
 	(j 0)) ;; the k to pass [maybe] to tex/prep
     (for-each (lambda (core-field)
 		(let* ((field-name (car core-field))
-		       (val (db-kise/get tuple field-name))
+		       (val (db-foliot/get tuple field-name))
 		       (tex/prep? (list-ref core-field 3)))
 		  (set! row-values
 			(cons (case field-name
@@ -417,7 +417,7 @@ reactivated within the table via the \showrowcolors command.
     (reverse! row-values)))
 
 (define (kp/get-ltx-description tuple)
-  (tex/prep-str-for-tbx-env (db-kise/get tuple 'description) 0 #t)) ;; newline -> space
+  (tex/prep-str-for-tbx-env (db-foliot/get tuple 'description) 0 #t)) ;; newline -> space
 
 (define (kp/draft-ltx-second-row-fmt even-bg?)
   (if even-bg?
@@ -566,7 +566,7 @@ Core fields: ~S
 	     (groups (kp/get-groups grouped))
 	     (core-fields (kp/get-core-ltx-field-specs kp-widget))
 	     (order-by (sqlite/build-group-by-order-by-expression order kp/order-by-extractor))
-	     (tuples (db-kise/select-another-some where
+	     (tuples (db-foliot/select-another-some where
 						  #f ;; group-by: we do it, otherwise we wouldn't get all tuples
 						  order-by)))
 	;; (kp/display-this-list-of-consed-items
@@ -613,8 +613,8 @@ Core fields: ~S
 
 #!
 
-(use-modules (kise p-draft))
-(reload-module (resolve-module '(kise p-draft)))
+(use-modules (foliot p-draft))
+(reload-module (resolve-module '(foliot p-draft)))
 
 this bugs latex: [tex/prep] just to test
 

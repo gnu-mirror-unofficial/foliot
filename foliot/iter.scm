@@ -4,20 +4,20 @@
 ;;;; Copyright (C) 2011 - 2016
 ;;;; Free Software Foundation, Inc.
 
-;;;; This file is part of Kisê.
+;;;; This file is part of GNU Foliot.
 
-;;;; Kisê is free software: you can redistribute it and/or modify it
-;;;; under the terms of the GNU General Public License as published by
-;;;; the Free Software Foundation, either version 3 of the License, or
-;;;; (at your option) any later version.
+;;;; GNU Foliot is free software: you can redistribute it and/or modify
+;;;; it under the terms of the GNU General Public License as published
+;;;; by the Free Software Foundation, either version 3 of the License,
+;;;; or (at your option) any later version.
 
-;;;; Kisê is distributed in the hope that it will be useful, but
+;;;; GNU Foliot is distributed in the hope that it will be useful, but
 ;;;; WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;;;; General Public License for more details.
 
 ;;;; You should have received a copy of the GNU General Public License
-;;;; along with Kisê.  If not, see <http://www.gnu.org/licenses/>.
+;;;; along with GNU Foliot.  If not, see <http://www.gnu.org/licenses/>.
 ;;;;
 
 ;;; Commentary:
@@ -25,7 +25,7 @@
 ;;; Code:
 
 
-(define-module (kise iter)
+(define-module (foliot iter)
   #:use-module (oop goops)
   #:use-module (gnome gtk)
 
@@ -35,7 +35,7 @@
 	    kiter/prepend-fill))
 
 
-(define *kise-iter-offsets*
+(define *foliot-iter-offsets*
   '((icolour . 0)
     (date . 1)
     (date_ . 1)
@@ -52,7 +52,7 @@
     (ifg . 10)))
 
 (define (kiter/get-pos what)
-  (cdr (assoc what *kise-iter-offsets*)))
+  (cdr (assoc what *foliot-iter-offsets*)))
 
 (define (kiter/get what model iter)
   (get-value model iter (kiter/get-pos what)))

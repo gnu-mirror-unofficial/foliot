@@ -4,20 +4,20 @@
 ;;;; Copyright (C) 2011 - 2016
 ;;;; Free Software Foundation, Inc.
 
-;;;; This file is part of Kisê.
+;;;; This file is part of GNU Foliot.
 
-;;;; Kisê is free software: you can redistribute it and/or modify it
-;;;; under the terms of the GNU General Public License as published by
-;;;; the Free Software Foundation, either version 3 of the License, or
-;;;; (at your option) any later version.
+;;;; GNU Foliot is free software: you can redistribute it and/or modify
+;;;; it under the terms of the GNU General Public License as published
+;;;; by the Free Software Foundation, either version 3 of the License,
+;;;; or (at your option) any later version.
 
-;;;; Kisê is distributed in the hope that it will be useful, but
+;;;; GNU Foliot is distributed in the hope that it will be useful, but
 ;;;; WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;;;; General Public License for more details.
 
 ;;;; You should have received a copy of the GNU General Public License
-;;;; along with Kisê.  If not, see <http://www.gnu.org/licenses/>.
+;;;; along with GNU Foliot.  If not, see <http://www.gnu.org/licenses/>.
 ;;;;
 
 ;;; Commentary:
@@ -25,7 +25,7 @@
 ;;; Code:
 
 
-(define-module (kise db-imported-db)
+(define-module (foliot db-imported-db)
   #:use-module (ice-9 format)
   #:use-module (srfi srfi-1)
   #:use-module (grip reexport)
@@ -36,8 +36,8 @@
   #:use-module (grip utils)
   #:use-module (grip strings)
   #:use-module (grip gnome colours)
-  #:use-module (kise globals)
-  #:use-module (kise db-con)
+  #:use-module (foliot globals)
+  #:use-module (foliot db-con)
 
   #:export (db-idb/add-imported-db-table
 	    db-idb/check-schema
@@ -63,8 +63,8 @@
 			      (grip i18n)
 			      (grip utils)
 			      (grip strings)
-			      (kise globals)
-			      (kise db-con))
+			      (foliot globals)
+			      (foliot db-con))
   (textdomain "db-imported-db")
   (bindtextdomain "db-imported-db" (storage-get 'pofdir)))
 
@@ -116,7 +116,7 @@
 ;;;
 
 (define (db-idb/add-imported-db-table-str)
-  "create table kise_imported_db (
+  "create table foliot_imported_db (
      id               integer primary key not null,
      name             text,
      imported_the     integer,
@@ -129,8 +129,8 @@
 
 (define (db-idb/check-schema db)
   ;; 'none, 'partial, 'complete
-  (if (sqlite/table-exists? db "kise_imported_db")
-      (let* ((table-info (sqlite/table-info db "kise_imported_db"))
+  (if (sqlite/table-exists? db "foliot_imported_db")
+      (let* ((table-info (sqlite/table-info db "foliot_imported_db"))
 	     (cols-nb (length table-info)))
 	(cond ((= cols-nb 4) ;; colour_set column added - 2013/07/29
 	       'partial)
@@ -139,13 +139,13 @@
       'none))
 
 (define (db-idb/create-complete-table db)
-  (if (sqlite/table-exists? db "kise_imported_db")
+  (if (sqlite/table-exists? db "foliot_imported_db")
       ;; colour_set columns added - 2013/07/29
-      (let* ((table-info (sqlite/table-info db "kise_imported_db"))
+      (let* ((table-info (sqlite/table-info db "foliot_imported_db"))
 	     (cols-nb (length table-info)))
 	(if (= cols-nb 4)
 	    (begin
-	      (sqlite/add-column db "kise_imported_db" "colour_set integer"))))
+	      (sqlite/add-column db "foliot_imported_db" "colour_set integer"))))
       (db-idb/add-imported-db-table db)))
 
 
@@ -155,7 +155,7 @@
 
 (define (db-idb/select-one-str)
   "select *
-     from kise_imported_db
+     from foliot_imported_db
     where id = '~A';")
 
 (define (db-idb/select-one reference)
@@ -165,12 +165,12 @@
 
 (define (db-idb/select-all-str)
   "select *
-     from kise_imported_db
+     from foliot_imported_db
  order by name;")
 
 (define (db-idb/select-all-for-display-str)
   "select ~A
-     from kise_imported_db
+     from foliot_imported_db
  order by name;")
 
 (define* (db-idb/select-all #:optional (display? #f))
@@ -181,7 +181,7 @@
 
 (define (db-idb/select-some-str)
   "select *
-     from kise_imported_db
+     from foliot_imported_db
     where ~A
  order by name;")
 
@@ -196,12 +196,12 @@
 ;;;
 
 (define (db-idb/set-date-str)
-  "update kise_imported_db
+  "update foliot_imported_db
       set ~A = strftime('%s','~A')
     where id = '~A';")
 
 (define (db-idb/set-str)
-  "update kise_imported_db
+  "update foliot_imported_db
       set ~A = '~A'
     where id = '~A';")
 
@@ -243,7 +243,7 @@
 ;;;
 
 (define (db-idb/get-next-id-str)
-  "select max(id) from kise_imported_db;")
+  "select max(id) from foliot_imported_db;")
 
 (define (db-idb/get-next-id)
   (let* ((next (sqlite/query (db-con)
@@ -253,7 +253,7 @@
     (if value (1+ value) 0)))
 
 (define (db-idb/add-str)
-  "insert into kise_imported_db (id,
+  "insert into foliot_imported_db (id,
                                  name,
                                  imported_the,
                                  imported_by,
@@ -278,7 +278,7 @@
 ;;;
 
 (define (db-idb/delete-str)
-  "delete from kise_imported_db
+  "delete from foliot_imported_db
     where id = '~A';")
 
 (define (db-idb/delete reference)

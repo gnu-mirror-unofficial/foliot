@@ -4,20 +4,20 @@
 ;;;; Copyright (C) 2011 - 2016
 ;;;; Free Software Foundation, Inc.
 
-;;;; This file is part of Kisê.
+;;;; This file is part of GNU Foliot.
 
-;;;; Kisê is free software: you can redistribute it and/or modify it
-;;;; under the terms of the GNU General Public License as published by
-;;;; the Free Software Foundation, either version 3 of the License, or
-;;;; (at your option) any later version.
+;;;; GNU Foliot is free software: you can redistribute it and/or modify
+;;;; it under the terms of the GNU General Public License as published
+;;;; by the Free Software Foundation, either version 3 of the License,
+;;;; or (at your option) any later version.
 
-;;;; Kisê is distributed in the hope that it will be useful, but
+;;;; GNU Foliot is distributed in the hope that it will be useful, but
 ;;;; WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;;;; General Public License for more details.
 
 ;;;; You should have received a copy of the GNU General Public License
-;;;; along with Kisê.  If not, see <http://www.gnu.org/licenses/>.
+;;;; along with GNU Foliot.  If not, see <http://www.gnu.org/licenses/>.
 ;;;;
 
 ;;; Commentary:
@@ -25,7 +25,7 @@
 ;;; Code:
 
 
-(define-module (kise p-dialog)
+(define-module (foliot p-dialog)
   #:use-module (ice-9 format)
   #:use-module (ice-9 receive)
   #:use-module (oop goops)
@@ -37,9 +37,9 @@
   #:use-module (grip i18n)
   #:use-module (grip utils)
   #:use-module (grip gnome)
-  #:use-module (kise colours)
-  #:use-module (kise db-kise)
-  #:use-module (kise db-printing-templates)
+  #:use-module (foliot colours)
+  #:use-module (foliot db-foliot)
+  #:use-module (foliot db-printing-templates)
 
   #:export (*kp-widget*
 	    kp/make-dialog
@@ -60,7 +60,7 @@
   (bindtextdomain "p-dialog" (storage-get 'pofdir)))
 
 
-(define *kise-p-dialog-offsets*
+(define *foliot-p-dialog-offsets*
   '((print . 0)
     (group . 1)
     (name . 2)
@@ -69,7 +69,7 @@
     (none . 5)))
 
 (define (kpiter/get-pos what)
-  (assoc-ref *kise-p-dialog-offsets* what))
+  (assoc-ref *foliot-p-dialog-offsets* what))
 
 (define (kpiter/get what model iter)
   (get-value model iter (kpiter/get-pos what)))
@@ -923,9 +923,9 @@
 ;;; Test multiple imports - 1
 ;;;
 
-(use-modules (kise tl-widget))
-(use-modules (kise p-dialog))
-(kp/make-dialog #f (string-append (storage-get 'glade-path) "/kise.glade"))
+(use-modules (foliot tl-widget))
+(use-modules (foliot p-dialog))
+(kp/make-dialog #f (string-append (storage-get 'glade-path) "/foliot.glade"))
 (define kp-widget $1)
 (dialog kp-widget)
 
@@ -934,9 +934,9 @@
 ;;; Test multiple imports - 2
 ;;;
 
-(use-modules (kise p-dialog))
-(use-modules (kise tl-widget))
-(kp/make-dialog #f (string-append (storage-get 'glade-path) "/kise.glade"))
+(use-modules (foliot p-dialog))
+(use-modules (foliot tl-widget))
+(kp/make-dialog #f (string-append (storage-get 'glade-path) "/foliot.glade"))
 (define kp-widget $1)
 (dialog kp-widget)
 

@@ -10,20 +10,20 @@ exec @GUILE@ --no-auto-compile -e main -s "$0" "$@"
 ;;;; Copyright (C) 2011 - 2016
 ;;;; Free Software Foundation, Inc.
 
-;;;; This file is part of Kisê.
+;;;; This file is part of GNU Foliot.
 
-;;;; Kisê is free software: you can redistribute it and/or modify it
-;;;; under the terms of the GNU General Public License as published by
-;;;; the Free Software Foundation, either version 3 of the License, or
-;;;; (at your option) any later version.
+;;;; GNU Foliot is free software: you can redistribute it and/or modify
+;;;; it under the terms of the GNU General Public License as published
+;;;; by the Free Software Foundation, either version 3 of the License,
+;;;; or (at your option) any later version.
 
-;;;; Kisê is distributed in the hope that it will be useful, but
+;;;; GNU Foliot is distributed in the hope that it will be useful, but
 ;;;; WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;;;; General Public License for more details.
 
 ;;;; You should have received a copy of the GNU General Public License
-;;;; along with Kisê.  If not, see <http://www.gnu.org/licenses/>.
+;;;; along with GNU Foliot.  If not, see <http://www.gnu.org/licenses/>.
 ;;;;
 
 ;;; Commentary:
@@ -46,7 +46,7 @@ exec @GUILE@ --no-auto-compile -e main -s "$0" "$@"
 	     (grip i18n)
 	     (gnome-2)  ;; finds and adds guile-gnome-2/gnome path
 			;; to %load-path
-	     (kise globals))
+	     (foliot globals))
 
 
 (eval-when (expand load eval)
@@ -69,15 +69,15 @@ exec @GUILE@ --no-auto-compile -e main -s "$0" "$@"
 (define %copyright
   "Copyright (C) 2011 - 2016  Free Software Foundation, Inc.
 
-Kise comes with ABSOLUTELY NO WARRANTY.  This program is free
+GNU Foliot comes with ABSOLUTELY NO WARRANTY.  This program is free
 software, and you are welcome to redistribute it under certain
 conditions.  See <http://www.gnu.org/licenses/gpl.html>, for more
 details.")
 
 (define %help
-  "Usage: kise [OPTION]...
+  "Usage: foliot [OPTION]...
   -d, --debug    spawns a server that you may connect to in order to
-                 interact with Kisê
+                 interact with GNU Foliot
       --help     display this usage information
       --version  display version information")
 
@@ -89,7 +89,7 @@ details.")
 
 
 (define %debug-help-1
-  "\nYou requested to run Kisê in debug mode:
+  "\nYou requested to run GNU Foliot in debug mode:
 
   -] a server has been spawned, in a new thread, port ~A, which you may
      connect to.  If you use emacs and geiser, which we recommend, then
@@ -97,8 +97,8 @@ details.")
 
   -] the following global variables have been defined:
 
-       *kise*      an instance of the <kise/tl-widget> class, see the
-                   (kise tl-widget) module for its definition.")
+       *foliot*      an instance of the <foliot/tl-widget> class, see the
+                   (foliot tl-widget) module for its definition.")
 
 (define %debug-help-2
   "        ~A~19t~A")
@@ -108,7 +108,7 @@ details.")
 
 
 (define (welcome port)
-  (displayln (string-append "Kise " %version) port)
+  (displayln (string-append "Foliot " %version) port)
   (displayln %copyright port))
 
 (define (help port)
@@ -156,7 +156,7 @@ details.")
 
 
 ;;;
-;;; Now we can import gnome modules and kise
+;;; Now we can import gnome modules and foliot
 ;;;
 
 (use-modules (gnome-2)
@@ -165,15 +165,15 @@ details.")
 	     (gnome gtk)
 	     (gnome glib)
 	     (grip server)
-	     (kise kise))
+	     (foliot foliot))
 
 
 ;;;
 ;;; Main
 ;;;
 
-(define *kise* #f)
-(export *kise*)
+(define *foliot* #f)
+(export *foliot*)
 
 (define (main args)
   (let* ((options (getopt-long args %synopsis))
@@ -189,10 +189,10 @@ details.")
 	   (storage-set 'debug debug?)
 	   (gtk-rc-parse (storage-get 'gtkrcfile))
 	   (load-user-init)
-	   (gnome-program-init "Kise" %version)
+	   (gnome-program-init "GNU Foliot" %version)
 	   (gnome-authentication-manager-init)
-	   (set! *kise*
-		 (kise/animate-ui uname (storage-get 'gladefile) %version debug?))
+	   (set! *foliot*
+		 (foliot/animate-ui uname (storage-get 'gladefile) %version debug?))
 	   (when debug?
 	     (receive (server-port thread)
 		 (spawn-server-any-port #:start 1968)

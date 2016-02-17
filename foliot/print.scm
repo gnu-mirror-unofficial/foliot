@@ -4,20 +4,20 @@
 ;;;; Copyright (C) 2011 - 2016
 ;;;; Free Software Foundation, Inc.
 
-;;;; This file is part of Kisê.
+;;;; This file is part of GNU Foliot.
 
-;;;; Kisê is free software: you can redistribute it and/or modify it
-;;;; under the terms of the GNU General Public License as published by
-;;;; the Free Software Foundation, either version 3 of the License, or
-;;;; (at your option) any later version.
+;;;; GNU Foliot is free software: you can redistribute it and/or modify
+;;;; it under the terms of the GNU General Public License as published
+;;;; by the Free Software Foundation, either version 3 of the License,
+;;;; or (at your option) any later version.
 
-;;;; Kisê is distributed in the hope that it will be useful, but
+;;;; GNU Foliot is distributed in the hope that it will be useful, but
 ;;;; WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;;;; General Public License for more details.
 
 ;;;; You should have received a copy of the GNU General Public License
-;;;; along with Kisê.  If not, see <http://www.gnu.org/licenses/>.
+;;;; along with GNU Foliot.  If not, see <http://www.gnu.org/licenses/>.
 ;;;;
 
 ;;; Commentary:
@@ -25,16 +25,16 @@
 ;;; Code:
 
 
-(define-module (kise print)
+(define-module (foliot print)
   #:use-module (oop goops)
   #:use-module (gnome gobject)
   #:use-module (gnome gtk)
   ;; #:use-module (grip reexport)
   #:use-module (grip gnome)
-  #:use-module (kise globals)
-  #:use-module (kise tl-widget)
-  #:use-module (kise p-dialog)
-  #:use-module (kise p-main)
+  #:use-module (foliot globals)
+  #:use-module (foliot tl-widget)
+  #:use-module (foliot p-dialog)
+  #:use-module (foliot p-main)
 
   #:export (kp/select-gui))
 
@@ -44,10 +44,10 @@
 			      (gnome gobject)
 			      (gnome gtk)
 			      (gnome all)
-			      (kise globals)
-			      (kise tl-widget)
-			      (kise p-dialog)
-			      (kise p-main)))
+			      (foliot globals)
+			      (foliot tl-widget)
+			      (foliot p-dialog)
+			      (foliot p-main)))
 
 
 ;;;
@@ -92,7 +92,7 @@ dialog	;; in guile-gnome?
 ;;; 1.
 ;;;
 
-(define tl-widget (make <kise/tl-widget>))
+(define tl-widget (make <foliot/tl-widget>))
 (define p-widget (kp/make-dialog (dialog tl-widget) (storage-get 'gladefile)))
 
 (dialog tl-widget)

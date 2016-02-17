@@ -4,26 +4,26 @@
 ;;;; Copyright (C) 2011 - 2016
 ;;;; Free Software Foundation, Inc.
 
-;;;; This file is part of Kisê.
+;;;; This file is part of GNU Foliot.
 
-;;;; Kisê is free software: you can redistribute it and/or modify it
-;;;; under the terms of the GNU General Public License as published by
-;;;; the Free Software Foundation, either version 3 of the License, or
-;;;; (at your option) any later version.
+;;;; GNU Foliot is free software: you can redistribute it and/or modify
+;;;; it under the terms of the GNU General Public License as published
+;;;; by the Free Software Foundation, either version 3 of the License,
+;;;; or (at your option) any later version.
 
-;;;; Kisê is distributed in the hope that it will be useful, but
+;;;; GNU Foliot is distributed in the hope that it will be useful, but
 ;;;; WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;;;; General Public License for more details.
 
 ;;;; You should have received a copy of the GNU General Public License
-;;;; along with Kisê.  If not, see <http://www.gnu.org/licenses/>.
+;;;; along with GNU Foliot.  If not, see <http://www.gnu.org/licenses/>.
 ;;;;
 
 ;;; Commentary:
 
 ;; Notes: the idea is to store the minimum possible infos in the
-;; user's kise.conf file. This means, once the application has been
+;; user's foliot.conf file. This means, once the application has been
 ;; used at least once, the db filename and whether it should be used
 ;; at startup [not offering the db connection dialog at startup], or
 ;; not. The rest of user's config, preferences and hopefully the undo
@@ -32,7 +32,7 @@
 ;;; Code:
 
 
-(define-module (kise config)
+(define-module (foliot config)
   #:use-module (grip reexport)
   #:use-module (grip passwd)
   #:use-module (grip config)
@@ -46,32 +46,32 @@
 (eval-when (expand load eval)
   (re-export-public-interface (grip passwd)
 			      (grip config))
-  (let ((config (read-config "kise")))
+  (let ((config (read-config "foliot")))
     (set! kcfg/get
 	  (lambda (what)
 	    (case what
 	      ((all)
 	       config)
 	      ((reload)
-	       (set! config (read-config "kise"))
+	       (set! config (read-config "foliot"))
 	       config)
 	      (else
 	       (assq-ref config what)))))))
 
 ;; the solution here below, which was suggested by mark weaver on irc,
 ;; would work @ compile load eval time, but not @ expand tine.  till
-;; now, I don't need any of the kisê's config user setting at expand
+;; now, I don't need any of the GNU Foliot's config user setting at expand
 ;; time, but that might not always be true.  i keep the definition
 ;; below as an example, it could even help someone else :lo:.
 
 #;(define kcfg/get
-  (let ((config (read-config "kise")))
+  (let ((config (read-config "foliot")))
     (lambda (what)
       (case what
 	((all)
 	 config)
 	((reload)
-	 (read-config "kise")
+	 (read-config "foliot")
 	 config)
 	(else
 	 (assq-ref config what))))))

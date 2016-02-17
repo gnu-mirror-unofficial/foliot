@@ -4,20 +4,20 @@
 ;;;; Copyright (C) 2011 - 2016
 ;;;; Free Software Foundation, Inc.
 
-;;;; This file is part of Kisê.
+;;;; This file is part of GNU Foliot.
 
-;;;; Kisê is free software: you can redistribute it and/or modify it
-;;;; under the terms of the GNU General Public License as published by
-;;;; the Free Software Foundation, either version 3 of the License, or
-;;;; (at your option) any later version.
+;;;; GNU Foliot is free software: you can redistribute it and/or modify
+;;;; it under the terms of the GNU General Public License as published
+;;;; by the Free Software Foundation, either version 3 of the License,
+;;;; or (at your option) any later version.
 
-;;;; Kisê is distributed in the hope that it will be useful, but
+;;;; GNU Foliot is distributed in the hope that it will be useful, but
 ;;;; WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;;;; General Public License for more details.
 
 ;;;; You should have received a copy of the GNU General Public License
-;;;; along with Kisê.  If not, see <http://www.gnu.org/licenses/>.
+;;;; along with GNU Foliot.  If not, see <http://www.gnu.org/licenses/>.
 ;;;;
 
 ;;; Commentary:
@@ -25,7 +25,7 @@
 ;;; Code:
 
 
-(define-module (kise i-dialog)
+(define-module (foliot i-dialog)
   #:use-module (ice-9 format)
   #:use-module (ice-9 receive)
   #:use-module (oop goops)
@@ -37,8 +37,8 @@
   #:use-module (grip i18n)
   #:use-module (grip utils)
   #:use-module (grip gnome)
-  #:use-module (kise colours)
-  #:use-module (kise db)
+  #:use-module (foliot colours)
+  #:use-module (foliot db)
 
   #:export (*ki-widget*
 
@@ -62,7 +62,7 @@
   (bindtextdomain "i-dialog" (storage-get 'pofdir)))
 
 
-(define *kise-i-dialog-offset*
+(define *foliot-i-dialog-offset*
   '((icolour . 0)
     (name . 1)
     (date . 2)
@@ -72,7 +72,7 @@
     (ibg . 6)))
 
 (define (kiiter/get-pos what)
-  (assoc-ref *kise-i-dialog-offset* what))
+  (assoc-ref *foliot-i-dialog-offset* what))
 
 (define (kiiter/get what model iter)
   (get-value model iter (kiiter/get-pos what)))
@@ -325,5 +325,5 @@
     (set-title (dialog widget) (_ "Import"))
     (set-markup (get-widget xmlc "ki/title_lb")
 		(format #f "<span foreground=\"darkblue\" size=\"x-large\"><b>~A</b></span>~%<b>~A</b>"
-			(_ "Kisê import dialog")
-			(_ "Add, remove and re-import other user's kisê database.")))))
+			(_ "GNU Foliot import dialog")
+			(_ "Add, remove and re-import other user's GNU Foliot database.")))))
