@@ -351,8 +351,8 @@
 	 (tuple (ftlw/get-tuple tl-widget row))
 	 (id (db-foliot/get tuple 'id))
 	 (iter (get-iter model path))
-	 (iter-get (lambda (model iter) (kiter/get 'to-be-charged model iter)))
-	 (iter-set (lambda (model iter value) (kiter/set 'to-be-charged model iter value)))
+	 (iter-get (lambda (model iter) (fiter/get 'to-be-charged model iter)))
+	 (iter-set (lambda (model iter value) (fiter/set 'to-be-charged model iter value)))
 	 ;; (old-value (iter-get model iter))
 	 (new-value (gtk2/fixed-toggled model iter iter-get iter-set))
 	 (guicbpv? (gui-callback? tl-widget)))
@@ -732,7 +732,7 @@
 	 (reordered? (not (= old-pos new-pos)))
 	 (prev-gui-cb? (gui-callback? tl-widget)))
     ;; (dimfi "old / new pos / current-row: " old-pos new-pos (current-row tl-widget))
-    (when set-iter? (kiter/set what model old-iter new-value))
+    (when set-iter? (fiter/set what model old-iter new-value))
     (when reordered?
       ;; we still need to solve things related 'filters'
       ;; if there is an active filter off course
@@ -1035,7 +1035,7 @@
     (for-each (lambda (tuple)
 		(let ((idb (db-foliot/get tuple 'imported_db)))
 		  (if (= idb -1)
-		      (kiter/append-fill model
+		      (fiter/append-fill model
 					 (db-foliot/get tuple 'date_)
 					 (db-foliot/get tuple 'who)
 					 (db-foliot/get tuple 'for_whom)
@@ -1044,7 +1044,7 @@
 					 (db-foliot/get tuple 'what)
 					 #f
 					 #f)
-		      (kiter/append-fill model
+		      (fiter/append-fill model
 					 (db-foliot/get tuple 'date_)
 					 (db-foliot/get tuple 'who)
 					 (db-foliot/get tuple 'for_whom)
@@ -1209,7 +1209,7 @@ filter date: ~S~%"
 			      "f"	;; to-be-charged
 			      ""))	;; description
 	 (ids? (if filter? (ftlw/add-id new-id tl-widget) (id-set tl-widget)))
-	 (new-iter (kiter/prepend-fill model today uname "" 0 #f "" #f #f))
+	 (new-iter (fiter/prepend-fill model today uname "" 0 #f "" #f #f))
 	 (tuples (db-foliot/select-some filter? ids?))
 	 (new-pos (db-foliot/find-pos tuples 'id new-id =)))
     (set! (db-tuples tl-widget) tuples)
@@ -1237,13 +1237,13 @@ filter date: ~S~%"
 	 (filter? (active-filter tl-widget))
 	 (new-id (db-foliot/duplicate (db-foliot/get tuple 'id) tuple))
 	 (ids? (if filter? (ftlw/add-id new-id tl-widget) (id-set tl-widget)))
-	 (new-iter (kiter/prepend-fill model
-				       (kiter/get 'date model iter)
-				       (kiter/get 'who model iter)
-				       (kiter/get 'for-whom model iter)
-				       (kiter/get 'duration model iter)
-				       (kiter/get 'to-be-charged model iter)
-				       (kiter/get 'what model iter)
+	 (new-iter (fiter/prepend-fill model
+				       (fiter/get 'date model iter)
+				       (fiter/get 'who model iter)
+				       (fiter/get 'for-whom model iter)
+				       (fiter/get 'duration model iter)
+				       (fiter/get 'to-be-charged model iter)
+				       (fiter/get 'what model iter)
 				       #f
 				       #f))
 	 (tuples (db-foliot/select-some filter? ids?))

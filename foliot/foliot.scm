@@ -149,11 +149,11 @@
 	  (hide (reference-eb tl-widget)))
 	(begin
 	  (set-markup (reference-lb tl-widget)
-		      (format #f "<span foreground=\"~A\"><i>~A:</i></span>" (kiter/get 'ibg model iter) (_ "Reference")))
+		      (format #f "<span foreground=\"~A\"><i>~A:</i></span>" (fiter/get 'ibg model iter) (_ "Reference")))
 	  (set-text (reference-entry tl-widget) (number->string (ftlw/get 'imported_id tl-widget row)))
 	  (show (reference-eb tl-widget))
-	  (modify-bg (reference-eb tl-widget) 'normal (kiter/get 'ibg model iter))))
-    (set-text (date-entry tl-widget) (kiter/get 'date model iter))
+	  (modify-bg (reference-eb tl-widget) 'normal (fiter/get 'ibg model iter))))
+    (set-text (date-entry tl-widget) (fiter/get 'date model iter))
     (let ((who? (gtk2/combo-find-row (who-combo tl-widget) (db-foliot/get tuple 'who))))
       (if who?
 	  (set-active (who-combo tl-widget) who?)
@@ -166,7 +166,7 @@
 	  (begin
 	    ;; (gtk2/set-text (for-whom-entry tl-widget) "")
 	    (set-active (for-whom-combo tl-widget) -1))))
-    (set-value (duration-sb tl-widget) (kiter/get 'duration model iter))
+    (set-value (duration-sb tl-widget) (fiter/get 'duration model iter))
     (let ((what? (gtk2/combo-find-row (what-combo tl-widget) (db-foliot/get tuple 'what))))
       (if what?
 	  (set-active (what-combo tl-widget) what?)
@@ -174,7 +174,7 @@
 	    ;; (gtk2/set-text (what-entry tl-widget) "")
 	    (set-active (what-combo tl-widget) -1))))
     (gtk2/set-text (description-entry tl-widget) (ftlw/get 'description tl-widget row))
-    (set-active (to-be-charged-cb tl-widget) (kiter/get 'to-be-charged model iter))))
+    (set-active (to-be-charged-cb tl-widget) (fiter/get 'to-be-charged model iter))))
 
 
 ;;;
@@ -359,7 +359,7 @@
 		       (iter (current-iter tl-widget))
 		       (value (fp/round (get-value widget) 1)))
 		   ;; (dimfi 'row row 'duration value)
-		   (kiter/set 'duration model iter value)
+		   (fiter/set 'duration model iter value)
 		   ;; update-db
 		   (ftlw/set 'duration tl-widget value row)
 		   (ftlw/update-totals-status-bars tl-widget)))))
@@ -378,7 +378,7 @@
 		   ;; do it on the toggle in the list store too ...
 		   (when (active-filter tl-widget) (ftlw/add-id id tl-widget))
 		   (set! (gui-callback? tl-widget) #f)
-		   (kiter/set 'to-be-charged model iter new-value)
+		   (fiter/set 'to-be-charged model iter new-value)
 		   (set! (gui-callback? tl-widget) #t)
 		   ;; update-db
 		   (ftlw/set 'to_be_charged tl-widget (sqlite/boolean new-value) row)
