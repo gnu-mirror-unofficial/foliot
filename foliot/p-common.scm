@@ -48,11 +48,11 @@
 	    draft
 	    draftLT
 	    commercial
-	    kp/common-filenames
-	    kp/get-ps-fname-from-pdf
-	    kp/compile-tex-file
-	    kp/write-pdf
-	    kp/write-printer))
+	    fp/common-filenames
+	    fp/get-ps-fname-from-pdf
+	    fp/compile-tex-file
+	    fp/write-pdf
+	    fp/write-printer))
 
 
 (eval-when (expand load eval)
@@ -124,11 +124,11 @@
 ;;; API
 ;;;
 
-(define (kp/get-ps-fname-from-pdf pdfname)
+(define (fp/get-ps-fname-from-pdf pdfname)
   (and pdfname
        (format #f "~A/~A.ps" (dirname pdfname) (basename pdfname ".pdf"))))
 
-(define (kp/common-filenames reference pdfname)
+(define (fp/common-filenames reference pdfname)
   (let* ((p-dir (storage-get 'printdir))
 	 ;; (reference (gensym))
 	 (uname (sys/get 'uname))
@@ -188,7 +188,7 @@
 
 	 (tex-files     (make <tex-files>
 			  #:pdf        pdfname
-			  #:ps         (kp/get-ps-fname-from-pdf pdfname)
+			  #:ps         (fp/get-ps-fname-from-pdf pdfname)
 			  #:doc-ref    reference
 			  #:lvars      lvars-tex-file
 			  #:draft      draft-tex-file
@@ -202,7 +202,7 @@
 ;;; Real printing/pdf related stuff
 ;;;
 
-(define (kp/compile-tex-file tex-file-object)
+(define (fp/compile-tex-file tex-file-object)
   (let* ((dir (p-directory tex-file-object))
 	 (fname (short-filename tex-file-object))
 	 (paper-size "a4") ;; we'll get there
@@ -211,7 +211,7 @@
     ;; (format #t "~S~%" compile-command)
     (system compile-command)))
 
-(define (kp/write-pdf tex-files mode)
+(define (fp/write-pdf tex-files mode)
   (let* ((main-tex-file-instance (case mode
 				   ((draft) (draft tex-files))
 				   ((commercial) (commercial tex-files))))
@@ -225,7 +225,7 @@
     ;; (format #t "~S~%" complete-command)
     (system complete-command)))
 
-(define (kp/print-ps-file tex-files acc printer)
+(define (fp/print-ps-file tex-files acc printer)
   (let* ((tex-file-object (acc tex-files))
 	 (temp-dir        (p-directory tex-file-object))
 	 (ps-fname        (ps-filename tex-file-object))
@@ -236,20 +236,20 @@
     ;; (format #t "~S~%" print-command)
     (system print-command)))
 
-(define (kp/write-printer tex-files mode printer)
+(define (fp/write-printer tex-files mode printer)
   (case mode
     ((draft)
      ;; here below, draft is the accessor, not the mode :)
-     (kp/print-ps-file tex-files draft printer)) 
+     (fp/print-ps-file tex-files draft printer)) 
     ((commercial)
      ;; dito, but commercial instead of draft
-     (kp/print-ps-file tex-files commercial printer))))
+     (fp/print-ps-file tex-files commercial printer))))
 
 
 #!
 
 (define tf
-  (kp/common-filenames "foliot-2011.10.31-draft"
+  (fp/common-filenames "foliot-2011.10.31-draft"
 		       (string-append (sys/get 'udir) "/foliot/foliot-2011.10.31-draft.pdf")))
 (show-me tf)
 

@@ -313,7 +313,7 @@
 	     'clicked
 	     (lambda (button)
 	       (foliot/on-tv-row-change tl-widget)
-	       (kp/select-gui tl-widget)))
+	       (fp/select-gui tl-widget)))
     (connect (first-bt tl-widget)
 	     'clicked
 	     (lambda (button)

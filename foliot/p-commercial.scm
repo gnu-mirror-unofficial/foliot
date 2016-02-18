@@ -31,7 +31,7 @@
   #:use-module (oop goops)
   ;; #:use-module (gnome gw generics)
 
-  #:export (kp/print-commercial))
+  #:export (fp/print-commercial))
 
 
 ;;;
@@ -43,6 +43,6 @@
 ;;; API
 ;;;
 
-(define (kp/print-commercial kp/widget tl-widget tex-files)
-  (format #t "kp/print-commercial not implemented yet.~%")
+(define (fp/print-commercial fp/widget tl-widget tex-files)
+  (format #t "fp/print-commercial not implemented yet.~%")
   #t)

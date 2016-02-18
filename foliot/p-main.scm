@@ -41,7 +41,7 @@
   #:use-module (foliot p-draft)
   #:use-module (foliot p-commercial)
 
-  #:export (kp/print))
+  #:export (fp/print))
 
 
 (eval-when (expand load eval)
@@ -49,35 +49,35 @@
   (bindtextdomain "p-main" (storage-get 'pofdir)))
 
 
-(define (kp/print-1 kp/widget tl-widget pdf-filename)
+(define (fp/print-1 fp/widget tl-widget pdf-filename)
   (let* ((reference (date/system-date "%Y%m%d"))
-	 (tex-files (kp/common-filenames reference pdf-filename)))
-    (kp/write-local-variables tex-files)
-    (case (mode kp/widget)
+	 (tex-files (fp/common-filenames reference pdf-filename)))
+    (fp/write-local-variables tex-files)
+    (case (mode fp/widget)
       ((draft)
-       (kp/print-draft kp/widget tl-widget tex-files))
+       (fp/print-draft fp/widget tl-widget tex-files))
       ((commercial)
-       (kp/print-commercial kp/widget tl-widget tex-files)))))
+       (fp/print-commercial fp/widget tl-widget tex-files)))))
 
 
 ;;;
 ;;; API
 ;;;
 
-(define (kp/print kp/widget tl-widget)
+(define (fp/print fp/widget tl-widget)
   (let ((n-file (date/system-date "%Y.%m.%d")))
-    (if (pdf kp/widget)
+    (if (pdf fp/widget)
 	(let* ((pdf-dir (format #f "~A/foliot" (sys/get 'udir)))
-	       (proposed-name (case (mode kp/widget)
+	       (proposed-name (case (mode fp/widget)
 				((draft)
 				 (format #f "foliot-~A-draft.pdf" n-file))
 				((commercial)
 				 (format #f "foliot-~A-commercial.pdf" n-file)))))
 	  (unless (access? pdf-dir F_OK) (mkdir pdf-dir))
-	  (let ((pdf-filename (prompt-for-filename (dialog kp/widget)
+	  (let ((pdf-filename (prompt-for-filename (dialog fp/widget)
 						   (_ "Save as ...")
 						   'save
 						   pdf-dir
 						   proposed-name)))
-	    (if pdf-filename (kp/print-1 kp/widget tl-widget pdf-filename))))
-     (kp/print-1 kp/widget tl-widget #f))))
+	    (if pdf-filename (fp/print-1 fp/widget tl-widget pdf-filename))))
+     (fp/print-1 fp/widget tl-widget #f))))

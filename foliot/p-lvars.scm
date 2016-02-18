@@ -39,7 +39,7 @@
   #:use-module (foliot p-common)
   #:use-module (foliot p-dialog)
 
-  #:export (kp/write-local-variables))
+  #:export (fp/write-local-variables))
 
 
 (eval-when (expand load eval)
@@ -54,7 +54,7 @@
 ;;; Globals and Non-API
 ;;;
 
-(define (kp/write-local-variables-str)
+(define (fp/write-local-variables-str)
   "
   \\def\\theprintingdate{~A}
   \\def\\draftreference{~A}
@@ -73,26 +73,26 @@
 ;;; API
 ;;;
 
-(define (kp/write-logo-tex-code ostream ulogo)
+(define (fp/write-logo-tex-code ostream ulogo)
   (if ulogo
       (format #f "\\def\\klheaderlogo{\\includegraphics[keepaspectratio=true,height=26mm,width=65mm]{~A}}" ulogo)
       ;; (format #f "\\def\\klheaderlogo{\\includegraphics[height=26mm]{~A}}" ulogo)
       (format #f "\\def\\klheader{\\klabel{~A}\\\\~~\\\\~~\\\\}" (_ "Your logo here"))))
 
-(define (kp/write-local-variables tex-files)
+(define (fp/write-local-variables tex-files)
   (let* ((date (sys/date)) ;; will check but should use the locale
 	 (lvars-tex-file-object (lvars tex-files))
 	 (filename (full-filename lvars-tex-file-object))
 	 (ostream (open-output-file filename))
 	 (ulogo (fcfg/get 'ulogo)))
-    (format ostream "~?" (kp/write-local-variables-str)
+    (format ostream "~?" (fp/write-local-variables-str)
 	    (list date ;; will check but should use the locale
 		  (basename (pdf tex-files) ".pdf")
 		  (_ "Page")
 		  (_ "Time Keeping Report")
 		  (_ "reference")
 		  ;; left header
-		  (kp/write-logo-tex-code ostream ulogo)
+		  (fp/write-logo-tex-code ostream ulogo)
 		  ;; right header
 		  ;;   this field is defined in draft-command
 		  ;; footer

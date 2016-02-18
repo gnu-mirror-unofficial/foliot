@@ -36,7 +36,7 @@
   #:use-module (foliot p-dialog)
   #:use-module (foliot p-main)
 
-  #:export (kp/select-gui))
+  #:export (fp/select-gui))
 
 
 #;(eval-when (expand load eval)
@@ -54,12 +54,12 @@
 ;;; API
 ;;;
 
-(define (kp/select-gui tl-widget)
+(define (fp/select-gui tl-widget)
   (let* ((parent (dialog tl-widget))
 	 (g-file (glade-file tl-widget))
-	 (kp/widget (kp/make-dialog parent g-file))
-	 (widget (dialog kp/widget)))
-    ;; (format #t "Printing Widget: ~S~%Parent: ~S~%Printing Dialog: ~S~%" kp/widget parent widget)
+	 (fp/widget (fp/make-dialog parent g-file))
+	 (widget (dialog fp/widget)))
+    ;; (format #t "Printing Widget: ~S~%Parent: ~S~%Printing Dialog: ~S~%" fp/widget parent widget)
     (show widget)
     (set-modal widget #f)
     (catch 'exit
@@ -68,7 +68,7 @@
 	       (hide widget)
 	       (case response
 		 ((ok)
-		  (kp/print kp/widget tl-widget)
+		  (fp/print fp/widget tl-widget)
 		  (throw 'exit 'ok))
 		 ((delete cancel)
 		  (throw 'exit 'cancel)))))
@@ -78,7 +78,7 @@
 
 #!
 
-(kp/select-gui tl-widget)
+(fp/select-gui tl-widget)
 
 
 ;;;
@@ -93,7 +93,7 @@ dialog	;; in guile-gnome?
 ;;;
 
 (define tl-widget (make <foliot/tl-widget>))
-(define p-widget (kp/make-dialog (dialog tl-widget) (storage-get 'gladefile)))
+(define p-widget (fp/make-dialog (dialog tl-widget) (storage-get 'gladefile)))
 
 (dialog tl-widget)
 (dialog p-widget)
@@ -103,7 +103,7 @@ dialog	;; in guile-gnome?
 ;;; 2.
 ;;;
 
-(define p-widget (kp/make-dialog #f (storage-get 'gladefile)))
+(define p-widget (fp/make-dialog #f (storage-get 'gladefile)))
 
 (dialog p-widget)
 
@@ -113,7 +113,7 @@ dialog	;; in guile-gnome?
 ;;;
 
 (define tl-widget (make-tl-widget))
-(define p-widget (kp/make-dialog (dialog tl-widget) (storage-get 'gladefile)))
+(define p-widget (fp/make-dialog (dialog tl-widget) (storage-get 'gladefile)))
 
 (dialog p-widget)
 (dialog tl-widget)
