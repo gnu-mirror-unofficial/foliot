@@ -51,8 +51,8 @@
 	    remove-bt
 	    reimport-bt
 
-	    kiiter/get
-	    kiiter/set
+	    fiiter/get
+	    fiiter/set
 	    ki/make-dialog
 	    ki/fill-treeview))
 
@@ -71,15 +71,15 @@
     (filename . 5)
     (ibg . 6)))
 
-(define (kiiter/get-pos what)
+(define (fiiter/get-pos what)
   (assoc-ref *foliot-i-dialog-offset* what))
 
-(define (kiiter/get what model iter)
-  (get-value model iter (kiiter/get-pos what)))
+(define (fiiter/get what model iter)
+  (get-value model iter (fiiter/get-pos what)))
 
-(define (kiiter/set what model iter value)
+(define (fiiter/set what model iter value)
   ;; (format #t "offset: ~S~%" (cdr (assoc what offsets)))
-  (set-value model iter (kiiter/get-pos what) value))
+  (set-value model iter (fiiter/get-pos what) value))
 
 
 ;;;
@@ -120,8 +120,8 @@
   ;; import OFF
   ;;	-> 
   ;; import infos MUST be gathered BEFORE any setting on any toggle
-  (let ((iiter-get (lambda (model iter) (kiiter/get 'import model iter)))
-	(iiter-set (lambda (model iter value) (kiiter/set 'import model iter value))))
+  (let ((iiter-get (lambda (model iter) (fiiter/get 'import model iter)))
+	(iiter-set (lambda (model iter value) (fiiter/set 'import model iter value))))
     (case caller
       ((fill) ;; dialog creation, value is not null
        (gtk2/fixed-toggled model iter iiter-get iiter-set (car value)))
@@ -255,12 +255,12 @@
 		      (let ((iter (gtk-list-store-append model))
 			    (filename (db-idb/get idb-tuple 'filename)))
 					; (ki/import-toggle-callback ki-widget model iter 'fill print?)
-			(kiiter/set 'name model iter (basename filename))
-			(kiiter/set 'date model iter (db-idb/get idb-tuple 'imported_the))
-			(kiiter/set 'by model iter (db-idb/get idb-tuple 'imported_by))
-			(kiiter/set 'id model iter (number->string (db-idb/get idb-tuple 'id)))
-			(kiiter/set 'filename model iter filename)
-			(kiiter/set 'ibg model iter (colour-set-bg (db-idb/get idb-tuple 'colour_set)))))
+			(fiiter/set 'name model iter (basename filename))
+			(fiiter/set 'date model iter (db-idb/get idb-tuple 'imported_the))
+			(fiiter/set 'by model iter (db-idb/get idb-tuple 'imported_by))
+			(fiiter/set 'id model iter (number->string (db-idb/get idb-tuple 'id)))
+			(fiiter/set 'filename model iter filename)
+			(fiiter/set 'ibg model iter (colour-set-bg (db-idb/get idb-tuple 'colour_set)))))
 	      idb-tuples)))))
 
 
