@@ -249,7 +249,7 @@
 	(win-w (fcfg/get 'win-w))
 	(win-h (fcfg/get 'win-h)))
     ;; the config has already been red, now just call fcfg/get when
-    ;; necessary or (kcgf/get 'reload) [if you manually change the
+    ;; necessary or (fcfg/get 'reload) [if you manually change the
     ;; file for example for testing purposes]
     (set! *tl-widget* tl-widget)
     (when win-x
@@ -286,7 +286,7 @@
 	     'clicked
 	     (lambda (button)
 	       (foliot/on-tv-row-change tl-widget)
-	       (kc/select-gui tl-widget)))
+	       (fc/select-gui tl-widget)))
     (connect (import-bt tl-widget)
 	     'clicked
 	     (lambda (button)

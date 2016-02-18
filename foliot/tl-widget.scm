@@ -836,7 +836,7 @@
 	  (else 'ok))))
 
 (define (ftlw/open-db-checks db-file)
-  ;; this will be called by kc/connect 'open mode or ftlw/open-db
+  ;; this will be called by fc/connect 'open mode or ftlw/open-db
   ;; based on foliot.config infos. in both of these cases, it must
   ;; check that:
   ;;   a. the file [still] exists;

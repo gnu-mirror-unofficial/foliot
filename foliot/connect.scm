@@ -37,7 +37,7 @@
   #:use-module (foliot config)
   #:use-module (foliot c-dialog)
 
-  #:export (kc/select-gui))
+  #:export (fc/select-gui))
 
 
 #!
@@ -68,7 +68,7 @@
 (define *db-already-in-use-msg*
   (_ "is the active database."))
 
-(define (kc/connect-cant-connect-str)
+(define (fc/connect-cant-connect-str)
   (_ "I can not open ~A: or it is not a GNU Foliot database file, or you don't have writing permissions over it."))
 
 #!
@@ -78,26 +78,26 @@ database file. Please check all of the above and start again or
 create/connect to another GNU Foliot database.
 !#
 
-(define (kc/connect-cant-create-str)
+(define (fc/connect-cant-create-str)
   (_ "You don't have 'writing permissions' in this directory: ~A. Please check your permissions and try again or make another directory selection."))
 
-(define (kc/connect-create-exists-str)
+(define (fc/connect-create-exists-str)
   (_ "A file named ~A already exists. Please select another name or another directory."))
 
-(define (kc/connect tl-widget kc-widget)
-  (let* ((kc-dialog (dialog kc-widget))
-	 (filename (get-filename kc-dialog))
-	 (reuse-db? (get-active (reuse-db-cb kc-widget)))
+(define (fc/connect tl-widget fc-widget)
+  (let* ((fc-dialog (dialog fc-widget))
+	 (filename (get-filename fc-dialog))
+	 (reuse-db? (get-active (reuse-db-cb fc-widget)))
 	 (active-db-file (and (db-con) (fcfg/get 'db-file))))
     (if (and active-db-file
 	     (string=? filename active-db-file))
-	(md1b/select-gui (dialog kc-widget)
+	(md1b/select-gui (dialog fc-widget)
 			 (_ "Information")
 			 (_ "Db already in use:")
 			 (format #f "~A: ~A" filename *db-already-in-use-msg*)
 			 (lambda () 'nothing)
 			 'dialog-info)
-	(case (mode kc-widget)
+	(case (mode fc-widget)
 	  ((open)
 	   ;; the user could select a 'wrong file'. all checks must be done but 'exists
 	   (receive (checks-result db)
@@ -107,73 +107,73 @@ create/connect to another GNU Foliot database.
 		(md1b/select-gui (dialog tl-widget)
 				 (_ "Warning!")
 				 (_ "DB connection problem:")
-				 (format #f "~?" (kc/connect-cant-connect-str) (list filename))
+				 (format #f "~?" (fc/connect-cant-connect-str) (list filename))
 				 (lambda () 'nothing)
 				 'dialog-warning))
 	       ((opened opened-partial-schema opened-no-schema)
 		(ftlw/open-db tl-widget filename 'from-gui 'open reuse-db? checks-result db)
-		(kc/close-dialog kc-dialog)))))
+		(fc/close-dialog fc-dialog)))))
 	  ((create)
-	   ;; for some very obscure reasons, when in 'create' mode, kc/connect is called 2x ... see
+	   ;; for some very obscure reasons, when in 'create' mode, fc/connect is called 2x ... see
 	   ;; foliot-bugs for details.  (format #t "modal?: ~S // New db for foliot in ~A~%" (get-modal
-	   ;; kc-dialog) filename)
-	   (when (get-modal kc-dialog)
+	   ;; fc-dialog) filename)
+	   (when (get-modal fc-dialog)
 	     (let ((checks-result (ftlw/create-db-checks filename)))
 	       (case checks-result
 		 ((exists)
 		  (md1b/select-gui (dialog tl-widget)
 				   (_ "Warning!")
 				   (_ "DB creation problem:")
-				   (format #f "~?" (kc/connect-create-exists-str) (list (basename filename)))
+				   (format #f "~?" (fc/connect-create-exists-str) (list (basename filename)))
 				   (lambda () 'nothing)
 				   'dialog-warning))
 		 ((wrong-perm)
 		  (md1b/select-gui (dialog tl-widget)
 				   (_ "Warning!")
 				   (_ "DB creation problem:")
-				   (format #f "~?" (kc/connect-cant-create-str) (list (dirname filename)))
+				   (format #f "~?" (fc/connect-cant-create-str) (list (dirname filename)))
 				   (lambda () 'nothing)
 				   'dialog-warning))
 		 ((ok opened)
 		  (ftlw/open-db tl-widget filename 'from-gui 'create reuse-db? checks-result #f)
-		  (kc/close-dialog kc-dialog))))))))))
+		  (fc/close-dialog fc-dialog))))))))))
 
-(define (kc/select-gui tl-widget)
+(define (fc/select-gui tl-widget)
   (let* ((parent (dialog tl-widget))
 	 (g-file (glade-file tl-widget))
 	 (db-file (fcfg/get 'db-file))
 	 (reuse-db? (or (not db-file) (fcfg/get 'open-at-startup)))
-	 (kc-widget (kc/make-dialog parent g-file))
-	 (kc-dialog (dialog kc-widget)))
+	 (fc-widget (fc/make-dialog parent g-file))
+	 (fc-dialog (dialog fc-widget)))
     ;; (format #t "Connecting Widget: ~S~%Parent: ~S~%Connecting Dialog: ~S~%"
-    ;;         kc-widget parent kc-dialog)
+    ;;         fc-widget parent fc-dialog)
     (if reuse-db?
-	(set-active (reuse-db-cb kc-widget) #t))
+	(set-active (reuse-db-cb fc-widget) #t))
     (if db-file
-	;; (set-current-folder kc-dialog (dirname db-file))
-	(select-filename kc-dialog db-file)
-	(set-current-folder kc-dialog (sys/get 'udir)))
+	;; (set-current-folder fc-dialog (dirname db-file))
+	(select-filename fc-dialog db-file)
+	(set-current-folder fc-dialog (sys/get 'udir)))
     ;; this is not allowed in 'open mode, which is the default (if fname
-    ;; (set-current-name kc-dialog fname))
-    (connect (ok-bt kc-widget)
+    ;; (set-current-name fc-dialog fname))
+    (connect (ok-bt fc-widget)
 	     'clicked
 	     (lambda (button)
-	       (kc/connect tl-widget kc-widget)))
-    (connect (cancel-bt kc-widget)
+	       (fc/connect tl-widget fc-widget)))
+    (connect (cancel-bt fc-widget)
 	     'clicked
 	     (lambda (button)
-	       (kc/close-dialog kc-dialog)))
-    (set-modal kc-dialog #t)
-    (show kc-dialog)))
+	       (fc/close-dialog fc-dialog)))
+    (set-modal fc-dialog #t)
+    (show fc-dialog)))
 
 
 #!
 
 (define tl-widget (make <foliot/tl-widget>
 		    #:glade-file (storage-get 'gladefile)))
-(kc/select-gui tl-widget "/usr/alto/db" "sqlite.alto.db")
+(fc/select-gui tl-widget "/usr/alto/db" "sqlite.alto.db")
 
-(define c-widget (kc/make-dialog (dialog tl-widget) (storage-get 'gladefile)))
+(define c-widget (fc/make-dialog (dialog tl-widget) (storage-get 'gladefile)))
 (dialog tl-widget)
 (dialog c-widget)
 
