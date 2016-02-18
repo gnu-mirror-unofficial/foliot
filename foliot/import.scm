@@ -67,10 +67,10 @@
 	(import-filename (prompt-for-filename (dialog ki-widget)
 					      (_ "Import database selection")
 					      'open
-					      (dirname (kcfg/get 'db-file))
+					      (dirname (fcfg/get 'db-file))
 					      #f)))
     (if import-filename
-	(let ((pre-checks-failed? (cond ((string=? import-filename (kcfg/get 'db-file))
+	(let ((pre-checks-failed? (cond ((string=? import-filename (fcfg/get 'db-file))
 					 *importing-the-active-db-is-not-allowed-msg*)
 					((not (access? import-filename R_OK))
 					 *no-read-perm-msg*)

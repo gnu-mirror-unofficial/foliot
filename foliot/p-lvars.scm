@@ -84,7 +84,7 @@
 	 (lvars-tex-file-object (lvars tex-files))
 	 (filename (full-filename lvars-tex-file-object))
 	 (ostream (open-output-file filename))
-	 (ulogo (kcfg/get 'ulogo)))
+	 (ulogo (fcfg/get 'ulogo)))
     (format ostream "~?" (kp/write-local-variables-str)
 	    (list date ;; will check but should use the locale
 		  (basename (pdf tex-files) ".pdf")

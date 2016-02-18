@@ -37,17 +37,17 @@
   #:use-module (grip passwd)
   #:use-module (grip config)
 
-  #:export (kcfg/get))
+  #:export (fcfg/get))
 
 
-(define kcfg/get #f)
+(define fcfg/get #f)
 
 
 (eval-when (expand load eval)
   (re-export-public-interface (grip passwd)
 			      (grip config))
   (let ((config (read-config "foliot")))
-    (set! kcfg/get
+    (set! fcfg/get
 	  (lambda (what)
 	    (case what
 	      ((all)
@@ -64,7 +64,7 @@
 ;; time, but that might not always be true.  i keep the definition
 ;; below as an example, it could even help someone else :lo:.
 
-#;(define kcfg/get
+#;(define fcfg/get
   (let ((config (read-config "foliot")))
     (lambda (what)
       (case what
@@ -79,15 +79,15 @@
 
 #!
 
-(kcfg/get 'all)
-(kcfg/get 'reload)
-(kcfg/get 'db-file)
-(kcfg/get 'open-at-startup)
-(kcfg/get 'ulogo)
-(kcfg/get 'win-x)
-(kcfg/get 'win-y)
-(kcfg/get 'win-w)
-(kcfg/get 'win-h)
+(fcfg/get 'all)
+(fcfg/get 'reload)
+(fcfg/get 'db-file)
+(fcfg/get 'open-at-startup)
+(fcfg/get 'ulogo)
+(fcfg/get 'win-x)
+(fcfg/get 'win-y)
+(fcfg/get 'win-w)
+(fcfg/get 'win-h)
 
 !#
 

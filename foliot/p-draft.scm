@@ -550,7 +550,7 @@ Core fields: ~S
 (define (kp/write-draft-content ostream kp-widget tl-widget draftLT-file-object)
   (let* ((db-name (basename (db-file tl-widget)))
 	 (filter (active-filter tl-widget))
-	 (ulogo (kcfg/get 'ulogo))
+	 (ulogo (fcfg/get 'ulogo))
 	 (tpl-pos (get-active (template-combo kp-widget)))
 	 (tpl-tuple (db-pt/get-tuple (tpl-tuples kp-widget) tpl-pos))
 	 (tpl-name (db-pt/get tpl-tuple 'name))

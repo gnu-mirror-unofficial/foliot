@@ -807,9 +807,9 @@
 	(get-size (dialog tl-widget))
       (write-config "foliot"
 			(if (null? rests)
-			    (list (cons 'db-file (kcfg/get 'db-file))
-				  (cons 'open-at-startup (kcfg/get 'open-at-startup))
-				  (cons 'ulogo (kcfg/get 'ulogo))
+			    (list (cons 'db-file (fcfg/get 'db-file))
+				  (cons 'open-at-startup (fcfg/get 'open-at-startup))
+				  (cons 'ulogo (fcfg/get 'ulogo))
 				  (cons 'win-x win-x)
 				  (cons 'win-y win-y)
 				  (cons 'win-w win-w)
@@ -821,7 +821,7 @@
 				  (cons 'win-y win-y)
 				  (cons 'win-w win-w)
 				  (cons 'win-h win-h))))))
-    (kcfg/get 'reload))
+    (fcfg/get 'reload))
 
 
 ;;;
@@ -876,7 +876,7 @@
   (case mode
     ((open)
      (case checks-result
-       ((opened) (ftlw/post-open-db-ops tl-widget db-filename open-at-startup? (kcfg/get 'ulogo) db))
+       ((opened) (ftlw/post-open-db-ops tl-widget db-filename open-at-startup? (fcfg/get 'ulogo) db))
        ((opened-partial-schema)
 	(md2b/select-gui (dialog tl-widget)
 			 (_ "Confirm dialog")
@@ -885,7 +885,7 @@
 				    (basename db-filename)))
 			 (lambda ()
 			   (db/complete-schema db)
-			   (ftlw/post-open-db-ops tl-widget db-filename open-at-startup? (kcfg/get 'ulogo) db))
+			   (ftlw/post-open-db-ops tl-widget db-filename open-at-startup? (fcfg/get 'ulogo) db))
 			 (lambda ()
 			   ;; Notes: [a] an open at start-up incomplete schema db cancel operation must set
 			   ;; GNU Foliot to its no db mode; [b] a connect to an incomplete schema db cancel is
@@ -901,7 +901,7 @@
 			 (_ "This database does not contain the GNU Foliot schema, would you like to add it now?")
 			 (lambda ()
 			   (db/add-schema db)
-			   (ftlw/post-open-db-ops tl-widget db-filename open-at-startup? (kcfg/get 'ulogo) db))
+			   (ftlw/post-open-db-ops tl-widget db-filename open-at-startup? (fcfg/get 'ulogo) db))
 			 (lambda ()
 			   ;; Notes: [a] an open at start-up no-schema db is not possible; [b] a connect to
 			   ;; a no schema db cancel is ok [dialogs closed, prev connected db in use].
@@ -914,7 +914,7 @@
      ;; (format #t "ftlw/open-db: ~S ~S~%" mode db-filename)
      (let ((db (db-con/open db-filename #f)))
        (db/add-schema db)
-       (ftlw/post-open-db-ops tl-widget db-filename open-at-startup? (kcfg/get 'ulogo) db)))))
+       (ftlw/post-open-db-ops tl-widget db-filename open-at-startup? (fcfg/get 'ulogo) db)))))
 
 
 ;;;

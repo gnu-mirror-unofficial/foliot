@@ -210,8 +210,8 @@
   (_ "Some problem occured while trying to open your default GNU Foliot database: ~A. It could be that the file has been deleted, moved, that it exists but you don't have 'write permission' over it, or that, for some reason you'll have to determine, it is not a GNU Foliot database file anymore. Please check all of the above and start again or create/connect to another GNU Foliot database."))
 
 (define (foliot/open-db tl-widget)
-  (let ((db-file (kcfg/get 'db-file))
-	(open-at-startup (kcfg/get 'open-at-startup)))
+  (let ((db-file (fcfg/get 'db-file))
+	(open-at-startup (fcfg/get 'open-at-startup)))
     (if (and db-file open-at-startup)
 	;; we still need to proceed with all checks: it could have
 	;; been deleted, moved, chmod, delted schema ...
@@ -244,11 +244,11 @@
 
 (define (foliot/animate-ui uname gfile version debug-mode)
   (let ((tl-widget (ftlw/make-tl-widget uname gfile))
-	(win-x (kcfg/get 'win-x))
-	(win-y (kcfg/get 'win-y))
-	(win-w (kcfg/get 'win-w))
-	(win-h (kcfg/get 'win-h)))
-    ;; the config has already been red, now just call kcfg/get when
+	(win-x (fcfg/get 'win-x))
+	(win-y (fcfg/get 'win-y))
+	(win-w (fcfg/get 'win-w))
+	(win-h (fcfg/get 'win-h)))
+    ;; the config has already been red, now just call fcfg/get when
     ;; necessary or (kcgf/get 'reload) [if you manually change the
     ;; file for example for testing purposes]
     (set! *tl-widget* tl-widget)

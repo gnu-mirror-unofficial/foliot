@@ -88,7 +88,7 @@ create/connect to another GNU Foliot database.
   (let* ((kc-dialog (dialog kc-widget))
 	 (filename (get-filename kc-dialog))
 	 (reuse-db? (get-active (reuse-db-cb kc-widget)))
-	 (active-db-file (and (db-con) (kcfg/get 'db-file))))
+	 (active-db-file (and (db-con) (fcfg/get 'db-file))))
     (if (and active-db-file
 	     (string=? filename active-db-file))
 	(md1b/select-gui (dialog kc-widget)
@@ -141,8 +141,8 @@ create/connect to another GNU Foliot database.
 (define (kc/select-gui tl-widget)
   (let* ((parent (dialog tl-widget))
 	 (g-file (glade-file tl-widget))
-	 (db-file (kcfg/get 'db-file))
-	 (reuse-db? (or (not db-file) (kcfg/get 'open-at-startup)))
+	 (db-file (fcfg/get 'db-file))
+	 (reuse-db? (or (not db-file) (fcfg/get 'open-at-startup)))
 	 (kc-widget (kc/make-dialog parent g-file))
 	 (kc-dialog (dialog kc-widget)))
     ;; (format #t "Connecting Widget: ~S~%Parent: ~S~%Connecting Dialog: ~S~%"
