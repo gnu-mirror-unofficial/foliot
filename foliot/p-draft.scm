@@ -173,7 +173,7 @@
 
 (define (kp/write-draft-abstract-table-rows-2 ostream tl-widget db-name where group-by order-by row)
   (receive (ttime tdays ctime cdays)
-      (ktlw/get-totals tl-widget)
+      (ftlw/get-totals tl-widget)
     (for-each (lambda (row-spec)
 		(format ostream "
       \\rowcolor{~A}
@@ -184,12 +184,12 @@
 		(set! row (1+ row)))
 	(list (cons (_ "total time")
 		    (format #f "~A ~A - ~A ~A"
-			    ttime (ktlw/get-hour-hours ttime)
-			    tdays (ktlw/get-day-days tdays)))
+			    ttime (ftlw/get-hour-hours ttime)
+			    tdays (ftlw/get-day-days tdays)))
 	      (cons (_ "charged time")
 		    (format #f "~A ~A - ~A ~A"
-			    ctime (ktlw/get-hour-hours ctime)
-			    cdays (ktlw/get-day-days cdays)))
+			    ctime (ftlw/get-hour-hours ctime)
+			    cdays (ftlw/get-day-days cdays)))
 	      ))))
 
 (define (kp/write-draft-abstract-table ostream tl-widget db-name where group-by order-by)

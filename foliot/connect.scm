@@ -101,7 +101,7 @@ create/connect to another GNU Foliot database.
 	  ((open)
 	   ;; the user could select a 'wrong file'. all checks must be done but 'exists
 	   (receive (checks-result db)
-	       (ktlw/open-db-checks filename)
+	       (ftlw/open-db-checks filename)
 	     (case checks-result
 	       ((wrong-perm not-an-sqlite-file)
 		(md1b/select-gui (dialog tl-widget)
@@ -111,14 +111,14 @@ create/connect to another GNU Foliot database.
 				 (lambda () 'nothing)
 				 'dialog-warning))
 	       ((opened opened-partial-schema opened-no-schema)
-		(ktlw/open-db tl-widget filename 'from-gui 'open reuse-db? checks-result db)
+		(ftlw/open-db tl-widget filename 'from-gui 'open reuse-db? checks-result db)
 		(kc/close-dialog kc-dialog)))))
 	  ((create)
 	   ;; for some very obscure reasons, when in 'create' mode, kc/connect is called 2x ... see
 	   ;; foliot-bugs for details.  (format #t "modal?: ~S // New db for foliot in ~A~%" (get-modal
 	   ;; kc-dialog) filename)
 	   (when (get-modal kc-dialog)
-	     (let ((checks-result (ktlw/create-db-checks filename)))
+	     (let ((checks-result (ftlw/create-db-checks filename)))
 	       (case checks-result
 		 ((exists)
 		  (md1b/select-gui (dialog tl-widget)
@@ -135,7 +135,7 @@ create/connect to another GNU Foliot database.
 				   (lambda () 'nothing)
 				   'dialog-warning))
 		 ((ok opened)
-		  (ktlw/open-db tl-widget filename 'from-gui 'create reuse-db? checks-result #f)
+		  (ftlw/open-db tl-widget filename 'from-gui 'create reuse-db? checks-result #f)
 		  (kc/close-dialog kc-dialog))))))))))
 
 (define (kc/select-gui tl-widget)

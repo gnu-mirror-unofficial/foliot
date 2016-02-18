@@ -117,7 +117,7 @@
   (set! iter (current-iter tl-widget))
   (set! gdedit (date-edit tl-widget))
   (set! tuples (db-tuples tl-widget))
-  (set! tuple (and tuples (ktlw/get-tuple tl-widget row)))
+  (set! tuple (and tuples (ftlw/get-tuple tl-widget row)))
   (set! duration-sp (duration-sb tl-widget))
   (set! ref-lb (reference-lb tl-widget)))
 
@@ -137,7 +137,7 @@
 ;;;
 
 (define (foliot/set-gtk-entries tl-widget row iter)
-  (let* ((tuple (ktlw/get-tuple tl-widget row))
+  (let* ((tuple (ftlw/get-tuple tl-widget row))
 	 (idb (db-foliot/get tuple 'imported_db))
 	 (model (tv-model tl-widget)))
     ;; (format #t "~S~%" tuple)
@@ -145,12 +145,12 @@
 	(begin
 	  (set-markup (reference-lb tl-widget)
 		      (format #f "<span foreground=\"~A\"><i>~A:</i></span>" "#000000" (_ "Reference")))
-	  (set-text (reference-entry tl-widget) (number->string (ktlw/get 'id tl-widget row)))
+	  (set-text (reference-entry tl-widget) (number->string (ftlw/get 'id tl-widget row)))
 	  (hide (reference-eb tl-widget)))
 	(begin
 	  (set-markup (reference-lb tl-widget)
 		      (format #f "<span foreground=\"~A\"><i>~A:</i></span>" (kiter/get 'ibg model iter) (_ "Reference")))
-	  (set-text (reference-entry tl-widget) (number->string (ktlw/get 'imported_id tl-widget row)))
+	  (set-text (reference-entry tl-widget) (number->string (ftlw/get 'imported_id tl-widget row)))
 	  (show (reference-eb tl-widget))
 	  (modify-bg (reference-eb tl-widget) 'normal (kiter/get 'ibg model iter))))
     (set-text (date-entry tl-widget) (kiter/get 'date model iter))
@@ -173,7 +173,7 @@
 	  (begin
 	    ;; (gtk2/set-text (what-entry tl-widget) "")
 	    (set-active (what-combo tl-widget) -1))))
-    (gtk2/set-text (description-entry tl-widget) (ktlw/get 'description tl-widget row))
+    (gtk2/set-text (description-entry tl-widget) (ftlw/get 'description tl-widget row))
     (set-active (to-be-charged-cb tl-widget) (kiter/get 'to-be-charged model iter))))
 
 
@@ -216,19 +216,19 @@
 	;; we still need to proceed with all checks: it could have
 	;; been deleted, moved, chmod, delted schema ...
 	(receive (checks-result db)
-	    (ktlw/open-db-checks db-file)
+	    (ftlw/open-db-checks db-file)
 	  (case checks-result
 	    ((does-not-exist wrong-perm not-an-sqlite-file)
 	     (md1b/select-gui (dialog tl-widget)
 			      (_ "Warning!")
 			      (_ "DB connection problem:")
 			      (format #f "~?" (foliot/open-db-cant-open-str) (list db-file))
-			      (lambda () (ktlw/no-db-mode tl-widget))
+			      (lambda () (ftlw/no-db-mode tl-widget))
 			      'dialog-warning))
 	    ((opened opened-partial-schema opened-no-schema)
-	     (ktlw/open-db tl-widget db-file #f 'open open-at-startup checks-result db))))
+	     (ftlw/open-db tl-widget db-file #f 'open open-at-startup checks-result db))))
 	(begin
-	  (ktlw/no-db-mode tl-widget)
+	  (ftlw/no-db-mode tl-widget)
 	  (emit (con-bt tl-widget) 'clicked)))))
 
 (define (foliot/exit tl-widget)
@@ -238,12 +238,12 @@
 		   (_ "Exit GNU Foliot ?")
 		   (lambda ()
 		     (foliot/on-tv-row-change tl-widget)
-		     (ktlw/write-config tl-widget)
+		     (ftlw/write-config tl-widget)
 		     (exit 0))
 		   (lambda () 'nothing)))
 
 (define (foliot/animate-ui uname gfile version debug-mode)
-  (let ((tl-widget (ktlw/make-tl-widget uname gfile))
+  (let ((tl-widget (ftlw/make-tl-widget uname gfile))
 	(win-x (kcfg/get 'win-x))
 	(win-y (kcfg/get 'win-y))
 	(win-w (kcfg/get 'win-w))
@@ -278,7 +278,7 @@
 		 (if (and (eq? has-focus (tv tl-widget))
 			  (string-ci=? key-name "delete"))
 		     (begin
-		       (ktlw/delete tl-widget)
+		       (ftlw/delete tl-widget)
 		       #t) ;; stops the event propagation
 		     #f)))) ;; do not stop the event propagation
 
@@ -299,16 +299,16 @@
 	     'clicked
 	     (lambda (button)
 	       (foliot/on-tv-row-change tl-widget)
-	       (ktlw/duplicate tl-widget)))
+	       (ftlw/duplicate tl-widget)))
     (connect (add-bt tl-widget)
 	     'clicked
 	     (lambda (button)
 	       (foliot/on-tv-row-change tl-widget)
-	       (ktlw/add tl-widget)))
+	       (ftlw/add tl-widget)))
     (connect (del-bt tl-widget)
 	     'clicked
 	     (lambda (button)
-	       (ktlw/delete tl-widget)))
+	       (ftlw/delete tl-widget)))
     (connect (print-bt tl-widget)
 	     'clicked
 	     (lambda (button)
@@ -317,19 +317,19 @@
     (connect (first-bt tl-widget)
 	     'clicked
 	     (lambda (button)
-	       (ktlw/select-row tl-widget 0)))
+	       (ftlw/select-row tl-widget 0)))
     (connect (prev-bt tl-widget)
 	     'clicked
 	     (lambda (button)
-	       (ktlw/select-row tl-widget (- (current-row tl-widget) 1))))
+	       (ftlw/select-row tl-widget (- (current-row tl-widget) 1))))
     (connect (next-bt tl-widget)
 	     'clicked
 	     (lambda (button)
-	       (ktlw/select-row tl-widget (+ (current-row tl-widget) 1))))
+	       (ftlw/select-row tl-widget (+ (current-row tl-widget) 1))))
     (connect (last-bt tl-widget)
 	     'clicked
 	     (lambda (button)
-	       (ktlw/select-row tl-widget (- (length (db-tuples tl-widget)) 1))))
+	       (ftlw/select-row tl-widget (- (length (db-tuples tl-widget)) 1))))
     #;(connect (help-bt tl-widget)
 	     'clicked
 	     (lambda (button)
@@ -339,7 +339,7 @@
 	     'focus-out-event
 	     (lambda (entry event)
 	       ;; (format #t "entry ~S // event ~S~%" entry event)
-	       (ktlw/entry-std-cb entry
+	       (ftlw/entry-std-cb entry
 				  tl-widget
 				  'date_
 				  0 ;; list-store offset or #f
@@ -361,8 +361,8 @@
 		   ;; (dimfi 'row row 'duration value)
 		   (kiter/set 'duration model iter value)
 		   ;; update-db
-		   (ktlw/set 'duration tl-widget value row)
-		   (ktlw/update-totals-status-bars tl-widget)))))
+		   (ftlw/set 'duration tl-widget value row)
+		   (ftlw/update-totals-status-bars tl-widget)))))
 
     (connect (to-be-charged-cb tl-widget)
 	     'toggled
@@ -371,26 +371,26 @@
 		 ;; (dimfi "to-be-charged callback, gui-callback true...")
 		 (let* ((model (tv-model tl-widget))
 			(row (current-row tl-widget))
-			(tuple (ktlw/get-tuple tl-widget row))
+			(tuple (ftlw/get-tuple tl-widget row))
 			(id (db-foliot/get tuple 'id))
 			(iter (current-iter tl-widget))
 			(new-value (get-active widget)))
 		   ;; do it on the toggle in the list store too ...
-		   (when (active-filter tl-widget) (ktlw/add-id id tl-widget))
+		   (when (active-filter tl-widget) (ftlw/add-id id tl-widget))
 		   (set! (gui-callback? tl-widget) #f)
 		   (kiter/set 'to-be-charged model iter new-value)
 		   (set! (gui-callback? tl-widget) #t)
 		   ;; update-db
-		   (ktlw/set 'to_be_charged tl-widget (sqlite/boolean new-value) row)
-		   (ktlw/update-totals-status-bars tl-widget)
-		   (ktlw/update-store-check-position tl-widget 'to_be_charged new-value #f)))))
+		   (ftlw/set 'to_be_charged tl-widget (sqlite/boolean new-value) row)
+		   (ftlw/update-totals-status-bars tl-widget)
+		   (ftlw/update-store-check-position tl-widget 'to_be_charged new-value #f)))))
 
     (connect (description-entry tl-widget)
 	     'focus-out-event
 	     (lambda (entry event)
 	       ;; (format #t "entry ~S // event ~S~%" entry event)
 	       (when (gui-callback? tl-widget)
-		 (ktlw/entry-std-cb entry
+		 (ftlw/entry-std-cb entry
 				    tl-widget
 				    'description
 				    #f      ; column position if used in the list-store
@@ -403,13 +403,13 @@
 	     (lambda (button)
 	       (foliot/on-tv-row-change tl-widget)
 	       (gtk2/status-pop (status-bar-2 tl-widget) "")
-	       (ktlw/filter-apply tl-widget 'force)))
+	       (ftlw/filter-apply tl-widget 'force)))
     (connect (filter-clear-bt tl-widget)
 	     'clicked
 	     (lambda (button)
 	       (foliot/on-tv-row-change tl-widget)
 	       (gtk2/status-pop (status-bar-2 tl-widget) "")
-	       (ktlw/filter-clear tl-widget)))
+	       (ftlw/filter-clear tl-widget)))
     (connect (filter-select-bt tl-widget)
 	     'clicked
 	     (lambda (button)
@@ -433,37 +433,37 @@
 		       (gtk2/set-text entry ""))
 		     (gtk2/status-pop (status-bar-2 tl-widget) ""))
 		 ;; we still have to call filter-apply of course
-		 (ktlw/filter-apply tl-widget)
+		 (ftlw/filter-apply tl-widget)
 		 #f)))
     (connect (filter-who-entry tl-widget)
 	     'focus-out-event
 	     (lambda (entry event)
 	       (gtk2/status-pop (status-bar-2 tl-widget) "")
-	       (ktlw/filter-apply tl-widget)
+	       (ftlw/filter-apply tl-widget)
 	       #f))
     (connect (filter-for-whom-entry tl-widget)
 	     'focus-out-event
 	     (lambda (entry event)
 	       (gtk2/status-pop (status-bar-2 tl-widget) "")
-	       (ktlw/filter-apply tl-widget)
+	       (ftlw/filter-apply tl-widget)
 	       #f))
     (connect (filter-what-entry tl-widget)
 	     'focus-out-event
 	     (lambda (entry event)
 	       (gtk2/status-pop (status-bar-2 tl-widget) "")
-	       (ktlw/filter-apply tl-widget)
+	       (ftlw/filter-apply tl-widget)
 	       #f))
     (connect (filter-description-entry tl-widget)
 	     'focus-out-event
 	     (lambda (entry event)
 	       (gtk2/status-pop (status-bar-2 tl-widget) "")
-	       (ktlw/filter-apply tl-widget)
+	       (ftlw/filter-apply tl-widget)
 	       #f))
     (connect (filter-to-be-charged-combo tl-widget)
 	     'changed
 	     (lambda (combo)
 	       (if (gui-callback? tl-widget)
-		   (ktlw/filter-apply tl-widget 'force))))
+		   (ftlw/filter-apply tl-widget 'force))))
     ;;
     ;; treeview
     ;;
@@ -489,12 +489,12 @@
 			      (guicbpv? (gui-callback? tl-widget)))
 			 ;; (dimfi "row-changed - new-row: " row)
 			 (gtk2/status-pop (status-bar-2 tl-widget) "")
-			 (ktlw/set-cur-globals tl-widget row iter)
+			 (ftlw/set-cur-globals tl-widget row iter)
 			 (set! (gui-callback? tl-widget) #f)
 			 (foliot/set-gtk-entries tl-widget row iter)
 			 (set! (gui-callback? tl-widget) guicbpv?)
-			 (ktlw/check-nav-tb-sensitive-needs tl-widget (1+ row))
-			 (ktlw/update-status-bar-1 tl-widget)))))))
+			 (ftlw/check-nav-tb-sensitive-needs tl-widget (1+ row))
+			 (ftlw/update-status-bar-1 tl-widget)))))))
     (connect (tv tl-widget)
 	     'cursor-changed
 	     (lambda (tview)

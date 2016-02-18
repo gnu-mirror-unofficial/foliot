@@ -155,46 +155,46 @@
 	    status-bar-3 ;; total time
 	    status-bar-4 ;; charged time
 
-	    ktlw/write-config
+	    ftlw/write-config
 
-	    ktlw/create-db-checks
-	    ktlw/open-db-checks
-	    ktlw/open-db
-	    ktlw/fill-combos
-	    ktlw/connect-combos
+	    ftlw/create-db-checks
+	    ftlw/open-db-checks
+	    ftlw/open-db
+	    ftlw/fill-combos
+	    ftlw/connect-combos
 
-	    ktlw/get-tuple
-	    ktlw/get
-	    ktlw/set
-	    ktlw/setup-treeview
-	    ktlw/fill-tv
-	    ktlw/get-hr-hrs
-	    ktlw/get-hour-hours
-	    ktlw/get-day-days
-	    ktlw/get-totals
-	    ktlw/update-status-bar-1
-	    ktlw/select-ctime
-	    ktlw/update-totals-status-bars
+	    ftlw/get-tuple
+	    ftlw/get
+	    ftlw/set
+	    ftlw/setup-treeview
+	    ftlw/fill-tv
+	    ftlw/get-hr-hrs
+	    ftlw/get-hour-hours
+	    ftlw/get-day-days
+	    ftlw/get-totals
+	    ftlw/update-status-bar-1
+	    ftlw/select-ctime
+	    ftlw/update-totals-status-bars
 
-	    ktlw/set-cur-globals
-	    ktlw/select-row
-	    ktlw/update-store-check-position
-	    ktlw/entry-std-cb
-	    ktlw/make-tl-widget
+	    ftlw/set-cur-globals
+	    ftlw/select-row
+	    ftlw/update-store-check-position
+	    ftlw/entry-std-cb
+	    ftlw/make-tl-widget
 
-	    ktlw/add-id ;; filter additional 'or' id set
-	    ktlw/del-id
-	    ktlw/import
-	    ktlw/add
-	    ktlw/duplicate
-	    ktlw/delete
+	    ftlw/add-id ;; filter additional 'or' id set
+	    ftlw/del-id
+	    ftlw/import
+	    ftlw/add
+	    ftlw/duplicate
+	    ftlw/delete
 
-	    ktlw/check-nav-tb-sensitive-needs
-	    ktlw/empty-subset-or-db-mode
-	    ktlw/no-db-mode
-	    ktlw/normal-mode
-	    ktlw/filter-apply
-	    ktlw/filter-clear))
+	    ftlw/check-nav-tb-sensitive-needs
+	    ftlw/empty-subset-or-db-mode
+	    ftlw/no-db-mode
+	    ftlw/normal-mode
+	    ftlw/filter-apply
+	    ftlw/filter-clear))
 
 
 (eval-when (expand load eval)
@@ -314,7 +314,7 @@
   (format #t "Widget: ~S~%" widget)
   (values))
 
-(define (ktlw/add-id id tl-widget)
+(define (ftlw/add-id id tl-widget)
   ;; filter additional 'or' id set [ids are integers]
   ;; id might already be in the set
   (let ((ids (id-set tl-widget)))
@@ -324,7 +324,7 @@
 	   (set! (id-set tl-widget) (sort! (cons id ids) <))))
     (id-set tl-widget)))
 
-(define (ktlw/del-id id tl-widget)
+(define (ftlw/del-id id tl-widget)
   ;; this could be called with an id that is not in the set
   (let ((ids (id-set tl-widget)))
     (and ids
@@ -343,12 +343,12 @@
 ;;; Treeview related stuff
 ;;;
 
-(define (ktlw/a-facturer-toggle-set-callback tl-widget model path update-db?)
-  ;; (pk "ktlw/a-facturer-toggle-set-callback, path:" path)
+(define (ftlw/a-facturer-toggle-set-callback tl-widget model path update-db?)
+  ;; (pk "ftlw/a-facturer-toggle-set-callback, path:" path)
   (let* ((row (string->number path)) ;; (current-row tl-widget)) ;; <- this is not correct the
 	 ;; user may click the checkbox of another iter AND this
 	 ;; callback seems to be called before the row-changed one!
-	 (tuple (ktlw/get-tuple tl-widget row))
+	 (tuple (ftlw/get-tuple tl-widget row))
 	 (id (db-foliot/get tuple 'id))
 	 (iter (get-iter model path))
 	 (iter-get (lambda (model iter) (kiter/get 'to-be-charged model iter)))
@@ -360,15 +360,15 @@
     (set! (gui-callback? tl-widget) #f)
     (set-active (to-be-charged-cb tl-widget) new-value)
     (set! (gui-callback? tl-widget) guicbpv?)
-    (when (active-filter tl-widget) (ktlw/add-id id tl-widget))
+    (when (active-filter tl-widget) (ftlw/add-id id tl-widget))
     ;; update db
     ;; (format #t "a-facturer - id: ~A, toggled row: ~S, path: ~S~%" id row path)
-    (ktlw/set 'to_be_charged tl-widget (sqlite/boolean new-value) row)
-    (ktlw/update-totals-status-bars tl-widget)
-    (ktlw/update-store-check-position tl-widget 'to_be_charged new-value #f row)
+    (ftlw/set 'to_be_charged tl-widget (sqlite/boolean new-value) row)
+    (ftlw/update-totals-status-bars tl-widget)
+    (ftlw/update-store-check-position tl-widget 'to_be_charged new-value #f row)
     #f)) ;;
 
-(define (ktlw/add-model treeview)
+(define (ftlw/add-model treeview)
   (let* ((column-types (list <gchararray>
 			     <gchararray>
 			     <gchararray>
@@ -384,7 +384,7 @@
     (set-model treeview model)
     (values model (get-selection treeview))))
 
-(define (ktlw/add-columns tl-widget treeview)
+(define (ftlw/add-columns tl-widget treeview)
   (let* ((dpi-ratio (storage-get 'Xft.dpi.ratio))
 	 (apply-ratio? (storage-get 'apply-dpi-ratio?))
 	 (model (get-model treeview))
@@ -519,16 +519,16 @@
 	     (lambda (widget path)
 	       (when (gui-callback? tl-widget)
 		 ;; (pk "iter set callback, a-facturer")
-		 (ktlw/a-facturer-toggle-set-callback tl-widget model path #t))))))
+		 (ftlw/a-facturer-toggle-set-callback tl-widget model path #t))))))
 
-(define (ktlw/setup-treeview tl-widget)
+(define (ftlw/setup-treeview tl-widget)
   (let ((treeview (tv tl-widget)))
     (receive (model selection)
-	(ktlw/add-model treeview)
+	(ftlw/add-model treeview)
       (set-mode selection 'single)
       (set! (tv-model tl-widget) model)
       (set! (tv-sel tl-widget) selection))
-    (ktlw/add-columns tl-widget treeview)
+    (ftlw/add-columns tl-widget treeview)
     tl-widget))
 
 
@@ -536,13 +536,13 @@
 ;;; Later to be generalized
 ;;;
 
-(define (ktlw/build-filter-conditions-sepxr tl-widget)
+(define (ftlw/build-filter-conditions-sepxr tl-widget)
   (let* ((date-f (gtk2/get-text (filter-date-entry tl-widget) 'trim))
 	 (who-f (str/prep-str-for-sql (gtk2/get-text (filter-who-entry tl-widget) 'trim)))
 	 (for-whom-f (str/prep-str-for-sql (gtk2/get-text (filter-for-whom-entry tl-widget) 'trim)))
 	 (what-f (str/prep-str-for-sql (gtk2/get-text (filter-what-entry tl-widget) 'trim)))
 	 (description-f (str/prep-str-for-sql (gtk2/get-text (filter-description-entry tl-widget) 'trim)))
-	 (to-be-charged-f (ktlw/filter-to-be-charged? tl-widget)))
+	 (to-be-charged-f (ftlw/filter-to-be-charged? tl-widget)))
     (and (or (not (string-null? date-f))
 	     (not (string-null? who-f))
 	     (not (string-null? for-whom-f))
@@ -555,36 +555,36 @@
 	       ("for_whom" text ,for-whom-f)
 	       ("what" text ,what-f)
 	       ("description" text ,description-f)
-	       ("to_be_charged" text ,(ktlw/filter-to-be-charged-sqlvalue tl-widget)))
+	       ("to_be_charged" text ,(ftlw/filter-to-be-charged-sqlvalue tl-widget)))
 	     `(("date_" date ,date-f)
 	       ("who" text ,who-f)
 	       ("for_whom" text ,for-whom-f)
 	       ("what" text ,what-f)
 	       ("description" text ,description-f))))))
 
-(define (ktlw/filter-to-be-charged? tl-widget)
+(define (ftlw/filter-to-be-charged? tl-widget)
   (case (get-active (filter-to-be-charged-combo tl-widget))
     ((0) #f) ;; it is not used as a filter criteria
     ((1) "to_be_charged = 't'") ;; used as a filter criteria and must be true
     ((2) "to_be_charged = 't'"))) ;; used as a filter criteria and must be false
 
-(define (ktlw/filter-to-be-charged-sqlvalue tl-widget)
+(define (ftlw/filter-to-be-charged-sqlvalue tl-widget)
   (case (get-active (filter-to-be-charged-combo tl-widget))
     ((1) "t")
     ((2) "f")
     (else
-     (format #t "ktlw/filter-to-be-charged-sqlvalue should not have been called!~%")
+     (format #t "ftlw/filter-to-be-charged-sqlvalue should not have been called!~%")
      #f)))
 
-(define (ktlw/filter-to-be-charged-value tl-widget)
+(define (ftlw/filter-to-be-charged-value tl-widget)
   (case (get-active (filter-to-be-charged-combo tl-widget))
     ((1) #t)
     ((2) #f)
     (else
-     (format #t "ktlw/filter-to-be-charged-value should not have been called!~%")
+     (format #t "ftlw/filter-to-be-charged-value should not have been called!~%")
      #f)))
 
-(define (ktlw/update-status-bar-1 tl-widget)
+(define (ftlw/update-status-bar-1 tl-widget)
   (let ((status-bar (status-bar-1 tl-widget))
 	(new-row (current-row tl-widget))
 	(tuples-nb (and (db-tuples tl-widget)
@@ -597,7 +597,7 @@
 	(gtk2/status-push status-bar (format #f "Record: ~A/~A" (1+ new-row) tuples-nb) "")
 	(gtk2/status-push status-bar "Record: none" ""))))
 
-(define (ktlw/select-ctime tl-widget)
+(define (ftlw/select-ctime tl-widget)
   ;; Foliot not only allows the user to define and activate a filter,
   ;; but to work from there [on the subset] and in particular he may
   ;; add entries and/or delete/modify them. As he does this, we keep
@@ -620,8 +620,8 @@
 
   (let* ((filter? (active-filter tl-widget))
 	 (id-set? (id-set tl-widget))
-	 (f-tbc? (ktlw/filter-to-be-charged? tl-widget))
-	 (f-tbc-true? (and f-tbc? (ktlw/filter-to-be-charged-value tl-widget)))
+	 (f-tbc? (ftlw/filter-to-be-charged? tl-widget))
+	 (f-tbc-true? (and f-tbc? (ftlw/filter-to-be-charged-value tl-widget)))
 	 (clause (cond ((not filter?) "to_be_charged = 't'")
 		       ((not id-set?)
 			(if f-tbc-true?
@@ -630,13 +630,13 @@
 				#f
 				(format #f "(~A) and to_be_charged = 't'" filter?))))
 		       (id-set?
-			(let* ((filter-conditions (ktlw/build-filter-conditions-sepxr tl-widget))
+			(let* ((filter-conditions (ftlw/build-filter-conditions-sepxr tl-widget))
 			       (new-filter (and filter-conditions (dbf/get-filter filter-conditions))))
 			  (format #f "((~A) or id in ~A) and to_be_charged = 't'"
 				  new-filter
 				  (sqlite/build-set-expression id-set?))))
 		       (else
-			(format #t "did I missed something? ktlw/select-ctime uncoverd condition...~%")
+			(format #t "did I missed something? ftlw/select-ctime uncoverd condition...~%")
 			#f))))
     (if clause
 	(begin
@@ -647,16 +647,16 @@
 	;; anyway
 	(list (make-vector 1 #f)))))
 
-(define (ktlw/get-hour-hours nb)
+(define (ftlw/get-hour-hours nb)
   (if (or (fp/<? nb 1) (fp/=? nb 1)) (_ "hour") (_ "hours")))
 
-(define (ktlw/get-hr-hrs nb)
+(define (ftlw/get-hr-hrs nb)
   (if (or (fp/<? nb 1) (fp/=? nb 1)) (_ "hr") (_ "hrs")))
 
-(define (ktlw/get-day-days nb)
+(define (ftlw/get-day-days nb)
   (if (or (fp/<? nb 1) (fp/=? nb 1)) (_ "day") (_ "days")))
 
-(define (ktlw/get-totals tl-widget)
+(define (ftlw/get-totals tl-widget)
   ;; tresult, returned by guile-sqlite, is a list of 1 vector
   ;; of 1 value. the value is a float or #f [when the db or the
   ;; subset upon which the query is performed is empty].
@@ -664,14 +664,14 @@
 	 (tduration (vector-ref (car tresult) 0))
 	 (ttime (and tduration (fp/round tduration 1)))
 	 (tdays (and ttime (fp/round (/ ttime 8) 1)))
-	 (cresult (ktlw/select-ctime tl-widget))
+	 (cresult (ftlw/select-ctime tl-widget))
 	 (cduration (vector-ref (car cresult) 0))
 	 (ctime (and cduration (fp/round cduration 1)))
 	 (cdays (and ctime (fp/round (/ ctime 8) 1))))
     (values (if ttime ttime 0.0) (if tdays tdays 0.0)
 	    (if ctime ctime 0.0) (if cdays cdays 0.0))))
 
-(define (ktlw/update-totals-status-bars tl-widget)
+(define (ftlw/update-totals-status-bars tl-widget)
   (let ((ttime-sbar (status-bar-3 tl-widget)) ;; totals ...
 	(ctime-sbar (status-bar-4 tl-widget))) ;; charged ...
     (gtk2/status-pop ttime-sbar "")
@@ -681,24 +681,24 @@
 	  (gtk2/status-push ttime-sbar (format #f "~A: n/a" (_ "Total")) "")
 	  (gtk2/status-push ctime-sbar (format #f "~A: n/a" (_ "Charged")) ""))
 	(receive (ttime tdays ctime cdays)
-	    (ktlw/get-totals tl-widget)
+	    (ftlw/get-totals tl-widget)
 	  ;; here we will use ngettext
 	  (gtk2/status-push ttime-sbar (format #f "~A: ~A ~A - ~A ~A"
 					       (_ "Total")
-					       ttime (ktlw/get-hr-hrs ttime)
-					       tdays (ktlw/get-day-days tdays)) "")
+					       ttime (ftlw/get-hr-hrs ttime)
+					       tdays (ftlw/get-day-days tdays)) "")
 	  (if ctime
 	      (gtk2/status-push ctime-sbar (format #f "~A: ~A ~A - ~A ~A"
 						   (_ "Charged")
-						   ctime (ktlw/get-hr-hrs ctime)
-						   cdays (ktlw/get-day-days cdays)) "")
+						   ctime (ftlw/get-hr-hrs ctime)
+						   cdays (ftlw/get-day-days cdays)) "")
 	      (gtk2/status-push ctime-sbar "Charged: n/a" ""))))))
 
-(define (ktlw/set-cur-globals tl-widget row iter)
+(define (ftlw/set-cur-globals tl-widget row iter)
   (set! (current-row tl-widget) row)
   (set! (current-iter tl-widget) iter))
 
-(define (ktlw/select-row tl-widget new-row . noscroll?)
+(define (ftlw/select-row tl-widget new-row . noscroll?)
   (when (gui-callback? tl-widget)
     (let ((path (list new-row))
 	  (tvsel (tv-sel tl-widget)))
@@ -707,12 +707,12 @@
       (unselect-all tvsel)
       ;; (format #t "Before select-path, new-row: ~S~%" new-row)
       (select-path tvsel path)
-      (ktlw/update-status-bar-1 tl-widget)
+      (ftlw/update-status-bar-1 tl-widget)
       (when (null? noscroll?)
 	(scroll-to-cell (tv tl-widget) path #f #t 0.3))
       (set! (gui-callback? tl-widget) #t)))) ;; prev value was #t
 
-(define* (ktlw/update-store-check-position tl-widget what new-value #:optional (set-iter? #t) row)
+(define* (ftlw/update-store-check-position tl-widget what new-value #:optional (set-iter? #t) row)
   ;; ATTENTION: il faut chercher l'iter courrant et non prendre
   ;;            la selection parce qu'il se peut que le présent appel
   ;;            résulte d'un focus-out-event provoquer par
@@ -724,9 +724,9 @@
   (let* ((model (tv-model tl-widget))
 	 (old-pos (if row row (current-row tl-widget)))
 	 (old-iter (get-iter model (list old-pos)))
-	 (db-tuple (and old-pos (ktlw/get-tuple tl-widget old-pos)))
+	 (db-tuple (and old-pos (ftlw/get-tuple tl-widget old-pos)))
 	 (reference (db-foliot/get db-tuple 'id))
-	 (old-entry (and db-tuple (ktlw/get what tl-widget old-pos)))
+	 (old-entry (and db-tuple (ftlw/get what tl-widget old-pos)))
 	 (tuples (db-foliot/select-some (active-filter tl-widget) (id-set tl-widget)))
 	 (new-pos (db-foliot/find-pos tuples 'id reference =))
 	 (reordered? (not (= old-pos new-pos)))
@@ -749,18 +749,18 @@
 	(if row
 	    (begin
 	      (set! (g-reselect-path? tl-widget) new-path)
-	      (ktlw/set-cur-globals tl-widget new-pos new-iter))
-	    (ktlw/select-row tl-widget new-pos))
+	      (ftlw/set-cur-globals tl-widget new-pos new-iter))
+	    (ftlw/select-row tl-widget new-pos))
 	;; (dimfi "reordered: old / new pos / current-row: " old-pos new-pos (current-row tl-widget))
 	(set! (gui-callback? tl-widget) prev-gui-cb?)))))
 
-(define (ktlw/entry-std-cb entry tl-widget what list-store-col-pos empty-msg . date?)
+(define (ftlw/entry-std-cb entry tl-widget what list-store-col-pos empty-msg . date?)
   (let* ((old-pos (current-row tl-widget))
 	 (db-tuple (and old-pos
 			(>= old-pos 0)
-			(ktlw/get-tuple tl-widget old-pos)))
+			(ftlw/get-tuple tl-widget old-pos)))
 	 (reference (and db-tuple (db-foliot/get db-tuple 'id)))
-	 (old-entry (and db-tuple (ktlw/get what tl-widget old-pos)))
+	 (old-entry (and db-tuple (ftlw/get what tl-widget old-pos)))
 	 (new-entry (gtk2/get-text entry)))
     ;; (format #t "Old: ~S, New: ~S~%Date?: ~S~%" old-entry new-entry date?)
     (if (and db-tuple
@@ -783,9 +783,9 @@
 	      (if updated?
 		  (begin
 		    (when (active-filter tl-widget)
-		      (ktlw/add-id reference tl-widget))
+		      (ftlw/add-id reference tl-widget))
 		    (when list-store-col-pos
-		      (ktlw/update-store-check-position tl-widget what new-entry)))
+		      (ftlw/update-store-check-position tl-widget what new-entry)))
 		  (begin
 		    (gdk-beep)
 		    (gtk2/status-pop (status-bar-2 tl-widget) "")
@@ -800,7 +800,7 @@
 ;;; Config
 ;;;
 
-(define (ktlw/write-config tl-widget . rests)
+(define (ftlw/write-config tl-widget . rests)
   (receive (win-x win-y)
       (get-position (dialog tl-widget))
     (receive (win-w win-h)
@@ -828,15 +828,15 @@
 ;;; Open DB
 ;;;
 
-(define (ktlw/create-db-checks db-file)
+(define (ftlw/create-db-checks db-file)
   ;; we need write access on the basename
   (let ((directory (dirname db-file)))
     (cond ((access? db-file F_OK) 'exists)
 	  ((not (access? directory W_OK)) 'wrong-perm)
 	  (else 'ok))))
 
-(define (ktlw/open-db-checks db-file)
-  ;; this will be called by kc/connect 'open mode or ktlw/open-db
+(define (ftlw/open-db-checks db-file)
+  ;; this will be called by kc/connect 'open mode or ftlw/open-db
   ;; based on foliot.config infos. in both of these cases, it must
   ;; check that:
   ;;   a. the file [still] exists;
@@ -855,7 +855,7 @@
 		     ((none) 'opened-no-schema))))
 	    db)))
 
-(define (ktlw/post-open-db-ops tl-widget db-fname open-at-startup? ulogo db)
+(define (ftlw/post-open-db-ops tl-widget db-fname open-at-startup? ulogo db)
   ;; the list-store related operations that needs to be done @ connection time is
   ;; exactly what needs to be done when clearing a filter _but_ (1) filling the
   ;; combos _and_ (2) selecting the first row [this is because filter-clear will
@@ -863,20 +863,20 @@
   (db-con/set-db-con db (basename db-fname))
   (set! (active-filter tl-widget) #t)
   (set! (db-file tl-widget) db-fname)
-  (ktlw/write-config tl-widget db-fname open-at-startup? ulogo)
+  (ftlw/write-config tl-widget db-fname open-at-startup? ulogo)
   (set-markup (db-name-lb1 tl-widget)
 	      (format #f "<span foreground=\"#777777\"><b>[ ~A ]</b></span>" (basename db-fname)))
   (run-shinning-room-237-checks db)
-  (ktlw/filter-clear tl-widget 'fillcombos)
-  (unless (= (current-row tl-widget) 0) (ktlw/select-row tl-widget 0)))
+  (ftlw/filter-clear tl-widget 'fillcombos)
+  (unless (= (current-row tl-widget) 0) (ftlw/select-row tl-widget 0)))
 
-(define (ktlw/open-db tl-widget db-filename from-gui? mode open-at-startup? checks-result db)
+(define (ftlw/open-db tl-widget db-filename from-gui? mode open-at-startup? checks-result db)
   ;; when basic checks passed, the schema is tested and for this the db is opened
   ;; already: -> db [the argument] is either #f or a db connector
   (case mode
     ((open)
      (case checks-result
-       ((opened) (ktlw/post-open-db-ops tl-widget db-filename open-at-startup? (kcfg/get 'ulogo) db))
+       ((opened) (ftlw/post-open-db-ops tl-widget db-filename open-at-startup? (kcfg/get 'ulogo) db))
        ((opened-partial-schema)
 	(md2b/select-gui (dialog tl-widget)
 			 (_ "Confirm dialog")
@@ -885,14 +885,14 @@
 				    (basename db-filename)))
 			 (lambda ()
 			   (db/complete-schema db)
-			   (ktlw/post-open-db-ops tl-widget db-filename open-at-startup? (kcfg/get 'ulogo) db))
+			   (ftlw/post-open-db-ops tl-widget db-filename open-at-startup? (kcfg/get 'ulogo) db))
 			 (lambda ()
 			   ;; Notes: [a] an open at start-up incomplete schema db cancel operation must set
 			   ;; GNU Foliot to its no db mode; [b] a connect to an incomplete schema db cancel is
 			   ;; ok, [dialogs closed, prev connected db in use].
 			   (if (db-con)
 			       'nothing
-			       (ktlw/no-db-mode tl-widget))))
+			       (ftlw/no-db-mode tl-widget))))
 	#f) ;;
        ((opened-no-schema)
 	(md2b/select-gui (dialog tl-widget)
@@ -901,46 +901,46 @@
 			 (_ "This database does not contain the GNU Foliot schema, would you like to add it now?")
 			 (lambda ()
 			   (db/add-schema db)
-			   (ktlw/post-open-db-ops tl-widget db-filename open-at-startup? (kcfg/get 'ulogo) db))
+			   (ftlw/post-open-db-ops tl-widget db-filename open-at-startup? (kcfg/get 'ulogo) db))
 			 (lambda ()
 			   ;; Notes: [a] an open at start-up no-schema db is not possible; [b] a connect to
 			   ;; a no schema db cancel is ok [dialogs closed, prev connected db in use].
 			   (if (db-con)
 			       'nothing
-			       (ktlw/no-db-mode tl-widget))))
+			       (ftlw/no-db-mode tl-widget))))
 
 	#f)))
     ((create)
-     ;; (format #t "ktlw/open-db: ~S ~S~%" mode db-filename)
+     ;; (format #t "ftlw/open-db: ~S ~S~%" mode db-filename)
      (let ((db (db-con/open db-filename #f)))
        (db/add-schema db)
-       (ktlw/post-open-db-ops tl-widget db-filename open-at-startup? (kcfg/get 'ulogo) db)))))
+       (ftlw/post-open-db-ops tl-widget db-filename open-at-startup? (kcfg/get 'ulogo) db)))))
 
 
 ;;;
 ;;; Combos related
 ;;;
 
-(define (ktlw/fill-combo tl-widget values-acc combo-acc db-field)
+(define (ftlw/fill-combo tl-widget values-acc combo-acc db-field)
   (let ((values (db-foliot/select-distinct db-field 'add-empty)))
     (set! (values-acc tl-widget) values)
     (gtk2/fill-combo (combo-acc tl-widget) values)))
 
-(define (ktlw/fill-combos tl-widget)
+(define (ftlw/fill-combos tl-widget)
   (for-each (lambda (vcd)
-	       (ktlw/fill-combo tl-widget (car vcd) (cadr vcd) (caddr vcd)))
+	       (ftlw/fill-combo tl-widget (car vcd) (cadr vcd) (caddr vcd)))
       `((,whos ,who-combo who)
 	(,for-whoms ,for-whom-combo for_whom)
 	(,whats ,what-combo what))))
 
-(define (ktlw/trace-combo-callback tl-widget combo entry db-fname in-store? signal)
+(define (ftlw/trace-combo-callback tl-widget combo entry db-fname in-store? signal)
   (when (storage-get 'debug)
     (let* ((row (current-row tl-widget))
-	   (db-tuple (ktlw/get-tuple tl-widget row))
+	   (db-tuple (ftlw/get-tuple tl-widget row))
 	   (id (db-foliot/get db-tuple 'id)))
       (dimfi (format #f "id ~A" id) db-fname signal (get-active combo) (get-text entry) in-store?))))
 
-(define (ktlw/connect-combos-1 combos-defs)
+(define (ftlw/connect-combos-1 combos-defs)
   (for-each (lambda (combo-def)
 	      (let* ((tl-widget (list-ref combo-def 0))
 		     (which-combo (list-ref combo-def 1))
@@ -956,28 +956,28 @@
 			 (lambda (combo)
 			   (when (gui-callback? tl-widget)
 			     (let* ((row (current-row tl-widget))
-				    (tuple (ktlw/get-tuple tl-widget row))
+				    (tuple (ftlw/get-tuple tl-widget row))
 				    (id (db-foliot/get tuple 'id))
 				    (value (get-text entry)))
-			       (ktlw/trace-combo-callback tl-widget combo entry db-fname in-store? 'changed)
-			       (ktlw/set db-fname tl-widget value row)
+			       (ftlw/trace-combo-callback tl-widget combo entry db-fname in-store? 'changed)
+			       (ftlw/set db-fname tl-widget value row)
 			       ;; if active-filter, we add the id to the set, even if we are not
 			       ;; certain this is absolutely necessary, since the cost of checking would
 			       ;; actually be much much higher.
-			       (when (active-filter tl-widget) (ktlw/add-id id tl-widget))
-			       (when in-store? (ktlw/update-store-check-position tl-widget db-fname value))))))
+			       (when (active-filter tl-widget) (ftlw/add-id id tl-widget))
+			       (when in-store? (ftlw/update-store-check-position tl-widget db-fname value))))))
 		(connect combo
 			 'move-active
 			 (lambda (combo scroll-type)
-			   (ktlw/trace-combo-callback tl-widget combo entry db-fname in-store? 'move-active)))
+			   (ftlw/trace-combo-callback tl-widget combo entry db-fname in-store? 'move-active)))
 		(connect combo
 			 'popup
 			 (lambda (combo)
-			   (ktlw/trace-combo-callback tl-widget combo entry db-fname in-store? 'popup)))
+			   (ftlw/trace-combo-callback tl-widget combo entry db-fname in-store? 'popup)))
 		(connect entry
 			 'focus-in-event
 			 (lambda (entry event)
-			   (ktlw/trace-combo-callback tl-widget combo entry db-fname in-store? 'focus-in)
+			   (ftlw/trace-combo-callback tl-widget combo entry db-fname in-store? 'focus-in)
 			   #f)) ;; do not stop - proceed with internal methods
 		(connect entry
 			 'focus-out-event
@@ -985,7 +985,7 @@
 			   (let ((active (get-active combo))
 				 (value (get-text entry))
 				 (new-values (db-get-values-func)))
-			     (ktlw/trace-combo-callback tl-widget combo entry db-fname in-store? 'focus-out)
+			     (ftlw/trace-combo-callback tl-widget combo entry db-fname in-store? 'focus-out)
 			     (set! (gui-callback? tl-widget) #f)
 			     (set! (kw-acc tl-widget) new-values)
 			     (gtk2/fill-combo combo new-values)
@@ -994,8 +994,8 @@
 			   #f))))  ;; do not stop - proceed with internal methods
       combos-defs))
 
-(define (ktlw/connect-combos tl-widget)
-  (ktlw/connect-combos-1 `((,tl-widget ,who-combo ,who-entry who #t ,whos
+(define (ftlw/connect-combos tl-widget)
+  (ftlw/connect-combos-1 `((,tl-widget ,who-combo ,who-entry who #t ,whos
 				       ,(lambda () (db-foliot/select-distinct 'who #t)))
 			   (,tl-widget ,for-whom-combo ,for-whom-entry for_whom #t ,for-whoms
 				       ,(lambda () (db-foliot/select-distinct 'for_whom #t)))
@@ -1007,26 +1007,26 @@
 ;;; API
 ;;;
 
-(define (ktlw/get-tuple tl-widget row)
+(define (ftlw/get-tuple tl-widget row)
   (let ((tuples (db-tuples tl-widget)))
     (if (and (not (null? tuples))
 	     (>= row 0))
 	(list-ref tuples row)
 	#f)))
 
-(define (ktlw/get what tl-widget . row)
+(define (ftlw/get what tl-widget . row)
   (let* ((which-row (if (null? row) (current-row tl-widget) (car row)))
-	 (db-tuple (ktlw/get-tuple tl-widget which-row)))
-    ;; (format #t "ktlw/get: row: ~S, what: ~S, tuple: ~S~%" which-row what db-tuple)
+	 (db-tuple (ftlw/get-tuple tl-widget which-row)))
+    ;; (format #t "ftlw/get: row: ~S, what: ~S, tuple: ~S~%" which-row what db-tuple)
     (db-foliot/get db-tuple what)))
 
-(define (ktlw/set what tl-widget value . row)
+(define (ftlw/set what tl-widget value . row)
   (let* ((which-row (if (null? row) (current-row tl-widget) (car row)))
-	 (db-tuple (ktlw/get-tuple tl-widget which-row)))
+	 (db-tuple (ftlw/get-tuple tl-widget which-row)))
     ;; (format #t "~S~%" db-tuple)
     (db-foliot/update db-tuple what value)))
 
-(define (ktlw/fill-tv tl-widget)
+(define (ftlw/fill-tv tl-widget)
   ;; note that icolors alist is like this [example]:
   ;; '((1 "#ac5251" . "#000000") (0 "#60a8a8" . "#000000"))
   (let ((model (tv-model tl-widget))
@@ -1058,7 +1058,7 @@
 					 (cdr (assoc-ref icolours idb))))))
 	(db-tuples tl-widget))))
 
-(define (ktlw/apply-xft-dpi-ratio tl-widget)
+(define (ftlw/apply-xft-dpi-ratio tl-widget)
   (when (storage-get 'apply-dpi-ratio?)
     (let* ((dpi-ratio (storage-get 'Xft.dpi.ratio))
 	   (widget-size-dates (inexact->exact (round (* dpi-ratio (get (date-entry tl-widget) 'width-request)))))
@@ -1089,7 +1089,7 @@ filter date: ~S~%"
 	      (get (filter-date-entry tl-widget) 'width-request)
 	      ))))
 
-(define (ktlw/make-tl-widget uname gfile)
+(define (ftlw/make-tl-widget uname gfile)
   (let* ((xmlc (glade-xml-new gfile  #f "foliot"))
 	 (t-tip (gtk-tooltips-new))
 	 (tl-widget (make <foliot/tl-widget>
@@ -1174,19 +1174,19 @@ filter date: ~S~%"
 		      #:status-bar-2 (get-widget xmlc "foliot/status_bar_2")
 		      #:status-bar-3 (get-widget xmlc "foliot/status_bar_3")
 		      #:status-bar-4 (get-widget xmlc "foliot/status_bar_4"))))
-    (ktlw/setup-treeview tl-widget)
+    (ftlw/setup-treeview tl-widget)
     ;; the combos need to be cleared since some example items
     ;; are defined in the glade file
     (gtk2/clear-combo (who-combo tl-widget))
     (gtk2/clear-combo (for-whom-combo tl-widget))
     (gtk2/clear-combo (what-combo tl-widget))
-    (ktlw/connect-combos tl-widget)
+    (ftlw/connect-combos tl-widget)
     (set-sensitive (filter-select-bt tl-widget) #f)
-    (ktlw/apply-xft-dpi-ratio tl-widget)
+    (ftlw/apply-xft-dpi-ratio tl-widget)
     ;; not doing anything yet but soon will have to
-    (ktlw/translate tl-widget)
+    (ftlw/translate tl-widget)
     (set-markup (db-name-lb1 tl-widget) "<span foreground=\"#777777\"><b>[ ]</b></span>")
-    (ktlw/set-filter-icon tl-widget 'off)
+    (ftlw/set-filter-icon tl-widget 'off)
     tl-widget))
 
 
@@ -1194,7 +1194,7 @@ filter date: ~S~%"
 ;;; Add, duplicate, delete
 ;;;
 
-(define (ktlw/add tl-widget)
+(define (ftlw/add tl-widget)
   (let* ((model (tv-model tl-widget))
 	 (today (date/system-date))
 	 (iso-today (date/iso-date today))
@@ -1208,7 +1208,7 @@ filter date: ~S~%"
 			      0		;; duration
 			      "f"	;; to-be-charged
 			      ""))	;; description
-	 (ids? (if filter? (ktlw/add-id new-id tl-widget) (id-set tl-widget)))
+	 (ids? (if filter? (ftlw/add-id new-id tl-widget) (id-set tl-widget)))
 	 (new-iter (kiter/prepend-fill model today uname "" 0 #f "" #f #f))
 	 (tuples (db-foliot/select-some filter? ids?))
 	 (new-pos (db-foliot/find-pos tuples 'id new-id =)))
@@ -1217,26 +1217,26 @@ filter date: ~S~%"
       (let ((prev-gui-cb? (gui-callback? tl-widget))
 	    (w-combo (who-combo tl-widget)))
 	(set! (gui-callback? tl-widget) #f)
-	(ktlw/fill-combo tl-widget whos who-combo 'who)
+	(ftlw/fill-combo tl-widget whos who-combo 'who)
 	(set-active w-combo (gtk2/combo-find-row w-combo uname))
 	(set! (gui-callback? tl-widget) prev-gui-cb?)))
-    (when restore-mode? (ktlw/normal-mode tl-widget))
+    (when restore-mode? (ftlw/normal-mode tl-widget))
     (if (= new-pos 0)
-	(ktlw/select-row tl-widget 0)
+	(ftlw/select-row tl-widget 0)
 	(begin
 	  (move-after model
 		      new-iter
 		      (get-iter model (list new-pos)))
-	  (ktlw/select-row tl-widget new-pos)))))
+	  (ftlw/select-row tl-widget new-pos)))))
 
-(define (ktlw/duplicate tl-widget)
+(define (ftlw/duplicate tl-widget)
   (let* ((model (tv-model tl-widget))
 	 (row (current-row tl-widget))
 	 (iter (current-iter tl-widget))
-	 (tuple (ktlw/get-tuple tl-widget row))
+	 (tuple (ftlw/get-tuple tl-widget row))
 	 (filter? (active-filter tl-widget))
 	 (new-id (db-foliot/duplicate (db-foliot/get tuple 'id) tuple))
-	 (ids? (if filter? (ktlw/add-id new-id tl-widget) (id-set tl-widget)))
+	 (ids? (if filter? (ftlw/add-id new-id tl-widget) (id-set tl-widget)))
 	 (new-iter (kiter/prepend-fill model
 				       (kiter/get 'date model iter)
 				       (kiter/get 'who model iter)
@@ -1254,10 +1254,10 @@ filter date: ~S~%"
     (if (< new-pos row)
 	(move-before model new-iter (get-iter model (list new-pos)))
 	(move-after model new-iter (get-iter model (list new-pos))))
-    (ktlw/select-row tl-widget new-pos)
-    (ktlw/update-totals-status-bars tl-widget)))
+    (ftlw/select-row tl-widget new-pos)
+    (ftlw/update-totals-status-bars tl-widget)))
 
-(define (ktlw/delete-msg-str)
+(define (ftlw/delete-msg-str)
   ;; with "~10,,,' @A" it would be right justified but because this is
   ;; passed to a gtk label widget, which uses variable size font, it
   ;; is not sufficient and not as nice at it should.
@@ -1268,17 +1268,17 @@ filter date: ~S~%"
 	~10,,,' A: ~A
 	~10,,,' A: ~A")
 
-(define (ktlw/delete tl-widget)
+(define (ftlw/delete tl-widget)
   (let* ((model (tv-model tl-widget))
 	 (row (current-row tl-widget))
 	 (last-row (1- (gtk-tree-model-iter-n-children model #f)))
 	 (iter (current-iter tl-widget))
-	 (tuple (ktlw/get-tuple tl-widget row))
+	 (tuple (ftlw/get-tuple tl-widget row))
 	 (reference (db-foliot/get tuple 'id)))
     (md2b/select-gui (dialog tl-widget)
 		     (_ "Confirm dialog")
 		     (_ "Deletion")
-		     (format #f "~?" (ktlw/delete-msg-str)
+		     (format #f "~?" (ftlw/delete-msg-str)
 			     (list "Reference" reference
 				   "Date" (db-foliot/get tuple 'date_)
 				   "Who" (db-foliot/get tuple 'who)
@@ -1286,17 +1286,17 @@ filter date: ~S~%"
 		     (lambda ()
 		       (db-foliot/delete reference)
 		       (let* ((a-filter? (active-filter tl-widget))
-			      (new-id-set (and a-filter? (ktlw/del-id reference tl-widget)))
+			      (new-id-set (and a-filter? (ftlw/del-id reference tl-widget)))
 			      (tuples (db-foliot/select-some a-filter? new-id-set))
 			      (its-length (length tuples)))
 			 (set! (db-tuples tl-widget) tuples)
 			 (remove model iter)
 			 (if (> its-length 0)
 			     (if (= row last-row)
-				 (ktlw/select-row tl-widget (1- last-row) 'noscroll)
-				 (ktlw/select-row tl-widget row 'noscroll))
-			     (ktlw/empty-subset-or-db-mode tl-widget))
-			 (ktlw/update-totals-status-bars tl-widget)))
+				 (ftlw/select-row tl-widget (1- last-row) 'noscroll)
+				 (ftlw/select-row tl-widget row 'noscroll))
+			     (ftlw/empty-subset-or-db-mode tl-widget))
+			 (ftlw/update-totals-status-bars tl-widget)))
 		     (lambda () 'nothing)
 		     'dialog-warning)))
 
@@ -1305,7 +1305,7 @@ filter date: ~S~%"
 ;;; Other GUI related
 ;;;
 
-(define (ktlw/check-nav-tb-sensitive-needs tl-widget line-nb)
+(define (ftlw/check-nav-tb-sensitive-needs tl-widget line-nb)
   (let ((nb-rows (length (db-tuples tl-widget))))
     (gtk2/check-nav-tb-sensitive-needs line-nb
 				       nb-rows
@@ -1320,7 +1320,7 @@ filter date: ~S~%"
 ;;; Filter related
 ;;;
 
-(define (ktlw/empty-subset-or-db-mode tl-widget)
+(define (ftlw/empty-subset-or-db-mode tl-widget)
   (let ((prev-gui-cb? (gui-callback? tl-widget)))
     (set! (gui-callback? tl-widget) #f)
     (set! (current-row tl-widget) -1)
@@ -1349,7 +1349,7 @@ filter date: ~S~%"
 		;; (format #t "empty-mode: ~S~%" acc)
 		(set-sensitive (acc tl-widget) #f))
 	`(,print-bt
-	  ,first-bt ,prev-bt ,next-bt ,last-bt ;; (ktlw/check-nav-tb-sensitive-needs tl-widget -1)
+	  ,first-bt ,prev-bt ,next-bt ,last-bt ;; (ftlw/check-nav-tb-sensitive-needs tl-widget -1)
 	  ,dup-bt ,del-bt
 	  ,date-entry
 	  ,description-entry
@@ -1372,10 +1372,10 @@ filter date: ~S~%"
 	    ,filter-what-entry
 	    ,filter-description-entry
 	    ,filter-to-be-charged-combo)))
-    (ktlw/update-status-bar-1 tl-widget)))
+    (ftlw/update-status-bar-1 tl-widget)))
 
-(define (ktlw/no-db-mode tl-widget)
-  (ktlw/empty-subset-or-db-mode tl-widget)
+(define (ftlw/no-db-mode tl-widget)
+  (ftlw/empty-subset-or-db-mode tl-widget)
   (for-each (lambda (acc)
 	      (set-sensitive (acc tl-widget) #f))
       `(,import-bt
@@ -1390,7 +1390,7 @@ filter date: ~S~%"
 	,filter-description-entry
 	,filter-to-be-charged-combo)))
 
-(define (ktlw/normal-mode tl-widget)
+(define (ftlw/normal-mode tl-widget)
   (for-each (lambda (acc)
 	      (set-sensitive (acc tl-widget) #t))
       `(,import-bt
@@ -1417,20 +1417,20 @@ filter date: ~S~%"
 	,filter-description-entry
 	,filter-to-be-charged-combo)))
 
-(define (ktlw/filter-get-row-new-pos-if-any tl-widget new-tuple-set)
+(define (ftlw/filter-get-row-new-pos-if-any tl-widget new-tuple-set)
   (let* ((row (current-row tl-widget))
-	 (tuple (and row (>= row 0) (ktlw/get-tuple tl-widget row)))
+	 (tuple (and row (>= row 0) (ftlw/get-tuple tl-widget row)))
 	 (reference (and tuple (db-foliot/get tuple 'id))))
     (and reference
 	 (db-foliot/find-pos new-tuple-set 'id reference =))))
 
-(define (ktlw/-display-filter-apply-infos filter tuple-set-length new-pos)
+(define (ftlw/-display-filter-apply-infos filter tuple-set-length new-pos)
   (format #t "Filter is: ~S~%" filter)
   (format #t "  nb of filtered tuples: ~S~%" tuple-set-length)
   (format #t "  previous active row new pos [or 0 if not in the set]: ~S~%" new-pos)
   #t)
 
-(define (ktlw/set-filter-icon tl-widget mode)
+(define (ftlw/set-filter-icon tl-widget mode)
   (let ((t-tip (tooltip tl-widget))
 	(image (filter-icon tl-widget)))
     (case mode
@@ -1441,11 +1441,11 @@ filter date: ~S~%"
        (set-from-file image (string-append (storage-get 'iconsdir) "/pie-full-grey.svg"))
        (set-tip t-tip image (_ "OFF: you are working on the entire database."))))))
 
-(define (ktlw/filter-apply tl-widget . force?)
+(define (ftlw/filter-apply tl-widget . force?)
   ;; (format #t "applying filter: ~S~%" force?)
   (let* ((prev-gui-cb? (gui-callback? tl-widget))
 	 (prev-filter (active-filter tl-widget))
-	 (filter-conditions? (ktlw/build-filter-conditions-sepxr tl-widget))
+	 (filter-conditions? (ftlw/build-filter-conditions-sepxr tl-widget))
 	 (filter? (and filter-conditions? (dbf/get-filter filter-conditions?))))
     ;; being invalid, the date only may lead to filter? being #f
     (set! (gui-callback? tl-widget) #f)
@@ -1455,33 +1455,33 @@ filter date: ~S~%"
 		(not (string=? filter? prev-filter)))
 	    ;; in this case we reset the id-set to #f
 	    (begin
-	      (ktlw/set-filter-icon tl-widget 'on)
+	      (ftlw/set-filter-icon tl-widget 'on)
 	      (set! (active-filter tl-widget) filter?)
 	      (set! (id-set tl-widget) #f)
 	      (let* ((new-tuple-set (db-foliot/select-some filter? #f))
-		     (new-pos (ktlw/filter-get-row-new-pos-if-any tl-widget new-tuple-set)))
-		(when (storage-get 'debug) (ktlw/-display-filter-apply-infos filter? (length new-tuple-set) new-pos))
+		     (new-pos (ftlw/filter-get-row-new-pos-if-any tl-widget new-tuple-set)))
+		(when (storage-get 'debug) (ftlw/-display-filter-apply-infos filter? (length new-tuple-set) new-pos))
 		(set! (db-tuples tl-widget) new-tuple-set)
-		(ktlw/fill-tv tl-widget)
-		(ktlw/update-totals-status-bars tl-widget)
+		(ftlw/fill-tv tl-widget)
+		(ftlw/update-totals-status-bars tl-widget)
 		(if (null? new-tuple-set)
-		    (ktlw/empty-subset-or-db-mode tl-widget)
+		    (ftlw/empty-subset-or-db-mode tl-widget)
 		    (begin
-		      (ktlw/normal-mode tl-widget)
+		      (ftlw/normal-mode tl-widget)
 		      (set! (gui-callback? tl-widget) #t)
 		      (if new-pos
-			  (ktlw/select-row tl-widget new-pos)
-			  (ktlw/select-row tl-widget 0)))))))
+			  (ftlw/select-row tl-widget new-pos)
+			  (ftlw/select-row tl-widget 0)))))))
 	(begin
-	  (ktlw/set-filter-icon tl-widget 'off)
-	  (when prev-filter (ktlw/filter-clear tl-widget))
+	  (ftlw/set-filter-icon tl-widget 'off)
+	  (when prev-filter (ftlw/filter-clear tl-widget))
 	  (format #t "filter is empty~%")))
     (set! (gui-callback? tl-widget) prev-gui-cb?)))
 
-(define (ktlw/filter-clear tl-widget . fillcombos?)
+(define (ftlw/filter-clear tl-widget . fillcombos?)
   ;; (format #t "clearing filter: ~S~%" fillcombos?)
   (let ((prev-gui-cb? (gui-callback? tl-widget)))
-    (ktlw/set-filter-icon tl-widget 'off)
+    (ftlw/set-filter-icon tl-widget 'off)
     (set! (gui-callback? tl-widget) #f)
     (gtk2/set-text (filter-date-entry tl-widget) "")
     (gtk2/set-text (filter-who-entry tl-widget) "")
@@ -1493,21 +1493,21 @@ filter date: ~S~%"
       (set! (active-filter tl-widget) #f)
       (set! (id-set tl-widget) #f)
       (let* ((new-tuple-set (db-foliot/select-all))
-	     (new-pos (ktlw/filter-get-row-new-pos-if-any tl-widget new-tuple-set)))
+	     (new-pos (ftlw/filter-get-row-new-pos-if-any tl-widget new-tuple-set)))
 	(set! (db-tuples tl-widget) new-tuple-set)
-	(if (not (null? fillcombos?)) (ktlw/fill-combos tl-widget))
-	(ktlw/fill-tv tl-widget)
+	(if (not (null? fillcombos?)) (ftlw/fill-combos tl-widget))
+	(ftlw/fill-tv tl-widget)
 	(if (null? new-tuple-set)
-	    (ktlw/empty-subset-or-db-mode tl-widget)
+	    (ftlw/empty-subset-or-db-mode tl-widget)
 	    (begin
-	      (ktlw/normal-mode tl-widget)
+	      (ftlw/normal-mode tl-widget)
 	      (set! (gui-callback? tl-widget) #t)
 	      (if new-pos
-		  (ktlw/select-row tl-widget new-pos)
-		  (ktlw/select-row tl-widget 0))))))
+		  (ftlw/select-row tl-widget new-pos)
+		  (ftlw/select-row tl-widget 0))))))
     (set! (gui-callback? tl-widget) #t)
     ;; this has to be last
-    (ktlw/update-totals-status-bars tl-widget)
+    (ftlw/update-totals-status-bars tl-widget)
     (set! (gui-callback? tl-widget) prev-gui-cb?)))
 
 
@@ -1515,7 +1515,7 @@ filter date: ~S~%"
 ;;; Tooltips and dialog translation
 ;;;
 
-(define (ktlw/dates-tooltip-str)
+(define (ftlw/dates-tooltip-str)
   (_ "In its current version, GNU Foliot only supports the following date format: dd-mm-yyyy [*]
 
 The date must be a valid date between the 01.01.1970 and 31.12.2037.
@@ -1524,12 +1524,12 @@ The date must be a valid date between the 01.01.1970 and 31.12.2037.
 	the same field seperator must be used twice."
 ))
 
-(define (ktlw/what-tooltip-str)
+(define (ftlw/what-tooltip-str)
   (_ "We suggest the use of keywords seperated by '/' [1]: '/admin', '/admin/expenses', '/sysadmin/install', '/contrib/gnu/gettext', '/personal', ...
 
 [1]	This way, the distinct database content of this field represents your activity tree. We actually plan to display it as such in the future."))
 
-(define (ktlw/filter-date-tooltip-str)
+(define (ftlw/filter-date-tooltip-str)
   (_ "Date filters:
 	a date
 	<, <=, =, >= or > a date
@@ -1537,7 +1537,7 @@ The date must be a valid date between the 01.01.1970 and 31.12.2037.
 
 [*] the range will include the specified dates"))
 
-(define (ktlw/filter-text-tooltip-str)
+(define (ftlw/filter-text-tooltip-str)
   (_ "Text filters:
   =			is empty
   *			is not empty
@@ -1550,11 +1550,11 @@ The date must be a valid date between the 01.01.1970 and 31.12.2037.
   & | ! 	and or not, for example:
 			demu & demi | dema ! demand"))
 
-(define (ktlw/filter-criteria-tooltip-str)
+(define (ftlw/filter-criteria-tooltip-str)
   (_ "When more then one filter field is used, they are combined using the AND operator."))
 
 
-(define (ktlw/translate tl-widget)
+(define (ftlw/translate tl-widget)
   (let ((tb-tip (gtk-tooltips-new))
 	(t-tip (tooltip tl-widget)))
     (gtk-tooltips-enable tb-tip)
@@ -1564,27 +1564,27 @@ The date must be a valid date between the 01.01.1970 and 31.12.2037.
     #;(set-markup (date-lb tl-widget) "<a href=\"www.fsf.org\">Date:</a>")
     (set-tooltip (import-bt tl-widget) tb-tip (_ "Import/Unimport...") "")
 
-    (set-tip t-tip (date-lb tl-widget) (ktlw/dates-tooltip-str))
+    (set-tip t-tip (date-lb tl-widget) (ftlw/dates-tooltip-str))
     ;;(set-label (what-lb tl-widget) (format #f "<u>~A:</u>" (_ "What")))
-    ;;(set-tip t-tip (what-lb tl-widget) (ktlw/what-tooltip-str))
-    (set-tip t-tip (filter-criteria-lb tl-widget) (ktlw/filter-criteria-tooltip-str))
+    ;;(set-tip t-tip (what-lb tl-widget) (ftlw/what-tooltip-str))
+    (set-tip t-tip (filter-criteria-lb tl-widget) (ftlw/filter-criteria-tooltip-str))
     (set-label (filter-date-lb tl-widget)
 	       (format #f "<u><span foreground=\"~A\">~A:</span></u>" *filters-border* (_ "Date")))
-    (set-tip t-tip (filter-date-lb tl-widget) (ktlw/filter-date-tooltip-str))
+    (set-tip t-tip (filter-date-lb tl-widget) (ftlw/filter-date-tooltip-str))
     (set-label (filter-who-lb tl-widget)
 	       (format #f "<u><span foreground=\"~A\">~A:</span></u>" *filters-border* (_ "Who")))
-    (set-tip t-tip (filter-who-lb tl-widget) (ktlw/filter-text-tooltip-str))
+    (set-tip t-tip (filter-who-lb tl-widget) (ftlw/filter-text-tooltip-str))
     (set-label (filter-for-whom-lb tl-widget)
 	       (format #f "<span foreground=\"~A\">~A:</span>" *filters-border* (_ "For whom")))
-    ;; (set-tip t-tip (filter-for-whom-lb tl-widget) (ktlw/filter-text-tooltip-str))
+    ;; (set-tip t-tip (filter-for-whom-lb tl-widget) (ftlw/filter-text-tooltip-str))
     (set-label (filter-what-lb tl-widget)
 	       (format #f "<span foreground=\"~A\">~A:</span>" *filters-border* (_ "What")))
-    ;; (set-tip t-tip (filter-what-lb tl-widget) (ktlw/filter-text-tooltip-str))
+    ;; (set-tip t-tip (filter-what-lb tl-widget) (ftlw/filter-text-tooltip-str))
     (set-label (filter-to-be-charged-lb tl-widget)
 	       (format #f "<span foreground=\"~A\">~A:</span>" *filters-border* (_ "To be charged")))
     (set-label (filter-description-lb tl-widget)
 	       (format #f "<span foreground=\"~A\">~A:</span>" *filters-border* (_ "Description")))
-    #;(set-tip t-tip (filter-description-lb tl-widget) (ktlw/filter-text-tooltip-str))))
+    #;(set-tip t-tip (filter-description-lb tl-widget) (ftlw/filter-text-tooltip-str))))
 
 
 #!

@@ -647,7 +647,7 @@
 (define tuple (db-foliot/get-tuple tuples 1))
 
 (define tl-widget tl-kwidget*)
-(define tuple (ktlw/get-tuple tl-widget 1))
+(define tuple (ftlw/get-tuple tl-widget 1))
 
 (db-foliot/get tuple 'who)
 (db-foliot/set tuple 'description "another description")

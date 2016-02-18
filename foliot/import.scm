@@ -110,7 +110,7 @@
 					   'dialog-warning))
 		      (set! (gui-callback? tl-widget) #f)
 		      (unless prev-active-filter (set! (active-filter tl-widget) #t))
-		      (ktlw/filter-clear tl-widget 'fillcombos)
+		      (ftlw/filter-clear tl-widget 'fillcombos)
 		      (set! (gui-callback? tl-widget) prev-gui-cb?)
 		      (set! (active-filter tl-widget) prev-active-filter)
 		      (ki/fill-treeview ki-widget (db-idb/select-all 'display))
@@ -129,7 +129,7 @@
 	  (db-foliot/delete-imported-tuples idb-id #:delete-imported-db-tuple? #t))))
     (set! (gui-callback? tl-widget) #f)
     (set! (active-filter tl-widget) #t)
-    (ktlw/filter-clear tl-widget 'fillcombos)
+    (ftlw/filter-clear tl-widget 'fillcombos)
     (set! (gui-callback? tl-widget) prev-gui-cb?)
     (set! (active-filter tl-widget) prev-active-filter)
     (set! (gui-callback? ki-widget) #f)
@@ -138,7 +138,7 @@
     (unselect-all (tv-sel ki-widget))))
 
 (define (ki/reimport tl-widget ki-widget)
-  ;; (dimfi "ktlw/import callback called")
+  ;; (dimfi "ftlw/import callback called")
   (let ((model (tv-model ki-widget))
 	(selection (tv-sel ki-widget))
 	(prev-gui-cb? (gui-callback? tl-widget))
@@ -155,10 +155,10 @@
 	  (kiiter/set 'date model iter (date/system-date)))))
     ;; (set! (gui-callback? tl-widget) #f)
     (if prev-active-filter
-	(ktlw/filter-apply tl-widget 'force)
+	(ftlw/filter-apply tl-widget 'force)
 	(begin
 	  (set! (active-filter tl-widget) #t)
-	  (ktlw/filter-clear tl-widget 'fillcombos)))
+	  (ftlw/filter-clear tl-widget 'fillcombos)))
     ;; (set! (gui-callback? tl-widget) prev-gui-cb?)
     (set! (active-filter tl-widget) prev-active-filter)))
 
