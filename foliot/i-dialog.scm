@@ -40,9 +40,9 @@
   #:use-module (foliot colours)
   #:use-module (foliot db)
 
-  #:export (*ki-widget*
+  #:export (*fi-widget*
 
-	    <ki-widget>
+	    <fi-widget>
 	    gui-callback?
 	    dialog
 	    tv-model
@@ -53,8 +53,8 @@
 
 	    fiiter/get
 	    fiiter/set
-	    ki/make-dialog
-	    ki/fill-treeview))
+	    fi/make-dialog
+	    fi/fill-treeview))
 
 
 (eval-when (expand load eval)
@@ -86,14 +86,14 @@
 ;;; Globals
 ;;;
 
-(define *ki-widget* #f)
+(define *fi-widget* #f)
 
 
 ;;;
 ;;; Goops related
 ;;;
 
-(define-class <ki-widget> ()
+(define-class <fi-widget> ()
   (gui-callback? #:accessor gui-callback? #:init-keyword #:gui-callback? #:init-value #t)
   (xml-code #:accessor xml-code #:init-keyword #:xml-code #:init-value #f)
   (dialog #:accessor dialog #:init-keyword #:dialog #:init-value #f)
@@ -114,7 +114,7 @@
 ;;; Treeview related stuff
 ;;;
 
-(define (ki/import-toggle-callback ki-widget model iter caller . value)
+(define (fi/import-toggle-callback fi-widget model iter caller . value)
   ;; import ON
   ;;	-> 
   ;; import OFF
@@ -130,7 +130,7 @@
 	      (new-value (not old-value)))
 	 (gtk2/fixed-toggled model iter iiter-get iiter-set))))))
 
-(define (ki/add-model treeview)
+(define (fi/add-model treeview)
   (let* ((column-types (list <gchararray>
 			     <gchararray>
 			     <gchararray>
@@ -144,7 +144,7 @@
     (values model
 	    (get-selection treeview))))
 
-(define (ki/add-columns ki-widget treeview)
+(define (fi/add-columns fi-widget treeview)
   (let* ((dpi-ratio (storage-get 'Xft.dpi.ratio))
 	 (apply-ratio? (storage-get 'apply-dpi-ratio?))
 	 (model (get-model treeview))
@@ -229,22 +229,22 @@
 	     'toggled
 	     (lambda (widget path)
 	       (let ((iter (get-iter model path)))
-		 (ki/import-toggle-callback ki-widget model iter 'toggled))))))
+		 (fi/import-toggle-callback fi-widget model iter 'toggled))))))
 
-(define (ki/setup-treeview ki-widget)
-  (let ((treeview (tv ki-widget)))
+(define (fi/setup-treeview fi-widget)
+  (let ((treeview (tv fi-widget)))
     (receive (model selection)
-	(ki/add-model treeview)
+	(fi/add-model treeview)
       (set-mode selection 'multiple)
-      (set! (tv-model ki-widget) model)
-      (set! (tv-sel ki-widget) selection))
-    (ki/add-columns ki-widget treeview)
-    ki-widget))
+      (set! (tv-model fi-widget) model)
+      (set! (tv-sel fi-widget) selection))
+    (fi/add-columns fi-widget treeview)
+    fi-widget))
 
-(define (ki/fill-treeview ki-widget idb-tuples)
-  (let ((model (tv-model ki-widget))
-	(rem-bt (remove-bt ki-widget))
-	(reimp-bt (reimport-bt ki-widget)))
+(define (fi/fill-treeview fi-widget idb-tuples)
+  (let ((model (tv-model fi-widget))
+	(rem-bt (remove-bt fi-widget))
+	(reimp-bt (reimport-bt fi-widget)))
     (gtk-list-store-clear model)
     (if (null? idb-tuples)
 	(gtk2/set-sensitive (list rem-bt reimp-bt) #f)
@@ -254,7 +254,7 @@
 		      ;; (dimfi idb-tuple)
 		      (let ((iter (gtk-list-store-append model))
 			    (filename (db-idb/get idb-tuple 'filename)))
-					; (ki/import-toggle-callback ki-widget model iter 'fill print?)
+					; (fi/import-toggle-callback fi-widget model iter 'fill print?)
 			(fiiter/set 'name model iter (basename filename))
 			(fiiter/set 'date model iter (db-idb/get idb-tuple 'imported_the))
 			(fiiter/set 'by model iter (db-idb/get idb-tuple 'imported_by))
@@ -268,62 +268,62 @@
 ;;; Making the dialog
 ;;;
 
-(define (ki/make-dialog parent glade-f)
-  (if *ki-widget*
-      *ki-widget*
-      (let* ((xmlc (glade-xml-new glade-f #f "ki/dialog"))
-	     (ki-widget (make <ki-widget>
+(define (fi/make-dialog parent glade-f)
+  (if *fi-widget*
+      *fi-widget*
+      (let* ((xmlc (glade-xml-new glade-f #f "fi/dialog"))
+	     (fi-widget (make <fi-widget>
 			  #:xml-code xmlc
-			  #:dialog (get-widget xmlc "ki/dialog")
-			  #:tv (get-widget xmlc "ki/import_tv")
-			  #:add-bt (get-widget xmlc "ki/add_bt")
-			  #:remove-bt (get-widget xmlc "ki/remove_bt")
-			  #:reimport-bt (get-widget xmlc "ki/reimport_bt")
-			  #:cancel-bt (get-widget xmlc "ki/cancel_bt")
-			  #:close-bt (get-widget xmlc "ki/close_bt"))))
-	(modify-bg (get-widget xmlc "ki/eventbox") 'normal *dialog-title-eb-bg*)
-	(when parent (set-transient-for (dialog ki-widget) parent))
-	(ki/translate ki-widget)
-	(ki/setup-treeview ki-widget)
+			  #:dialog (get-widget xmlc "fi/dialog")
+			  #:tv (get-widget xmlc "fi/import_tv")
+			  #:add-bt (get-widget xmlc "fi/add_bt")
+			  #:remove-bt (get-widget xmlc "fi/remove_bt")
+			  #:reimport-bt (get-widget xmlc "fi/reimport_bt")
+			  #:cancel-bt (get-widget xmlc "fi/cancel_bt")
+			  #:close-bt (get-widget xmlc "fi/close_bt"))))
+	(modify-bg (get-widget xmlc "fi/eventbox") 'normal *dialog-title-eb-bg*)
+	(when parent (set-transient-for (dialog fi-widget) parent))
+	(fi/translate fi-widget)
+	(fi/setup-treeview fi-widget)
 
-	(connect (dialog ki-widget)
+	(connect (dialog fi-widget)
 		 'destroy-event
 		 (lambda (widget event)
 		   ;; don't do this if the dialog is launched using
 		   ;; (run widget) modal 'style', it crashes
 		   ;; (destroy widget)
-		   (set! *ki-widget* #f)
+		   (set! *fi-widget* #f)
 		   #f))
-	(connect (dialog ki-widget)
+	(connect (dialog fi-widget)
 		 'delete-event
 		 (lambda (widget event)
 		   ;; same as destroy-event
-		   (set! *ki-widget* #f)
+		   (set! *fi-widget* #f)
 		   #f))
-	(connect (close-bt ki-widget)
+	(connect (close-bt fi-widget)
 		 'clicked
 		 (lambda (button)
 		   ;; same as destroy-event
-		   (set! *ki-widget* #f)))
+		   (set! *fi-widget* #f)))
 
-	(set! (gui-callback? ki-widget) #f)
-	(gtk2/hide `(,(cancel-bt ki-widget)
-		     ,(get-widget xmlc "ki/execute_tb")))
-	(ki/fill-treeview ki-widget (db-idb/select-all #t))
-	(set! (gui-callback? ki-widget) #t)
-	(unselect-all (tv-sel ki-widget))
-	(set! *ki-widget* ki-widget)
-	ki-widget)))
+	(set! (gui-callback? fi-widget) #f)
+	(gtk2/hide `(,(cancel-bt fi-widget)
+		     ,(get-widget xmlc "fi/execute_tb")))
+	(fi/fill-treeview fi-widget (db-idb/select-all #t))
+	(set! (gui-callback? fi-widget) #t)
+	(unselect-all (tv-sel fi-widget))
+	(set! *fi-widget* fi-widget)
+	fi-widget)))
 
 
 ;;;
 ;;; i18n - localisation
 ;;;
 
-(define (ki/translate widget)
+(define (fi/translate widget)
   (let ((xmlc (xml-code widget)))
     (set-title (dialog widget) (_ "Import"))
-    (set-markup (get-widget xmlc "ki/title_lb")
+    (set-markup (get-widget xmlc "fi/title_lb")
 		(format #f "<span foreground=\"darkblue\" size=\"x-large\"><b>~A</b></span>~%<b>~A</b>"
 			(_ "GNU Foliot import dialog")
 			(_ "Add, remove and re-import other user's GNU Foliot database.")))))

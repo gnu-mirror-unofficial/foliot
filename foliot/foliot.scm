@@ -291,7 +291,7 @@
 	     'clicked
 	     (lambda (button)
 	       (foliot/on-tv-row-change tl-widget)
-	       (ki/select-gui tl-widget)))
+	       (fi/select-gui tl-widget)))
     (connect (quit-bt tl-widget)
 	     'clicked
 	     (lambda (button) (foliot/exit tl-widget)))

@@ -36,7 +36,7 @@
   #:use-module (foliot i-dialog)
   #:use-module (foliot db)
 
-  #:export (ki/select-gui))
+  #:export (fi/select-gui))
 
 
 (eval-when (expand load eval)
@@ -59,12 +59,12 @@
 (define *not-foliot-table-msg*
   (_ "no foliot table"))
 
-(define (ki/add tl-widget ki-widget)
-  (let ((model (tv-model ki-widget))
-	(selection (tv-sel ki-widget))
+(define (fi/add tl-widget fi-widget)
+  (let ((model (tv-model fi-widget))
+	(selection (tv-sel fi-widget))
 	(prev-gui-cb? (gui-callback? tl-widget))
 	(prev-active-filter (active-filter tl-widget))
-	(import-filename (prompt-for-filename (dialog ki-widget)
+	(import-filename (prompt-for-filename (dialog fi-widget)
 					      (_ "Import database selection")
 					      'open
 					      (dirname (fcfg/get 'db-file))
@@ -79,7 +79,7 @@
 					(else #f))))
 	  (if pre-checks-failed?
 	      (begin
-		(md1b/select-gui (dialog ki-widget)
+		(md1b/select-gui (dialog fi-widget)
 				 (_ "Warning!")
 				 (_ "Import db pre checks failed:")
 				 (format #f "~A: ~A" import-filename pre-checks-failed?)
@@ -90,7 +90,7 @@
 		     (foliot? (sqlite/table-exists? idb-con "foliot")))
 		(if (not foliot?)
 		    (begin
-		      (md1b/select-gui (dialog ki-widget)
+		      (md1b/select-gui (dialog fi-widget)
 				       (_ "Warning!")
 				       (_ "Import db pre checks failed:")
 				       (format #f "~A: ~A" import-filename *not-foliot-table-msg*)
@@ -101,7 +101,7 @@
 			   (idb-cs (modulo id (length %palette)))
 			   (idb-id (db-foliot/import import-filename idb-cs id idb-con)))
 		      (if (>= id (length %palette))
-			  (md1b/select-gui (dialog ki-widget)
+			  (md1b/select-gui (dialog fi-widget)
 					   (_ "Warning!")
 					   (_ "Colour set:")
 					   (format #f "~?" *no-available-colour-set-msg*
@@ -113,13 +113,13 @@
 		      (ftlw/filter-clear tl-widget 'fillcombos)
 		      (set! (gui-callback? tl-widget) prev-gui-cb?)
 		      (set! (active-filter tl-widget) prev-active-filter)
-		      (ki/fill-treeview ki-widget (db-idb/select-all 'display))
+		      (fi/fill-treeview fi-widget (db-idb/select-all 'display))
 		      idb-id)))))
 	#f)))
 
-(define (ki/remove tl-widget ki-widget)
-  (let ((model (tv-model ki-widget))
-	(selection (tv-sel ki-widget))
+(define (fi/remove tl-widget fi-widget)
+  (let ((model (tv-model fi-widget))
+	(selection (tv-sel fi-widget))
 	(prev-gui-cb? (gui-callback? tl-widget))
 	(prev-active-filter (active-filter tl-widget)))
     (dotimes (i (gtk-tree-model-iter-n-children model #f))
@@ -132,15 +132,15 @@
     (ftlw/filter-clear tl-widget 'fillcombos)
     (set! (gui-callback? tl-widget) prev-gui-cb?)
     (set! (active-filter tl-widget) prev-active-filter)
-    (set! (gui-callback? ki-widget) #f)
-    (ki/fill-treeview ki-widget (db-idb/select-all #t))
-    (set! (gui-callback? ki-widget) #t)
-    (unselect-all (tv-sel ki-widget))))
+    (set! (gui-callback? fi-widget) #f)
+    (fi/fill-treeview fi-widget (db-idb/select-all #t))
+    (set! (gui-callback? fi-widget) #t)
+    (unselect-all (tv-sel fi-widget))))
 
-(define (ki/reimport tl-widget ki-widget)
+(define (fi/reimport tl-widget fi-widget)
   ;; (dimfi "ftlw/import callback called")
-  (let ((model (tv-model ki-widget))
-	(selection (tv-sel ki-widget))
+  (let ((model (tv-model fi-widget))
+	(selection (tv-sel fi-widget))
 	(prev-gui-cb? (gui-callback? tl-widget))
 	(prev-active-filter (active-filter tl-widget)))
     (dotimes (i (gtk-tree-model-iter-n-children model #f))
@@ -167,28 +167,28 @@
 ;;; API
 ;;;
 
-(define (ki/select-gui tl-widget)
+(define (fi/select-gui tl-widget)
   (let* ((parent (dialog tl-widget))
 	 (g-file (glade-file tl-widget))
-	 (ki-widget (ki/make-dialog parent g-file))
-	 (widget (dialog ki-widget)))
-    (connect (add-bt ki-widget)
+	 (fi-widget (fi/make-dialog parent g-file))
+	 (widget (dialog fi-widget)))
+    (connect (add-bt fi-widget)
 	     'clicked
 	     (lambda (button)
-	       (ki/add tl-widget ki-widget)))
-    (connect (remove-bt ki-widget)
+	       (fi/add tl-widget fi-widget)))
+    (connect (remove-bt fi-widget)
 		 'clicked
 		 (lambda (button)
-		   (ki/remove tl-widget ki-widget)))
-    (connect (reimport-bt ki-widget)
+		   (fi/remove tl-widget fi-widget)))
+    (connect (reimport-bt fi-widget)
 	     'clicked
 	     (lambda (button)
-	       (ki/reimport tl-widget ki-widget)))
+	       (fi/reimport tl-widget fi-widget)))
     (show widget)
     (catch 'exit
 	   (lambda ()
 	     (let ((response (genum->symbol (make <gtk-response-type> #:value (run widget)))))
-	       ;; (dimfi "ki/select-gui" response)
+	       ;; (dimfi "fi/select-gui" response)
 	       (hide widget)
 	       (case response
 		 ((close) ;; -7 in glade files
