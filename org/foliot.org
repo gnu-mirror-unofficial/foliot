@@ -47,8 +47,9 @@ let the user select its perefered colour for each of his imported databases.
 
 ** Other important stuff
 
-*** TODO foliot -d needs a message 'à la guile-clutter 'examples'
-*** TODO all Copyright (C) need to become Copyright (C) 2011 - 2015
+*** DONE foliot -d needs a message 'à la guile-clutter 'examples'
+CLOSED: [2016-02-19 Fri 19:39]
+- State "DONE"       from "TODO"       [2016-02-19 Fri 19:39]
 *** DONE delete: binding the delete key to remove row
 CLOSED: [2014-02-27 Thu 16:02]
 - State "DONE"       from "TODO"       [2014-02-27 Thu 16:02]
