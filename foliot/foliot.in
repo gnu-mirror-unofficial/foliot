@@ -165,6 +165,8 @@ details.")
 	     (gnome gtk)
 	     (gnome glib)
 	     (grip server)
+	     (grip config)
+	     (foliot config)
 	     (foliot foliot))
 
 
@@ -191,6 +193,14 @@ details.")
 	   (load-user-init)
 	   (gnome-program-init "GNU Foliot" %version)
 	   (gnome-authentication-manager-init)
+	   ;; February the 9th, Foliot is now part of GNU and becomes GNU Foliot.
+	   ;; Before, it was named Kisê, with kise.conf as its config file.  We
+	   ;; need to check and if there is a file ~/config/kise.conf, rename it
+	   ;; and reload it.
+	   (when (read-config "kise")
+	     (rename-file (get-config-filename "kise")
+			  (get-config-filename "foliot"))
+	     (kcfg/get 'reload))
 	   (set! *foliot*
 		 (foliot/animate-ui uname (storage-get 'gladefile) %version debug?))
 	   (when debug?

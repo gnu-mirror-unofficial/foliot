@@ -60,6 +60,18 @@
   (db-shi/add-shinning-table db))
 
 (define (db/check-schema db)
+  ;; February the 9th, 2016, Kisê becomes GNU Foliot.  Unless the database
+  ;; was created using GNU Foliot, we need to rename tables from kise- to
+  ;; foliot-, then proceed with the usual schema checks.
+  (when (sqlite/table-exists? db "kise")
+    (sqlite/begin-transaction db)
+    (sqlite/table-rename db "kise" "foliot")
+    (sqlite/table-rename db "kise_printing_templates" "foliot_printing_templates")
+    (sqlite/table-rename db "kise_imported_db" "foliot_imported_db")
+    (sqlite/table-rename db "kise_shinning" "foliot_shinning")
+    (sqlite/commit db)
+    ;; Caution: table names are cached, we musr refresh!
+    (sqlite/table-names db #:refresh #t))
   (let ((foliot? (sqlite/table-exists? db "foliot"))
 	(foliot-printing-templates? (sqlite/table-exists? db "foliot_printing_templates"))
 	(foliot-imported-db? (db-idb/check-schema db))
