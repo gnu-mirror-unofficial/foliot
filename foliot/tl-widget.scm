@@ -373,7 +373,7 @@
 			     <gchararray>
 			     <gchararray>
 			     <gchararray>
-			     <gfloat> ;; duration
+			     <gchararray> ;; <gfloat> ;; duration
 			     <gboolean>
 			     <gchararray>
 			     <gchararray>
@@ -429,18 +429,20 @@
 		      #:reorderable #f
 		      #:alignment   .5))
 	 ;; DURATION
-	 (adjustment4 (make <gtk-adjustment>
+	 #;(adjustment4 (make <gtk-adjustment>
 			#:value 0
 			#:lower 0
 			#:upper 100
 			#:step-increment .1
 			#:page-increment 1
 			#:page-size 0))
-	 (renderer4 (make <gtk-cell-renderer-spin>
+	 #;(renderer4 (make <gtk-cell-renderer-spin>
 		      ;; #:family "Monospace"
 		      #:adjustment adjustment4
 		      #:climb-rate 0.1
-		      #:digits 1))
+	              #:digits 1))
+	 (renderer4 (make <gtk-cell-renderer-text>
+		      #:xalign      1))
 	 (column4   (make <gtk-tree-view-column>
 		      #:title       (_ "Dur.")
 		      #:sizing      'fixed
@@ -496,7 +498,7 @@
 		      (ibg ,column9 ,renderer9 "text")
 		      (ifg ,column10 ,renderer10 "text"))))
     (gtk2/pack-tv-cols treeview to-pack)
-    (set renderer4 'digits 1)
+    #;(set renderer4 'digits 1)
     ;; background colour
     (add-attribute column0 renderer0 "cell-background" 9)
     (add-attribute column1 renderer1 "cell-background" 7)

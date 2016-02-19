@@ -66,7 +66,7 @@
   (fiter/set 'date model iter date)
   (fiter/set 'who model iter who)
   (fiter/set 'for-whom model iter for-whom)
-  (fiter/set 'duration model iter duration)
+  (fiter/set 'duration model iter (number->string duration))
   (fiter/set 'to-be-charged model iter to-be-charged)
   (fiter/set 'what model iter what)
   (fiter/set 'rowbg model iter #f)

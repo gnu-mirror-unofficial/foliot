@@ -166,7 +166,7 @@
 	  (begin
 	    ;; (gtk2/set-text (for-whom-entry tl-widget) "")
 	    (set-active (for-whom-combo tl-widget) -1))))
-    (set-value (duration-sb tl-widget) (fiter/get 'duration model iter))
+    (set-value (duration-sb tl-widget) (string->number (fiter/get 'duration model iter)))
     (let ((what? (gtk2/combo-find-row (what-combo tl-widget) (db-foliot/get tuple 'what))))
       (if what?
 	  (set-active (what-combo tl-widget) what?)
@@ -359,7 +359,7 @@
 		       (iter (current-iter tl-widget))
 		       (value (fp/round (get-value widget) 1)))
 		   ;; (dimfi 'row row 'duration value)
-		   (fiter/set 'duration model iter value)
+		   (fiter/set 'duration model iter (number->string value))
 		   ;; update-db
 		   (ftlw/set 'duration tl-widget value row)
 		   (ftlw/update-totals-status-bars tl-widget)))))
