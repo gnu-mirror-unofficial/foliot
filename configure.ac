@@ -79,9 +79,9 @@ GUILE_GNOME_MODULE_REQUIRED([gnome glade])
 PKG_CHECK_MODULES(SQLite3, sqlite3 >= 3.7)
 PKG_CHECK_MODULES(libpcre, libpcre)
 
-PKG_CHECK_MODULES([Grip], [grip-1.0 >= 0.1.0])
-PKG_CHECK_MODULES([Grip_Gnome], [grip-gnome-1.0 >= 0.1.0])
-PKG_CHECK_MODULES([Grip_SQLite], [grip-sqlite-1.0 >= 0.1.0])
+PKG_CHECK_MODULES([Grip], [grip-1.0 >= 0.1.1])
+PKG_CHECK_MODULES([Grip_Gnome], [grip-gnome-1.0 >= 0.1.1])
+PKG_CHECK_MODULES([Grip_SQLite], [grip-sqlite-1.0 >= 0.1.1])
 
 AC_CHECK_PROG(PDFLATEX, pdflatex, yes)
 if test -z "$PDFLATEX"; then
