@@ -29,38 +29,40 @@
   #:use-module (oop goops)
   #:use-module (gnome gtk)
 
-  #:export (fiter/get
+  #:export (fiter/get-pos
+	    fiter/get
 	    fiter/set
 	    fiter/append-fill
 	    fiter/prepend-fill))
 
 
-(define *foliot-iter-offsets*
-  '((icolour . 0)
-    (date . 1)
-    (date_ . 1)
-    (who . 2)
-    (for-whom . 3)
-    (for_whom . 3)
-    (duration . 4)
-    (to-be-charged . 5)
-    (to_be_charged . 5)
-    (what . 6)
-    (rowbg . 7)
-    (rowfg . 8)
-    (ibg . 9)
-    (ifg . 10)))
+(define fiter/get-pos #f)
 
-(define (fiter/get-pos what)
-  (cdr (assoc what *foliot-iter-offsets*)))
+(let ((foliot-iter-offsets '((icolour . 0)
+			     (date . 1)
+			     (date_ . 1)
+			     (who . 2)
+			     (for-whom . 3)
+			     (for_whom . 3)
+			     (duration . 4)
+			     (to-be-charged . 5)
+			     (to_be_charged . 5)
+			     (what . 6)
+			     (rowbg . 7)
+			     (rowfg . 8)
+			     (ibg . 9)
+			     (ifg . 10))))
+  (set! fiter/get-pos
+	(lambda (key)
+	  (assq-ref foliot-iter-offsets key))))
 
-(define (fiter/get what model iter)
-  (get-value model iter (fiter/get-pos what)))
+(define (fiter/get key model iter)
+  (get-value model iter (fiter/get-pos key)))
 
-(define (fiter/set what model iter value)
-  (set-value model iter (fiter/get-pos what) value))
+(define (fiter/set key model iter value)
+  (set-value model iter (fiter/get-pos key) value))
 
-(define (fiter/fill-next model iter date who for-whom duration to-be-charged what ibg ifg)
+(define (fiter/fill model iter date who for-whom duration to-be-charged what ibg ifg)
   (fiter/set 'date model iter date)
   (fiter/set 'who model iter who)
   (fiter/set 'for-whom model iter for-whom)
@@ -75,8 +77,8 @@
 
 (define (fiter/append-fill model date who for-whom duration to-be-charged what ibg ifg)
   (let ((iter (gtk-list-store-append model)))
-    (fiter/fill-next model iter date who for-whom duration to-be-charged what ibg ifg)))
+    (fiter/fill model iter date who for-whom duration to-be-charged what ibg ifg)))
 
 (define (fiter/prepend-fill model date who for-whom duration to-be-charged what ibg ifg)
   (let ((iter (gtk-list-store-prepend model)))
-    (fiter/fill-next model iter date who for-whom duration to-be-charged what ibg ifg)))
+    (fiter/fill model iter date who for-whom duration to-be-charged what ibg ifg)))
