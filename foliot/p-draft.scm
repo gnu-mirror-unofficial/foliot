@@ -87,13 +87,13 @@
 
 (define (fp/write-draft-fancy-specs ostream)
   (format ostream "
-	\\lhead{\\klheader}
+	\\lhead{\\flheader}
 	\\chead{}
-	\\rhead{\\krheader}
+	\\rhead{\\frheader}
 
-	\\lfoot{\\klfooter}
+	\\lfoot{\\flfooter}
 	\\cfoot{}
-	\\rfoot{\\krfooter}
+	\\rfoot{\\frfooter}
 
 	\\renewcommand{\\headrulewidth}{0pt}
 	\\renewcommand{\\footrulewidth}{0.3pt}~%"))
@@ -121,15 +121,15 @@
   \\newlength\\logowidth
   \\newlength\\logoheight
 
-  \\setlength{\\logowidth}{\\widthof{\\klheaderlogo}}
-  \\setlength{\\logoheight}{\\totalheightof{\\klheaderlogo}}
+  \\setlength{\\logowidth}{\\widthof{\\flheaderlogo}}
+  \\setlength{\\logoheight}{\\totalheightof{\\flheaderlogo}}
 
   \\ifdim\\logoheight<42pt
     \\newlength\\diffheight
     \\setlength{\\diffheight}{42pt-\\logoheight}
-    \\def\\klheader{\\klheaderlogo \\\\[\\diffheight]}
+    \\def\\flheader{\\flheaderlogo \\\\[\\diffheight]}
   \\else
-    \\def\\klheader{\\klheaderlogo}
+    \\def\\flheader{\\flheaderlogo}
   \\fi
 
   %logo width: \\the\\logowidth\\\\
@@ -139,7 +139,7 @@
 #;(define (fp/write-logo-spec-code ostream ulogo)
   (if ulogo
       (format ostream "
-    \\def\\klheader{\\klheaderlogo}
+    \\def\\flheader{\\flheaderlogo}
 ")))
 
 (define (fp/write-draft-end-document ostream)
@@ -152,13 +152,13 @@
     (for-each (lambda (row-spec)
 		(format ostream "
       \\rowcolor{~A}
-        \\klabel{~A} : & ~A \\\\~%"
-			(if (odd? row) "\\ktboddrowcolour" "\\ktbevenrowcolour")
+        \\flabel{~A} : & ~A \\\\~%"
+			(if (odd? row) "\\ftboddrowcolour" "\\ftbevenrowcolour")
 			(car row-spec)
 			(cdr row-spec))
 		(set! row (1+ row)))
 	(list (cons (_ "database")
-		    (format #f "\\textcolor{\\kdbnamecolour}{~A}" db-name))
+		    (format #f "\\textcolor{\\fdbnamecolour}{~A}" db-name))
 	      (cons (_ "filter")
 		    (format #f "~A" (if where (tex/prep-str-for-tex where) (_ "none"))))
 	      (cons (_ "grouped by")
@@ -177,8 +177,8 @@
     (for-each (lambda (row-spec)
 		(format ostream "
       \\rowcolor{~A}
-        \\klabel{~A} : & ~A \\\\~%"
-			(if (odd? row) "\\ktboddrowcolour" "\\ktbevenrowcolour")
+        \\flabel{~A} : & ~A \\\\~%"
+			(if (odd? row) "\\ftboddrowcolour" "\\ftbevenrowcolour")
 			(car row-spec)
 			(cdr row-spec))
 		(set! row (1+ row)))
@@ -194,7 +194,7 @@
 
 (define (fp/write-draft-abstract-table ostream tl-widget db-name where group-by order-by)
   (format ostream "
-\\setlength\\arrayrulewidth{0.3pt}\\arrayrulecolor{\\kabstitlecolour}~%")
+\\setlength\\arrayrulewidth{0.3pt}\\arrayrulecolor{\\fabstitlecolour}~%")
   (format ostream "
  \\begin{center}
    \\begin{tabularx}{.94\\textwidth}{r X}~%")
@@ -208,7 +208,7 @@
 (define (fp/get-abstract-footnote-text)
   (format #f"~A."
 	  (string-append (_ "When selected [not grouped by]")
-			 ", \\klabel{" (_ "to be charged") "} "
+			 ", \\flabel{" (_ "to be charged") "} "
 			 (_ "is printed using")
 			 " \\checked" "~"
 			 (_ "when true") " "
@@ -221,8 +221,8 @@
 		(let ((field-name (tex/prep-str-for-tex (symbol->string (car field)))))
 		  (set! result
 			(if (string-null? result)
-			    (format #f "\\klabel{~A}" field-name)
-			    (format #f "~A, \\klabel{~A}" result field-name)))))
+			    (format #f "\\flabel{~A}" field-name)
+			    (format #f "~A, \\flabel{~A}" result field-name)))))
 	core-fields)
     result))
 
@@ -234,7 +234,7 @@
 
 (define (fp/write-draft-abstract ostream tl-widget db-name where group-by order-by core-fields)
   (format ostream "
-\\kabstract{~A}{" (_ "Summary"))
+\\fabstract{~A}{" (_ "Summary"))
   (format ostream "~A:\\\\[-1mm]~%"
 	  (_ "This \\foliot report was produced using the following criteria"))
   (fp/write-draft-abstract-table ostream tl-widget db-name where group-by order-by)
@@ -333,10 +333,10 @@
 		      ((t) "to be charged"))
 		    value)))
     (case level
-      ((0) (format ostream "\\ksection{~A}~%" title))
-      ((1) (format ostream "\\ksubsection{~A}~%" title))
-      ((2) (format ostream "\\ksubsubsection{~A}~%" title))
-      ((3) (format ostream "\\kparagraph{~A}~%" title)))))
+      ((0) (format ostream "\\fsection{~A}~%" title))
+      ((1) (format ostream "\\fsubsection{~A}~%" title))
+      ((2) (format ostream "\\fsubsubsection{~A}~%" title))
+      ((3) (format ostream "\\fparagraph{~A}~%" title)))))
 
 (define (fp/get-core-table-offset groups)
   (case (length groups)
@@ -364,9 +364,9 @@
 			    (set! preamble (string-append rowfmt "l " f-tex-spec))
 			    (case f-name
 			      ((date_)
-			       (set! rowfmt "\\multicolumn{2}{c}{\\cellcolor{\\ktboddrowcolour}~A}"))
+			       (set! rowfmt "\\multicolumn{2}{c}{\\cellcolor{\\ftboddrowcolour}~A}"))
 			      (else
-			       (set! rowfmt "\\multicolumn{2}{l}{\\cellcolor{\\ktboddrowcolour}~A}"))))
+			       (set! rowfmt "\\multicolumn{2}{l}{\\cellcolor{\\ftboddrowcolour}~A}"))))
 			  (begin
 			    (set! nb-cols (1+ nb-cols))
 			    (set! preamble f-tex-spec)
@@ -421,17 +421,17 @@ reactivated within the table via the \showrowcolors command.
 
 (define (fp/draft-ltx-second-row-fmt even-bg?)
   (if even-bg?
-      "  & \\multicolumn{~A}{p{\\textwidth-~A-4\\tabcolsep}}{\\cellcolor{\\ktbevenrowcolour}\\small ~A}\\\\~%"
+      "  & \\multicolumn{~A}{p{\\textwidth-~A-4\\tabcolsep}}{\\cellcolor{\\ftbevenrowcolour}\\small ~A}\\\\~%"
       "  \\multicolumn{1}{l}{\\cellcolor{white}~~} & \\multicolumn{~A}{p{\\textwidth-~A-4\\tabcolsep}}{\\small ~A}\\\\~%"))
 
 (define (fp/write-draft-ltx-tuple ltx-stream tuple core-fields rowfmt nb-cols description? ltx-offset)
   ;; (format #t "~S~%" rowfmt)
   (let ((1st-row-values (fp/get-ltx-first-row-values core-fields tuple)))
     ;; (format #t "~S~%" 1st-row-values)
-    ;; (format ltx-stream "  \\rowcolor{\\ktboddrowcolour}~%")
+    ;; (format ltx-stream "  \\rowcolor{\\ftboddrowcolour}~%")
     (format ltx-stream "  ~?\\\\~%" rowfmt 1st-row-values)
     (when description?
-      ;; (format ltx-stream "  \\rowcolor{\\ktbevenrowcolour}~%")
+      ;; (format ltx-stream "  \\rowcolor{\\ftbevenrowcolour}~%")
       (format ltx-stream "~?" (fp/draft-ltx-second-row-fmt 'even-bg)
 	      (list (1- nb-cols) ltx-offset (fp/get-ltx-description tuple))))))
 
@@ -458,7 +458,7 @@ reactivated within the table via the \showrowcolors command.
   (format ostream "
   \\setlength\\LTleft{~A}
   \\setlength\\LTright{0pt}
-  \\rowcolors{1}{\\ktboddrowcolour}{\\ktbevenrowcolour}
+  \\rowcolors{1}{\\ftboddrowcolour}{\\ftbevenrowcolour}
   ~%"
 	  ltx-offset))
 

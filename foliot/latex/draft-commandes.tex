@@ -1,22 +1,23 @@
 % -*- coding: utf-8; -*-
 
-%%%% Copyright (C) 2011, 2012, 2013
+%%%%
+%%%% Copyright (C) 2011, 2012, 2013, 2016
 %%%% Free Software Foundation, Inc.
 
-%%%% This file is part of Kisê.
+%%%% This file is part of GNU Foliot.
 
-%%%% Kisê is free software: you can redistribute it and/or modify it
-%%%% under the terms of the GNU General Public License as published by
-%%%% the Free Software Foundation, either version 3 of the License, or
-%%%% (at your option) any later version.
+%%%% GNU Foliot is free software: you can redistribute it and/or modify
+%%%% it under the terms of the GNU General Public License as published
+%%%% by the Free Software Foundation, either version 3 of the License,
+%%%% or (at your option) any later version.
 
-%%%% Kisê is distributed in the hope that it will be useful, but
+%%%% GNU Foliot is distributed in the hope that it will be useful, but
 %%%% WITHOUT ANY WARRANTY; without even the implied warranty of
 %%%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 %%%% General Public License for more details.
 
 %%%% You should have received a copy of the GNU General Public License
-%%%% along with Kisê.  If not, see <http://www.gnu.org/licenses/>.
+%%%% along with GNU Foliot.  If not, see <http://www.gnu.org/licenses/>.
 %%%%
 
 %%%
@@ -25,8 +26,8 @@
 
 \newcommand{\einsec}{~}
 
-\newcolumntype{y}{>{\color{\kabstbleftcolour}}r}
-\newcolumntype{Z}{>{\color{\kabstbrightcolour}}X}
+\newcolumntype{y}{>{\color{\fabstbleftcolour}}r}
+\newcolumntype{Z}{>{\color{\fabstbrightcolour}}X}
 
 
 %%%
@@ -77,11 +78,11 @@
 %%% Abstract
 %%%
 
-\newcommand{\kabstract}[2]{%
+\newcommand{\fabstract}[2]{%
 \begin{center}
-  {\huge \textcolor{\kabstitlecolour}{\textbf{#1}}}\\
+  {\huge \textcolor{\fabstitlecolour}{\textbf{#1}}}\\
   \vspace{-.17cm}
-  \ulksection{.7\textwidth}{\kabstitlecolour}
+  \ulksection{.7\textwidth}{\fabstitlecolour}
   %\vspace{.1cm}
   ~\\
   {\normalsize
@@ -96,35 +97,35 @@
 %%% Draft Sectioning
 %%%
 
-\newcommand{\ksection}[1]{%
-  \section*{\textcolor{\ksectioncolour}{\textbf{#1}}}
+\newcommand{\fsection}[1]{%
+  \section*{\textcolor{\fsectioncolour}{\textbf{#1}}}
   \vspace{-0.48cm}
-  \ulksection{\textwidth}{\ksectioncolour}
+  \ulksection{\textwidth}{\fsectioncolour}
 }
 
-\newcommand{\ksubsection}[1]{%
+\newcommand{\fsubsection}[1]{%
   \vspace{-0.2cm}
-  \subsection*{\textcolor{\ksubsectioncolour}{\textbf{#1}}}
+  \subsection*{\textcolor{\fsubsectioncolour}{\textbf{#1}}}
 }
 
-\newcommand{\ksubsubsection}[1]{%
-  \subsubsection*{\textcolor{\ksubsubsectioncolour}{\underline{\textbf{#1}}}}
+\newcommand{\fsubsubsection}[1]{%
+  \subsubsection*{\textcolor{\fsubsubsectioncolour}{\underline{\textbf{#1}}}}
   %\vspace{-0.65cm}
   %\ulksection{\textwidth}{#2}
   %\vspace{-0.3cm}
 }
 
-\newcommand{\kparagraph}[1]{%
-  \paragraph{\textcolor{\kparagraphcolour}{\textbf{#1}}}
+\newcommand{\fparagraph}[1]{%
+  \paragraph{\textcolor{\fparagraphcolour}{\textbf{#1}}}
   %\vspace{-0.65cm}
   %\ulksection{\textwidth}{#2}
   %\vspace{-0.3cm}
 }
 
 
-\newcommand{\klabel}[1]{%
-  %%\textcolor{\ksectioncolour}{\textit{#1}}
-  \textcolor{\klabelcolour}{\textit{#1}}}
+\newcommand{\flabel}[1]{%
+  %%\textcolor{\fsectioncolour}{\textit{#1}}
+  \textcolor{\flabelcolour}{\textit{#1}}}
 
 
 

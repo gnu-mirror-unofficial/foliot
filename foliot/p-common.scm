@@ -206,8 +206,8 @@
   (let* ((dir (p-directory tex-file-object))
 	 (fname (short-filename tex-file-object))
 	 (paper-size "a4") ;; we'll get there
-	 (compile-command (format #f "cd ~A; latex ~A; latex ~A; dvips -t ~A -o ~A.ps ~A.dvi"
-				  dir fname fname paper-size fname fname)))
+	 (compile-command (format #f "cd ~A; pdflatex ~A > /dev/null; pdflatex ~A > /dev/null;"
+				  dir fname fname)))
     ;; (format #t "~S~%" compile-command)
     (system compile-command)))
 
@@ -219,9 +219,10 @@
 	 (pdf-temp-name (pdf-filename main-tex-file-instance))
 	 (shortname (short-filename main-tex-file-instance))
 	 (pdf-fullname (pdf tex-files))
-	 (pdf-command (format #f "cd ~A; ps2pdf ~A.ps ~A.pdf" p-dir shortname shortname))
-	 (complete-command (format #f "~A; cp -f ~A ~A"
-				   pdf-command pdf-temp-name pdf-fullname)))
+	 #;(pdf-command (format #f "cd ~A; ps2pdf ~A.ps ~A.pdf" p-dir shortname shortname))
+	 (complete-command (format #f "cd ~A; cp -f ~A ~A"
+				   p-dir #;pdf-command
+				   pdf-temp-name pdf-fullname)))
     ;; (format #t "~S~%" complete-command)
     (system complete-command)))
 

@@ -64,8 +64,8 @@
 
   ~A
 
-  \\def\\klfooter{~A}
-  \\def\\krfooter{~A}
+  \\def\\flfooter{~A}
+  \\def\\frfooter{~A}
 ")
 
 
@@ -75,9 +75,9 @@
 
 (define (fp/write-logo-tex-code ostream ulogo)
   (if ulogo
-      (format #f "\\def\\klheaderlogo{\\includegraphics[keepaspectratio=true,height=26mm,width=65mm]{~A}}" ulogo)
-      ;; (format #f "\\def\\klheaderlogo{\\includegraphics[height=26mm]{~A}}" ulogo)
-      (format #f "\\def\\klheader{\\klabel{~A}\\\\~~\\\\~~\\\\}" (_ "Your logo here"))))
+      (format #f "\\def\\flheaderlogo{\\includegraphics[keepaspectratio=true,height=26mm,width=65mm]{~A}}" ulogo)
+      ;; (format #f "\\def\\flheaderlogo{\\includegraphics[height=26mm]{~A}}" ulogo)
+      (format #f "\\def\\flheader{\\flabel{~A}\\\\~~\\\\~~\\\\}" (_ "Your logo here"))))
 
 (define (fp/write-local-variables tex-files)
   (let* ((date (sys/date)) ;; will check but should use the locale
