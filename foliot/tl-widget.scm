@@ -1243,7 +1243,7 @@ filter date: ~S~%"
 				       (fiter/get 'date model iter)
 				       (fiter/get 'who model iter)
 				       (fiter/get 'for-whom model iter)
-				       (fiter/get 'duration model iter)
+				       (string->number (fiter/get 'duration model iter))
 				       (fiter/get 'to-be-charged model iter)
 				       (fiter/get 'what model iter)
 				       #f
