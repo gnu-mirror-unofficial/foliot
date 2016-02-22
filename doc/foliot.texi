@@ -1,9 +1,9 @@
 \input texinfo
 @c -*- mode: texinfo; coding: utf-8 -*-
-@c This is part of the Kisê User Manual.
+@c This is part of the GNU Foliot User Manual.
 @c Copyright (C)  2011 - 2016 Free Software Foundation, Inc.
 
-@setfilename kise.info
+@setfilename foliot.info
 
 @documentencoding UTF-8
 @c @paragraphindent none
@@ -17,7 +17,7 @@
 
 
 @copying
-This manual documents Kisê version @value{VERSION}.
+This manual documents GNU Foliot version @value{VERSION}.
 
 Copyright (C) 2011 - 2016 Free Software Foundation, Inc.
 
@@ -32,7 +32,7 @@ Documentation License.''
 
 @dircategory Software
 @direntry
-* Kisê: (kise).  
+* GNU Foliot: (foliot).  
 @end direntry
 
 @c Choices for setchapternewpage are {on,off,odd}.
@@ -49,12 +49,12 @@ Documentation License.''
 
 @titlepage
 @sp 10
-@title Kisê
+@title GNU Foliot
 @subtitle @
   Edition @value{EDITION}, @
   revision @value{MANUAL-REVISION}, @
-  for use with Kisê @value{VERSION}
-@author The Kisê Developpers
+  for use with GNU Foliot @value{VERSION}
+@author The GNU Foliot Developpers
 
 @c the next two commands start the copyright
 @page
@@ -74,7 +74,7 @@ Documentation License.''
 @menu
 * Preface::
 * Introduction::
-* Using Kisê::
+* Using GNU Foliot::
 
 Appendices
 
@@ -94,7 +94,7 @@ Indices
 
 @include preface.texi
 @include introduction.texi
-@include using-kise.texi
+@include using-foliot.texi
 
 
 @node GNU Free Documentation License

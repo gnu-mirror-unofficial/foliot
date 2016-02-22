@@ -1,10 +1,10 @@
 @c -*-texinfo-*-
-@c This is part of the Kisê User Manual.
+@c This is part of the GNU Foliot User Manual.
 @c Copyright (C)  2011 - 2016 Free Software Foundation, Inc.
 
 
 @copying
-This manual documents Kisê version @value{VERSION}.
+This manual documents GNU Foliot version @value{VERSION}.
 
 Copyright (C) 2011 - 2016 Free Software Foundation, Inc.
 
@@ -17,8 +17,8 @@ Documentation License.''
 @end copying
 
 
-@node Using Kisê
-@chapter Using Kisê
+@node Using GNU Foliot
+@chapter Using GNU Foliot
 
 blabla
 
