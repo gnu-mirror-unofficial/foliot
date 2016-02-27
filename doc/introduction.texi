@@ -22,7 +22,7 @@ Documentation License.''
 
 @menu
 * About GNU Foliot::
-* GNU Foliot the name::
+* The name::
 * What else::
 * Savannah::
 * Obtaining and Installing GNU Foliot::
@@ -56,13 +56,13 @@ quickly generate the pdf files and/or printed reports of your needs.
 A version which will let users export an active filter based subset of
 their time keeping entries is under work.
 
-@node GNU Foliot the name
-@section GNU Foliot the name
+@node The name
+@section The name
 
 Foliot was the name given, back in the 13th century, to one of the
 essential components of the first all-mecanical clocks:
 
-@smallquotation
+@quotation
 ... Starting in the 13th century, large tower clocks were built in
 European town squares, cathedrals, and monasteries. They kept time by
 using the verge escapement to drive a foliot, an horizontal bar with
@@ -70,7 +70,7 @@ weights on the ends, a primitive type of balance wheel, to oscillate
 back and forth. The rate of the clock could be adjusted by sliding the
 weights in or out on the foliot bar ...
 @author @uref{@value{UFOLIOT-WIKIPEDIA}, Wikipedia}
-@end smallquotation
+@end quotation
 
 @node What else
 @section What else
@@ -109,33 +109,46 @@ you should grab is:
 GNU Foliot needs the following software to run:
 
 @itemize @bullet
+
 @item
 Autoconf >= 2.69
+
 @item
 Automake >= 1.14
+
 @item
 @uref{@value{UGUILE}, Guile}>= 2.0.11
+
 @item
 @uref{@value{UGUILE-GNOME}, Guile-Gnome} >= 2.16.4, the following
 wrappers:
-@indentedblock
-Gobject, Glib, Pango, Pangocairo, libgnome, lingnomeui, libglade, Gtk
-@end indentedblock
+
+  @indentedblock
+  Gobject, Glib, Pango, Pangocairo, libgnome, lingnomeui, libglade, Gtk
+  @end indentedblock
+
 @item 
 @uref{@value{USQLITE}, SQLite} >= 3.7
+
 @item
 libpcre
+
 @comment @item
 @comment @uref{@value{USQLITE3-PCRE}, sqlite3-pcre}: perl compatible
 @comment regular expression support for SQLite
+
 @item
 @uref{@value{UGRIP}, Grip} >= 0.1.1
+
 @item
 @uref{@value{UGRIP-GNOME}, Grip-Gnome} >= 0.1.1
+
 @item
 @uref{@value{UGRIP-SQLITE}, Grip-SQLite} >= 0.1.1
+
 @item
 @uref{@value{ULATEX}, LaTex}: any recent LaTex 2e version will do
+
 @end itemize
 
 GNU Foliot reports needs the following font:
