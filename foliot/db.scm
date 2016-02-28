@@ -27,9 +27,7 @@
 
 (define-module (foliot db)
   #:use-module (grip reexport)
-  ;; #:use-module (grip utils)
-  ;; #:use-module (grip dates)
-  ;; #:use-module (grip db sqlite)
+  #:use-module (grip sqlite)
   #:use-module (foliot db-con)
   #:use-module (foliot db-foliot)
   #:use-module (foliot db-imported-db)
@@ -42,7 +40,8 @@
 
 
 (eval-when (expand load eval)
-  (re-export-public-interface (foliot db-con)
+  (re-export-public-interface (grip sqlite)
+			      (foliot db-con)
 			      (foliot db-foliot)
 			      (foliot db-imported-db)
 			      (foliot db-printing-templates)

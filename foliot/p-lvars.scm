@@ -34,7 +34,6 @@
   #:use-module (grip utils)
   #:use-module (grip nbs)
   #:use-module (grip tex-utils)
-  #:use-module (grip db sqlite)
   #:use-module (foliot config)
   #:use-module (foliot p-common)
   #:use-module (foliot p-dialog)

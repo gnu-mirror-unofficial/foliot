@@ -28,7 +28,7 @@
 (define-module (foliot db-con)
   #:use-module (grip reexport)
   #:use-module (grip utils)
-  #:use-module (grip db sqlite)
+  #:use-module (grip sqlite)
 
   #:export (db-con
 	    db-name
@@ -39,7 +39,7 @@
 
 (eval-when (expand load eval)
   (re-export-public-interface (grip utils)
-			      (grip db sqlite)))
+			      (grip sqlite)))
 
 
 ;;;

@@ -36,7 +36,7 @@
   #:use-module (grip utils)
   #:use-module (grip passwd)
   #:use-module (grip strings)
-  #:use-module (grip db sqlite)
+  #:use-module (grip sqlite)
   #:use-module (grip gnome colours)
   #:use-module (foliot globals)
   #:use-module (foliot db-con)
@@ -69,7 +69,7 @@
 
 
 (eval-when (expand load eval)
-  (re-export-public-interface (grip db sqlite)
+  (re-export-public-interface (grip sqlite)
 			      (grip dates)
 			      (grip i18n)
 			      (grip utils)

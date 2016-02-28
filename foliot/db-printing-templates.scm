@@ -31,7 +31,7 @@
   ;; #:use-module (oop goops)
   #:use-module (grip reexport)
   #:use-module (grip do)
-  #:use-module (grip db sqlite)
+  #:use-module (grip sqlite)
   #:use-module (grip dates)
   #:use-module (grip i18n)
   #:use-module (grip utils)
@@ -59,7 +59,7 @@
 
 
 (eval-when (expand load eval)
-  (re-export-public-interface (grip db sqlite)
+  (re-export-public-interface (grip sqlite)
 			      (grip dates)
 			      (grip i18n)
 			      (grip utils)

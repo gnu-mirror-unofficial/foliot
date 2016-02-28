@@ -31,7 +31,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (grip reexport)
   #:use-module (grip do)
-  #:use-module (grip db sqlite)
+  #:use-module (grip sqlite)
   #:use-module (grip i18n)
   #:use-module (grip utils)
   #:use-module (grip nbs)
@@ -57,7 +57,7 @@
 
 (eval-when (expand load eval)
   (re-export-public-interface (grip do)
-			      (grip db sqlite)
+			      (grip sqlite)
 			      (grip i18n)
 			      (grip utils)
 			      (grip strings)
