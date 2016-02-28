@@ -26,7 +26,7 @@ Documentation License.''
 * What else::
 * Savannah::
 * Obtaining and Installing GNU Foliot::
-* Reporting Bugs::
+* Contact::
 @end menu
 
 
@@ -181,6 +181,7 @@ To start GNU Foliot:
 foliot
 @end example
 
+@*
 @strong{Notes:}
 
 @enumerate
@@ -198,14 +199,18 @@ To install GNU Foliot, @code{make install}, you must have @code{write
 permissions} for (a) @code{$prefix} and its subdirs, (b) the
 @code{guile-gnome-2} and (c) guile's @code{site-ccache} dirs [see
 below].
+@ifhtml
 @*@*
+@end ifhtml
 
 @item
 GNU Foliot's modules are installed in the @code{guile-gnome-2} directory.  If
 you want to know its location, it is listed as part of the configure
 step and stored in the config.log file, look for "checking for
 guile-gnome-2"
+@ifhtml
 @*@*
+@end ifhtml
 
 @item
 GNU Foliot's compiled modules are installed in the Guile's @code{site-ccache}
@@ -237,8 +242,46 @@ is a mock-up.
 Happy GNU Foliot!
 
 
-@node Reporting Bugs
-@section Reporting Bugs
+@node Contact
+@section Contact
 
-Please send your questions, bug reports and/or requests for improvements
-to @email{david at altosw dot be}.
+@menu
+* Mailing list::
+* Reporting Bugs::
+* IRC::
+@end menu
+
+@node Mailing list
+@subsection Mailing list
+
+GNU Foliot uses the following mailing list:
+
+@itemize @bullet
+@item foliot-user at gnu dot org
+@end itemize
+
+You can (un)subscribe to the list by following instructions on the
+@uref{@value{UFOLIOT-LISTINFO}, list information page}.
+
+
+@node Reporting Bugs
+@subsection Reporting Bugs
+
+GNU Foliot has a @uref{@value{UFOLIOT-BUGS-TRACKER}, bugs tracker}. You
+may send your bugs report here:
+
+@itemize @bullet
+@item bug-foliot at gnu dot org
+@end itemize
+
+You can (un)subscribe to the bugs report list by following instructions
+on the @uref{@value{UFOLIOT-BUGS-LISTINFO}, list information page}.
+
+
+@node IRC
+@subsection IRC
+
+Most of the time you can find me on irc, channel @emph{#guile},
+@emph{#guix} and @emph{#scheme} on @emph{irc.freenode.net},
+@emph{#clutter} on @emph{irc.gnome.org}, under the nickname
+@strong{daviid}.

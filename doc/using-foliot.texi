@@ -20,7 +20,8 @@ Documentation License.''
 @node Using GNU Foliot
 @chapter Using GNU Foliot
 
-blabla
+GNU Foliot User's Manual still is a mock-up: any help is more then
+welcome to improve this situation, thanks!
 
 @menu
 * Filter criteria::
@@ -34,27 +35,27 @@ blabla
 @node Printing dialog
 @section Printing dialog
 
-The printing dialog is very powerfull. You can choose to print in a
-pdf file or with a printer.
+@c The printing dialog is very powerfull. You can choose to print in a
+@c pdf file or with a printer.
 
-You can define many templates. A template organises how and what to
-print the entries. To create a new template, clic the + button and
-change the name in the combo. To delete a template, clic the - button;
-an alert asks you to confirm the delete. When there is only one
-model, the - button is disabled.
+@c You can define many templates. A template organises how and what to
+@c print the entries. To create a new template, clic the + button and
+@c change the name in the combo. To delete a template, clic the -
+@c button; an alert asks you to confirm the delete. When there is only
+@c one model, the - button is disabled.
 
-You choose to print only the selected entry or all entries (= all
-filtered entries).
+@c You choose to print only the selected entry or all entries (= all
+@c filtered entries).
 
-You choose also items to print, group and sort.
+@c You choose also items to print, group and sort.
 
-When an item is grouped, a title will be printed with the content of
-the item.
+@c When an item is grouped, a title will be printed with the content of
+@c the item.
 
-You can specify, for each item, whether it should be sorted in
-ascending, descending or unsorted; select the appropriate option.
+@c You can specify, for each item, whether it should be sorted in
+@c ascending, descending or unsorted; select the appropriate option.
 
-When you check the group box of an item, the print box is also
-check. The item moves to the top
+@c When you check the group box of an item, the print box is also
+@c check. The item moves to the top
 
- When you clear a print box with group box 
+@c When you clear a print box with group box
