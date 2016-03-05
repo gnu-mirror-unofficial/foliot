@@ -61,16 +61,28 @@
 (define (db/check-schema db)
   ;; February the 9th, 2016, Kisê becomes GNU Foliot.  Unless the database
   ;; was created using GNU Foliot, we need to rename tables from kise- to
-  ;; foliot-, then proceed with the usual schema checks.
+  ;; foliot-, then proceed with the usual schema checks.  Note that the
+  ;; schema could still be incomplete, for example users of very early
+  ;; versions of this app, then start to use it again... So we need to
+  ;; test each table existence individually.
   (when (sqlite/table-exists? db "kise")
     (sqlite/begin-transaction db)
     (sqlite/table-rename db "kise" "foliot")
+    (sqlite/commit db))
+  (when (sqlite/table-exists? db "kise_printing_templates")
+    (sqlite/begin-transaction db)
     (sqlite/table-rename db "kise_printing_templates" "foliot_printing_templates")
+    (sqlite/commit db))
+  (when (sqlite/table-exists? db "kise_imported_db")
+    (sqlite/begin-transaction db)
     (sqlite/table-rename db "kise_imported_db" "foliot_imported_db")
+    (sqlite/commit db))
+  (when (sqlite/table-exists? db "kise_shinning")
+    (sqlite/begin-transaction db)
     (sqlite/table-rename db "kise_shinning" "foliot_shinning")
-    (sqlite/commit db)
-    ;; Caution: table names are cached, we musr refresh!
-    (sqlite/table-names db #:refresh #t))
+    (sqlite/commit db))
+  ;; Caution: table names are cached, we must refresh!
+  (sqlite/table-names db #:refresh #t)
   (let ((foliot? (sqlite/table-exists? db "foliot"))
 	(foliot-printing-templates? (sqlite/table-exists? db "foliot_printing_templates"))
 	(foliot-imported-db? (db-idb/check-schema db))
@@ -92,4 +104,5 @@
   (db-foliot/create-complete-table db)
   (db-pt/create-complete-table db)
   (db-idb/create-complete-table db)
-  (db-shi/create-complete-table db))
+  (db-shi/create-complete-table db)
+  (sqlite/table-names db #:refresh #t))
