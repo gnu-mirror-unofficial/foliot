@@ -22,6 +22,21 @@ Documentation License.''
 
 ** Bugs
 
+*** CLOSED [[50] 3] reimporting raises an exception
+CLOSED: [2016-03-04 Fri 19:35]
+- State "CLOSED"     from "OPEN"       [2016-03-04 Fri 19:35]
+
+if/when any of the db still has the kise_* table names.
+
+*** CLOSED [[49] 3] connect, other db, printing templates
+CLOSED: [2016-03-02 Wed 00:02]
+- State "CLOSED"     from "OPEN"       [2016-03-02 Wed 00:02]
+
+connecting to anoter dabatabase fails to update the printing templates
+combo, in the printing dialog: either we refresh the combo each time the
+printing dialog is opened, or we force an update at db open time, don't
+know yet.
+
 *** CLOSED [[48] 2] (kcfg/get 'reload)
 CLOSED: [2015-05-10 Sun 20:42]
 - State "CLOSED"     from "OPEN"       [2015-05-10 Sun 20:42]

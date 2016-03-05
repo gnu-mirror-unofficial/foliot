@@ -687,7 +687,13 @@
 
 (define (fp/make-dialog parent glade-f)
   (if *fp-widget*
-      *fp-widget*
+      ;; need to refresh the templates combo: the user may have connected to
+      ;; another database.
+      (let ((fp-widget *fp-widget*))
+	(set! (gui-callback? fp-widget) #f)
+	(fp/fill-templates-combo fp-widget 'reload)
+	(set! (gui-callback? fp-widget) #t)
+	fp-widget)
       (let* ((xmlc (glade-xml-new glade-f #f "fp/dialog"))
 	     (fp-widget (make <fp-widget>
 			  #:tpl-tuples (fp/get-templates)
@@ -912,7 +918,12 @@
 ;;;
 
 (define (fp/translate widget)
- #f)
+  (let ((xmlc (xml-code widget)))
+    (set-title (dialog widget) (_ "Printing"))
+    (set-markup (get-widget xmlc "fp/title_lb")
+		(format #f "<span foreground=\"darkblue\" size=\"x-large\"><b>~A</b></span>~%<b>~A</b>"
+			(_ "GNU Foliot printing dialog")
+			(_ "Add, remove, update templates and print.")))))
 
 
 #!
