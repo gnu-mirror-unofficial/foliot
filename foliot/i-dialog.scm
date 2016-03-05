@@ -326,4 +326,4 @@
     (set-markup (get-widget xmlc "fi/title_lb")
 		(format #f "<span foreground=\"darkblue\" size=\"x-large\"><b>~A</b></span>~%<b>~A</b>"
 			(_ "GNU Foliot import dialog")
-			(_ "Add, remove and re-import other user's GNU Foliot database.")))))
+			(_ "Add, remove and re-import other GNU Foliot user's database(s).")))))
