@@ -868,10 +868,13 @@
   (set! (db-file tl-widget) db-fname)
   (ftlw/write-config tl-widget db-fname open-at-startup? ulogo)
   (set-markup (db-name-lb1 tl-widget)
-	      (format #f "<span foreground=\"#777777\"><b>[ ~A ]</b></span>" (basename db-fname)))
+	      (format #f "<span foreground=\"#777777\"><b>[ ~A ]</b></span>"
+		      (basename db-fname)))
   (run-shinning-room-237-checks db)
   (ftlw/filter-clear tl-widget 'fillcombos)
-  (unless (= (current-row tl-widget) 0) (ftlw/select-row tl-widget 0)))
+  (sqlite/table-names db #:refresh #t)
+  (unless (= (current-row tl-widget) 0)
+    (ftlw/select-row tl-widget 0)))
 
 (define (ftlw/open-db tl-widget db-filename from-gui? mode open-at-startup? checks-result db)
   ;; when basic checks passed, the schema is tested and for this the db is opened
