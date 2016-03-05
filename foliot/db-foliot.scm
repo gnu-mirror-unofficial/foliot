@@ -219,7 +219,7 @@
 			(list (db-foliot/fields)
 			      reference))))
 
-(define (db-foliot/select-order-by-str)
+(define %order-by-str
   "date_ desc, who asc, for_whom asc, what asc, to_be_charged asc, id desc")
 
 (define (db-foliot/select-all-str)
@@ -232,18 +232,28 @@
     (sqlite/query (db-con)
 		  (format #f "~?" (db-foliot/select-all-str)
 			  (list what
-				(db-foliot/select-order-by-str))))))
+				%order-by-str)))))
 
-(define (db-foliot/select-all-other-db-str)
+(define %select-all-foliot-tuples-str
   ;; do not process dates, they will be imported as is
   "select *
      from foliot
  order by ~A")
 
+(define %select-all-kise-tuples-str
+  ;; do not process dates, they will be imported as is
+  "select *
+     from kise
+ order by ~A")
+
 (define (db-foliot/select-all-other-db db)
   (sqlite/query db
-		(format #f "~?" (db-foliot/select-all-other-db-str)
-			(list (db-foliot/select-order-by-str)))))
+		(format #f "~?"
+			;; see the comment we wrote for db-foliot/import
+			(if (sqlite/table-exists? db "kise")
+			    %select-all-kise-tuples-str
+			    %select-all-foliot-tuples-str)
+			(list %order-by-str))))
 
 (define (db-foliot/select-some-str)
   "select ~A
@@ -266,13 +276,13 @@
 				 (list what
 				       where
 				       (sqlite/build-set-expression ids)
-				       (db-foliot/select-order-by-str)))))
+				       %order-by-str))))
 	  (where
 	   (sqlite/query (db-con)
 			 (format #f "~?" (db-foliot/select-some-str)
 				 (list what
 				       where
-				       (db-foliot/select-order-by-str)))))
+				       %order-by-str))))
 	  (else
 	   (if (null? aggregate?)
 	       (db-foliot/select-all)
@@ -612,7 +622,17 @@
 	 (iso-today (date/iso-date today))
 	 (idb-tuples (db-idb/select-all))
 	 (idb-tuple-pos (db-idb/find-pos idb-tuples 'filename filename string=?))
-	 (idb-con (or idb (db-con/open filename #f)))
+	 (idb-con (or idb
+		      ;; Caution: when idb is not #f, the schema checks for this db have been
+		      ;; done and successful.  This is not the case if idb is #f of course.
+		      ;; Now, this procedure is also called for re importing db, and it could
+		      ;; be an old kise-* schema.  We can either import the kise table or ask
+		      ;; the user to upgrade that particular db, then re importing it again.
+		      ;; We'll do the former, because it is so much easier for the user, and
+		      ;; there has been no change between the kise and the foliot table
+		      ;; definition since Kisê -> GNU Foliot, so we are on the safe side doing
+		      ;; this, until the foliot table changes, this solution is ok.
+		      (db-con/open filename #f)))
 	 (tuples (db-foliot/select-all-other-db idb-con)))
     (db-con/close idb-con #f)
     (let ((db (db-con)))
