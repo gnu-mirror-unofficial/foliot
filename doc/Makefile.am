@@ -24,7 +24,7 @@ AUTOMAKE_OPTIONS = gnu
 
 info_TEXINFOS = foliot.texi
 
-kise_TEXINFOS =		\
+foliot_TEXINFOS =	\
   version.texi		\
   variables.texi	\
   preface.texi     	\
