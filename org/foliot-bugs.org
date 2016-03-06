@@ -22,6 +22,15 @@ Documentation License.''
 
 ** Bugs
 
+*** CLOSED [[51] 2] description-entry 'focus-out-event signal callback
+CLOSED: [2016-03-06 Sun 00:08]
+- State "CLOSED"     from "OPEN"       [2016-03-06 Sun 00:08]
+
+All <gtk-widget> 'focus-out-event signal callback must return a boolean.
+It never occurred to me till now that GNU Foliot 'Description', which is
+a <gtk-text-view>>, returned #<unspecified> in some circumstances.  Now
+it is fixed.
+
 *** CLOSED [[50] 3] reimporting raises an exception
 CLOSED: [2016-03-04 Fri 19:35]
 - State "CLOSED"     from "OPEN"       [2016-03-04 Fri 19:35]

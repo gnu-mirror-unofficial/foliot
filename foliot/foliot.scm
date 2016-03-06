@@ -394,7 +394,8 @@
 				    tl-widget
 				    'description
 				    #f      ; column position if used in the list-store
-				    #f))))  ; msg to display if empty and not allowed to be
+				    #f))
+	       #f))  ; msg to display if empty and not allowed to be
     ;;
     ;; filters
     ;;
