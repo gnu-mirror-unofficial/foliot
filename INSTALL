@@ -1,14 +1,15 @@
 # ;; -*- mode: org; coding: utf-8 -*-
 
-#+TITLE: Kisê INSTALL
+#+TITLE: GNU Foliot INSTALL
 
-* ( Kisê )
+* GNU Foliot
 
+GNU Foliot
 a small and easy to use time keeping application
 
-** ( dependencies )
+** Dependencies
 
-Kisê needs the following software to run:
+GNU Foliot needs the following software to run:
 
 	Autoconf	>= 2.69
 	Automake	>= 1.14
@@ -25,50 +26,50 @@ Kisê needs the following software to run:
 	Grip-Sqlite	>= 0.1.0
 	LaTeX
 
-Kisê reports needs the following font:
+GNU Foliot reports needs the following font:
 
 	iwona: on debian iwona is part of the texlive-fonts-extra
 	package.
 
-** ( quickstart )
+** Quickstart
 
-The latest release is kise-0.9.5.tar.gz [other releases are available
-here: http://www.altosw.be/kise/releases.html]
+The latest release is foliot-0.9.6-alpha.tar.gz  - other releases are
+available here: http://ftp.gnu.org/gnu/foliot/
 
 Assuming you have satisfied the dependencies, open a terminal and
 proceed with the following steps:
 
 	cd <download-path>
-	tar zxf kise-0.9.5.tar.gz
-	cd kise-0.9.5
+	tar zxf foliot-0.9.6-alpha.tar.gz
+	cd foliot-0.9.6-alpha
 	./configure [--prefix=/your/prefix]
 	make
 	make install
 
-To start Kisê:
+To start GNU Foliot:
 
-	kise
+	foliot
 
-Happy Kisê!
+Happy GNU Foliot!
 
 *** Notes
 
-[1] In the above configure step, --prefix=/your/prefix is optional, as
-    indicated by the presence of the []. The default value is
-    /usr/local. As an example, you could use configure --prefix=/opt
+[1] In the above configure step, --prefix=/your/prefix is optiona. The
+    default value is /usr/local. As an example, you could use:
 
-[2] To install Kisê, make install, you must have write permissions for
-    (a) the $prefix/bin, (b) the guile-gnome-2 and (c) guile’s
-    site-ccache dirs [see below].
+		configure --prefix=/opt
 
-[3] Kisê's modules are installed in the guile-gnome-2 directory.  If you
-    want to know its location, it is listed as part of the configure
-    step and stored in the config.log file, look for "checking for
-    guile-gnome-2"
+[2] To install GNU Foliot, you must have write permissions for (a) the
+    $prefix/bin, (b) the guile-gnome-2 and (c) guile’s site-ccache dirs.
 
-[4] Kisê's compiled modules are installed in the Guile's site-ccache
-    directory.  If you want to know its location, enter the following
-    expression in a terminal:
+[3] GNU Foliot's modules are installed in the guile-gnome-2 directory.
+    If you want to know its location, it is listed as part of the
+    configure step and stored in the config.log file, look for "checking
+    for guile-gnome-2".
+
+[4] GNU Foliot's compiled modules are installed in the Guile's
+    site-ccache directory.  If you want to know its location, enter the
+    following expression in a terminal:
 
 		guile -c "(display (%site-ccache-dir)) (newline)"
 
@@ -81,10 +82,11 @@ Happy Kisê!
 
 [6] Like for any other GNU Tool Chain compatible software, you may
     install the documentation locally using make install-info, make
-    install-html and/or make install-pdf. Note that as it is, Kisê’s
-    documentation still is a mock-up.
+    install-html and/or make install-pdf. Note that as it is, GNU
+    Foliot’s documentation still is a mock-up.
 
-* ( the GNU standard INSTALL file content )
+
+* the GNU standard INSTALL file content
 
 Installation Instructions
 *************************
