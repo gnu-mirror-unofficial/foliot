@@ -1,10 +1,10 @@
 @c -*-texinfo-*-
-@c This is part of the Kisê User Manual.
+@c This is part of the GNU Foliot User Manual.
 @c Copyright (C)  2011 - 2016 Free Software Foundation, Inc.
 
 
 @copying
-This manual documents Kisê version @value{VERSION}.
+This manual documents GNU Foliot version @value{VERSION}.
 
 Copyright (C) 2011 - 2016 Free Software Foundation, Inc.
 
@@ -17,7 +17,7 @@ Documentation License.''
 @end copying
 
 
-@set TITLE Kisê User Manual
+@set TITLE GNU Foliot User Manual
 
 @set MANUAL-REVISION 1
 
@@ -28,7 +28,17 @@ Documentation License.''
 @set ULATEX http://www.latex-project.org
 @set UIWONA http://www.tug.dk/FontCatalogue/iwona/
 @set USCHEME http://schemers.org
-@set UALTO http://altosw.be
-@set UKISE http://altosw.be/kise/
-@set UKISE-RELEASES http://www.altosw.be/kise/releases.html
-@set UKISE-LATEST http://www.altosw.be/kise/releases/kise-@value{VERSION}.tar.gz
+
+@set UFOLIOT http://www.gnu.org/software/foliot/
+@set UFOLIOT-RELEASES http://ftp.gnu.org/gnu/foliot/
+@set UFOLIOT-LATEST http://ftp.gnu.org/gnu/foliot/foliot-@value{VERSION}.tar.gz
+@set UFOLIOT-WIKIPEDIA https://en.wikipedia.org/wiki/Verge_and_foliot
+@set UFOLIOT-SAVANNAH https://savannah.gnu.org/projects/foliot
+@set UFOLIOT-LISTINFO https://lists.gnu.org/mailman/listinfo/foliot-user
+@set UFOLIOT-BUGS-TRACKER https://savannah.gnu.org/bugs/?group=foliot
+@set UFOLIOT-BUGS-LISTINFO https://lists.gnu.org/mailman/listinfo/bug-foliot
+
+
+@set UGRIP http://www.nongnu.org/grip/index.html
+@set UGRIP-GNOME http://www.nongnu.org/grip/index.html
+@set UGRIP-SQLITE http://www.nongnu.org/grip/index.html

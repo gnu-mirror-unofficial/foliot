@@ -1,14 +1,11 @@
 # ;; -*- mode: org; coding: utf-8 -*-
 
-#+TITLE: Kisê README
+#+TITLE: GNU Foliot README
 
-* ( Kisê )
+* GNU Foliot
 
+GNU Foliot [1]
 a small and easy to use time keeping application
-
-** ( about )
-
-Kisê is a small and easy to use time keeping application.
 
 It can be used in a single user mode or by small organizations. Starting
 with version 0.9.4, it can import other user's database, an essential
@@ -27,24 +24,42 @@ quickly generate the pdf files and/or printed reports of your needs.
 A version which will let users export an active filter based subset of
 their time keeping entries is under work.
 
-*** ( latest news )
+** The name
 
-1 Feb 2016 Kisê version 0.9.5 is released, see Kisê's NEWS file for
-details.
+Foliot was the name given, back in the 13th century, to one of the
+essential components of the first all-mecanical clocks:
 
-** ( the name )
+	... Starting in the 13th century, large tower clocks were built
+	in European town squares, cathedrals, and monasteries. They kept
+	time by using the verge escapement to drive a foliot, an
+	horizontal bar with weights on the ends, a primitive type of
+	balance wheel, to oscillate back and forth. The rate of the
+	clock could be adjusted by sliding the weights in or out on the
+	foliot bar ... [see here [2] for a complete definition].
 
-Kisê comes from the language Tupi-Guarani. It means 'an old and/or
-rusty knife'. It should be pronounced ki-c. However, if you pronounce
-it key-say, it would come close to the french expression 'qui sait',
-which means 'who knows'. Then comes why the name: 'qui sait? kisê!' -
-'who knows? Kisê!'. Neat dont you think ? Finally, this kind of
-application is (also) used to, in the end, produce invoices, quite a
-pain, which could (too) well be caused by 'an old and/or rusty
-knife'...
+** What else
 
-** ( what else )
+GNU Foliot is written in Guile [3], an interpreter and compiler for the
+Scheme programming language. It uses Guile-Gnome [4] for its graphical
+interface, SQLite [5] for its database backend and LaTex [6] for the
+reports.
 
-Kisê is written in guile, an interpreter and compiler for the scheme
-programming language. It uses guile-gnome for its graphical interface,
-SQLite for its database backend and LaTeX for the reports.
+** Savannah
+
+GNU Foliot also has a Savannah [7] project page.
+
+** License
+
+GNU Foliot is a free software, distributed under the terms of the GNU
+General Public License GPLv3 or higher. You must be aware there is no
+warranty whatsoever for GNU Foliot. This is described in full in the
+licenses.
+
+
+[1] http://www.gnu.org/software/foliot/
+[2] https://en.wikipedia.org/wiki/Verge_and_foliot
+[3] http://www.gnu.org/software/guile/
+[4] http://www.gnu.org/software/guile-gnome/
+[5] http://sqlite.org/
+[6] http://www.latex-project.org/
+[7] https://savannah.gnu.org/projects/foliot

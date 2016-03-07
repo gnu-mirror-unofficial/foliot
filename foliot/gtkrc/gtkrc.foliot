@@ -1,0 +1,106 @@
+## -*- coding: utf-8 -*-
+
+####
+#### Copyright (C) 2011 - 2016
+#### Free Software Foundation, Inc.
+
+#### This file is part of GNU Foliot.
+
+#### GNU Foliot is free software: you can redistribute it and/or
+#### modify it under the terms of the GNU General Public License as
+#### published by the Free Software Foundation, either version 3 of
+#### the License, or (at your option) any later version.
+
+#### GNU Foliot is distributed in the hope that it will be useful, but
+#### WITHOUT ANY WARRANTY; without even the implied warranty of
+#### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#### General Public License for more details.
+
+#### You should have received a copy of the GNU General Public License
+#### along with GNU Foliot.  If not, see
+#### <http://www.gnu.org/licenses/>.
+
+### Commentary:
+
+### Code:
+
+
+###
+### Combo globals
+###
+
+style "combobox_style"
+{
+	# xthickness = 1
+	# ythickness = 1
+
+	GtkComboBox::appears-as-list = 1
+	base[NORMAL] = "#e8e8e8"
+        base[ACTIVE] = "#e8e8e8"
+	base[INSENSITIVE] = "#e8e8e8"
+}
+
+# class "GtkComboBox"  style "combobox_style"
+widget "*foliot/who_combo"  style "combobox_style"
+widget "*foliot/for_whom_combo"  style "combobox_style"
+widget "*foliot/what_combo"  style "combobox_style"
+
+
+###
+### GtkEntry globals
+###
+
+style "no_selection_on_focus"
+{
+	GtkEntry::select-on-focus = 0
+}
+
+class "GtkEntry"     style "no_selection_on_focus"
+
+
+###
+### Non editable entries
+###
+
+style "non-editable-entry"
+{
+	base[NORMAL]      = "#ffffff"
+        base[ACTIVE]      = "#ffffff"
+	base[INSENSITIVE] = "#e8e8e8"
+}
+
+
+###
+### Never editable entries
+###
+
+style "never-editable-entry" = "non-editable-entry"
+{
+	GtkEntry::shadow_type = GTK_SHADOW_ETCHED_IN
+}
+
+widget "*foliot/reference_entry" style "never-editable-entry"
+widget "*foliot/db_name_entry" style "never-editable-entry"
+
+
+###
+### filters
+###
+
+style "entry-filters"
+{
+	base[NORMAL] = "#aabbaa"
+	base[ACTIVE] = "#aabbaa"
+	base[PRELIGHT] = "#aabbaa"
+	base[SELECTED] = "#aabbaa"
+	base[INSENSITIVE] = "#aabbaa"
+
+}
+
+widget "*foliot/filter_date" style "entry-filters"
+widget "*foliot/filter_who" style "entry-filters"
+widget "*foliot/filter_for_whom" style "entry-filters"
+widget "*foliot/filter_what" style "entry-filters"
+widget "*foliot/filter_to_be_charged_cb" style "entry-filters"
+widget "*foliot/filter_to_be_charged_combo" style "entry-filters"
+widget "*foliot/filter_description" style "entry-filters"

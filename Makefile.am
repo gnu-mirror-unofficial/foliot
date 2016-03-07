@@ -3,20 +3,21 @@
 #### Copyright (C) 2015 - 2016
 #### Free Software Foundation, Inc.
 
-#### This file is part of Kisê.
+#### This file is part of GNU Foliot.
 
-#### Kisê is free software: you can redistribute it and/or modify it
-#### under the terms of the GNU General Public License as published by
-#### the Free Software Foundation, either version 3 of the License, or
-#### (at your option) any later version.
+#### GNU Foliot is free software: you can redistribute it and/or
+#### modify it under the terms of the GNU General Public License as
+#### published by the Free Software Foundation, either version 3 of
+#### the License, or (at your option) any later version.
 
-#### Kisê is distributed in the hope that it will be useful, but
+#### GNU Foliot is distributed in the hope that it will be useful, but
 #### WITHOUT ANY WARRANTY; without even the implied warranty of
 #### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 #### General Public License for more details.
 
 #### You should have received a copy of the GNU General Public License
-#### along with Kisê.  If not, see <http://www.gnu.org/licenses/>.
+#### along with GNU Foliot.  If not, see
+#### <http://www.gnu.org/licenses/>.
 ####
 
 
@@ -26,36 +27,36 @@ moddir=$(ggdir)
 godir=$(gccache)
 
 SOURCES = \
-	kise/config.scm			\
-	kise/globals.scm		\
-	kise/colours.scm		\
-	kise/db-con.scm			\
-	kise/db-imported-db.scm		\
-	kise/db-kise.scm		\
-	kise/db-printing-templates.scm	\
-	kise/db-shinning.scm		\
-	kise/db.scm			\
-	kise/iter.scm			\
-	kise/tl-widget.scm		\
-	kise/c-dialog.scm		\
-	kise/connect.scm		\
-	kise/i-dialog.scm		\
-	kise/import.scm			\
-	kise/p-dialog.scm		\
-	kise/p-common.scm		\
-	kise/p-commercial.scm		\
-	kise/p-draft.scm		\
-	kise/p-lvars.scm		\
-	kise/p-main.scm			\
-	kise/print.scm			\
-	kise/kise.scm
+	foliot/config.scm			\
+	foliot/globals.scm		\
+	foliot/colours.scm		\
+	foliot/db-con.scm			\
+	foliot/db-imported-db.scm		\
+	foliot/db-foliot.scm		\
+	foliot/db-printing-templates.scm	\
+	foliot/db-shinning.scm		\
+	foliot/db.scm			\
+	foliot/iter.scm			\
+	foliot/tl-widget.scm		\
+	foliot/c-dialog.scm		\
+	foliot/connect.scm		\
+	foliot/i-dialog.scm		\
+	foliot/import.scm			\
+	foliot/p-dialog.scm		\
+	foliot/p-common.scm		\
+	foliot/p-commercial.scm		\
+	foliot/p-draft.scm		\
+	foliot/p-lvars.scm		\
+	foliot/p-main.scm			\
+	foliot/print.scm			\
+	foliot/foliot.scm
 
 NOCOMP_SOURCES= \
-	$(wildcard kise/glade/*)	\
-	$(wildcard kise/icons/*)	\
-	$(wildcard kise/latex/*)	\
-	$(wildcard kise/gtkrc/*)	\
-	$(shell find $(top_srcdir)/kise/pof -type f)
+	$(wildcard foliot/glade/*)	\
+	$(wildcard foliot/icons/*)	\
+	$(wildcard foliot/latex/*)	\
+	$(wildcard foliot/gtkrc/*)	\
+	$(shell find $(top_srcdir)/foliot/pof -type f)
 
 EXTRA_DIST = \
 	AUTHORS				\
@@ -66,23 +67,23 @@ EXTRA_DIST = \
 	NEWS				\
 	README				\
 	env.in				\
-	kise/kise.in			\
+	foliot/foliot.in			\
 	meta/guild.in			\
 	$(wildcard org/*)		\
 	$(wildcard am/*)		\
 	$(wildcard m4/*)		\
-	$(wildcard kise/sqlite/*)	\
+	$(wildcard foliot/sqlite/*)	\
 	$(SOURCES)			\
 	$(NOCOMP_SOURCES)
 
-bin_SCRIPTS = kise/kise
+bin_SCRIPTS = foliot/foliot
 
 CLEANFILES = \
 	$(GOBJECTS)			\
 	$(bin_SCRIPTS)
 
 ETAGS_ARGS = \
-	kise/kise			\
+	foliot/foliot			\
 	$(SOURCES)
 
 SUBDIRS = \
@@ -95,9 +96,9 @@ distclean-local:
 	rm -rf build-aux
 	rm -f configure
 	rm -f *~
-	rm -f kise-*.tar.gz
-	rm -f kise-*.tar.gz.sig
-	rm -rf doc/kise
+	rm -f foliot-*.tar.gz
+	rm -f foliot-*.tar.gz.sig
+	rm -rf doc/foliot
 	rm -f doc/*.info
 	rm -f doc/*.pdf
 	rm -f doc/*~
@@ -105,7 +106,7 @@ distclean-local:
 	rm -f doc/*.log doc/*.pg doc/*.toc doc/*.tp doc/*.vr
 	rm -f doc/Makefile.in
 	rm -f doc/stamp-vti
-	rm -f kise/*~
+	rm -f foliot/*~
 
 # * .PHONY: gen-pof:
 

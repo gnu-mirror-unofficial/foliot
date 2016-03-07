@@ -1,0 +1,210 @@
+#!/bin/sh
+# -*- mode: scheme; coding: utf-8 -*-
+export G_SLICE=always-malloc
+export GUILE_WARN_DEPRECATED="detailed"
+# ( cd `dirname $0` && make `basename $0` >/dev/null ) || exit
+exec @GUILE@ --no-auto-compile -e main -s "$0" "$@"
+!#
+
+;;;;
+;;;; Copyright (C) 2011 - 2016
+;;;; Free Software Foundation, Inc.
+
+;;;; This file is part of GNU Foliot.
+
+;;;; GNU Foliot is free software: you can redistribute it and/or modify
+;;;; it under the terms of the GNU General Public License as published
+;;;; by the Free Software Foundation, either version 3 of the License,
+;;;; or (at your option) any later version.
+
+;;;; GNU Foliot is distributed in the hope that it will be useful, but
+;;;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;;;; General Public License for more details.
+
+;;;; You should have received a copy of the GNU General Public License
+;;;; along with GNU Foliot.  If not, see <http://www.gnu.org/licenses/>.
+;;;;
+
+;;; Commentary:
+
+;; 2 steps import modules, because (gnome gnome-ui) uses $LANG and we
+;; want to make sure (setlocale LC_ALL "") 'pass' first.  It may fail,
+;; if the user $LANG is set to uninstalled locale.  In this case, the
+;; user is warned, as we catch the exception, and then we start to look
+;; to other possibilities, first looking for utf-8 available locales and
+;; in last ressort if no utf-8 locale is available, it is set to "C".
+
+;;; Code:
+
+
+(use-modules (ice-9 getopt-long)
+	     (system repl server)
+	     (grip utils)
+	     (grip locale)
+	     (grip passwd)
+	     (grip i18n)
+	     (gnome-2)  ;; finds and adds guile-gnome-2/gnome path
+			;; to %load-path
+	     (foliot globals))
+
+
+(eval-when (expand load eval)
+  (use-modules (oop goops))
+  (default-duplicate-binding-handler
+    '(merge-generics replace warn-override-core warn last)))
+
+
+;;;
+;;; Synopsis, version...
+;;;
+
+(define %synopsis
+  '((debug (single-char #\d) (value #f))
+    (version (value #f))
+    (help (value #f))))
+
+(define %version "@VERSION@")
+
+(define %copyright
+  "Copyright (C) 2011 - 2016  Free Software Foundation, Inc.
+
+GNU Foliot comes with ABSOLUTELY NO WARRANTY.  This program is free
+software, and you are welcome to redistribute it under certain
+conditions.  See <http://www.gnu.org/licenses/gpl.html>, for more
+details.")
+
+(define %help
+  "Usage: foliot [OPTION]...
+  -d, --debug    spawns a server that you may connect to in order to
+                 interact with GNU Foliot
+      --help     display this usage information
+      --version  display version information")
+
+(define %uninstalled-lang
+    "
+  Warning:
+    Your LANG environment variable is set to ~S which is not installed
+    on this system. As a fallback, we will use ~S locale instead.\n")
+
+
+(define %debug-help-1
+  "\nYou requested to run GNU Foliot in debug mode:
+
+  -] a server has been spawned, in a new thread, port ~A, which you may
+     connect to.  If you use emacs and geiser, which we recommend, then
+     M-x connect-to-guile ...
+
+  -] the following global variables have been defined:
+
+       *foliot*    an instance of the <foliot/tl-widget> class, see the
+                   (foliot tl-widget) module for its definition.")
+
+(define %debug-help-2
+  "        ~A~19t~A")
+
+(define %debug-help-3
+  "\nHappy hacking!")
+
+
+(define (welcome port)
+  (displayln (string-append "GNU Foliot " %version) port)
+  (displayln %copyright port))
+
+(define (help port)
+  (displayln %help port))
+
+(define (uninstalled-lang port lang fallback)
+  (displayln (format #f "~?" %uninstalled-lang
+		     (list lang fallback)) port))
+
+(define* (debug-help server-port port #:key (ovars #f))
+  (displayln (format #f "~?" %debug-help-1 (list server-port)) port)
+  (when ovars
+    (for-each (lambda (ovar)
+		(displayln (format #f "~?" %debug-help-2
+				   (list (car ovar) (cdr ovar)) port)))
+	ovars))
+  (displayln %debug-help-3 port))
+
+(define (set-locale msg-port)
+  (let ((locale (storage-get 'lang)))
+    (catch #t
+      (lambda () (setlocale LC_ALL "")) ;; gettext will not work otherwise
+      (lambda (key . parameters)
+	(let* ((utf8-locales (sys/get-utf8-locales))
+	       (fallback (or (sys/get-utf8-fallback '("C" "en"))
+			     (and (not (null? utf8-locales)) (car utf8-locales))
+			     "C")))
+	  (uninstalled-lang msg-port locale fallback)
+	  (setenv "LANG" fallback)
+	  (set! locale fallback)
+	  (setlocale LC_ALL fallback))
+	#f))
+    (storage-set 'locale locale)
+    locale))
+
+
+(eval-when (expand load eval)
+  (textdomain "main")
+  (bindtextdomain "main" (storage-get 'pofdir))
+  ;; the following must be done before (a) writting to the port and (b)
+  ;; loading any gnome modules.
+  (let ((port (current-output-port)))
+    (set-locale port)
+    (set-port-encoding! port "utf-8")))
+
+
+;;;
+;;; Now we can import gnome modules and foliot
+;;;
+
+(use-modules (gnome-2)
+	     (gnome gnome)
+	     (gnome gnome-ui) ;; <- uses $LANG
+	     (gnome gtk)
+	     (gnome glib)
+	     (grip server)
+	     (grip config)
+	     (foliot config)
+	     (foliot foliot))
+
+
+;;;
+;;; Main
+;;;
+
+(define *foliot* #f)
+(export *foliot*)
+
+(define (main args)
+  (let* ((options (getopt-long args %synopsis))
+	 (help? (option-ref options 'help #f))
+	 (version? (option-ref options 'version #f))
+	 (debug? (option-ref options 'debug #f))
+	 (port (current-output-port))
+	 (uname (sys/get 'uname)))
+    (cond (version? (welcome port))
+	  (help? (help port))
+	  (else
+	   (welcome port)
+	   (storage-set 'debug debug?)
+	   (gtk-rc-parse (storage-get 'gtkrcfile))
+	   (load-user-init)
+	   (gnome-program-init "GNU Foliot" %version)
+	   (gnome-authentication-manager-init)
+	   ;; February the 9th, Foliot is now part of GNU and becomes GNU Foliot.
+	   ;; Before, it was named Kisê, with kise.conf as its config file.  We
+	   ;; need to check and if there is a file ~/config/kise.conf, rename it
+	   ;; and reload it.
+	   (when (read-config "kise")
+	     (rename-file (get-config-filename "kise")
+			  (get-config-filename "foliot"))
+	     (kcfg/get 'reload))
+	   (set! *foliot*
+		 (foliot/animate-ui uname (storage-get 'gladefile) %version debug?))
+	   (when debug?
+	     (receive (server-port thread)
+		 (spawn-server-any-port #:start 1968)
+	       (debug-help server-port port)))
+	   (g-main-loop-run (g-main-loop-new))))))

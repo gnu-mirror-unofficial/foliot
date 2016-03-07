@@ -1,68 +1,60 @@
 # ;; -*- mode: org; coding: utf-8 -*-
 
-#+TITLE: Kisê NEWS
+#+TITLE: GNU Foliot NEWS
 
 * Latest News
 
-** 1 February 2016
+** March the 7th, 2016
 
-Kisê version 0.9.5 is released.
+GNU Foliot version 0.9.6-alpha is released.
 
-	- Good news for everyone:
-	- Kisê is now fully autotool chained;
-	- it depends on Grip [prev. 'common'] also fully autotool
-      chained;
-	- both Kisê and Grip run strict dependency checks @ configure
-      time;
-	- both install compiled modules, shared among all users.
-	- Other than that, known bugs have been fixed, see
-      org/kise-bugs.org if your are interested, and:
+Special Note: Before GNU Foliot became a GNU package, it was named Kisê.
+The change of name has implied thousands of source code, manual and
+web-pages changes, which is why we decided to release GNU Foliot 0.9.6
+as an alpha release: despite we rate the application as pretty robust,
+wrt the implemented functionality as in version 0.9.5, and although we
+have taken all possible precaution, the huge quantity of source code
+changes is, in itlself, error prone.
 
-Miscellaneous
+Core
+----
 
-	- all copyright years range updated;
-	- org, pot, po and texi files now have copyright headers;
-	- icons are now in svg not png;
+	- known bugs have been fixed, see org/kise-bugs.org if your are
+      interested;
+	- automatic schema migration from kise -> foliot has been
+      implemented; opening and re-importing dabatase(s) always trigger a
+      schema check and upgrade automatically if necessary.
 
-Backend
-
-	- Kisê's application script launcher code reviewed;
-	- fixing things so Kisê works with Guile-2.2 [1];
-	- database correctness/automatic update(s) control mechanism
-      added;
+Because of the above, we strongly recommend you make a backup of your
+database(s), if you were a Kisê user of course: you can never be too
+prudent!
 
 GUI
+---
 
-	- fixing <gtk-spin-button> float values not honoring 1 decimal
-      only [2].
+	- list-store duration now rendered as text: this is to paliate a
+      gtk2 list store spin button rendering bug.
+
+Printing
+--------
+
+	- printing dialog title label layout reviewed: all dialogs
+      are now uniform in presentation.
 
 Documentation
+-------------
 
 Note that the documentation is still a mock-up, but:
 
-	- texi files fixed to compile against Texinfo >= 5.2;
-
-Printing
-
-	- rephrasing some of the draft summary output;
-	- default draft report subsection and footskip vertical space
-      review.
+	- all reviewed for the new name of course, and sync with
+      web-pages with repect to dependencies and installation procedure.
 
 Web-pages
+---------
 
-	- Kisê's web-pages  have been entirely rewritten  using sxml. As
-      you will spot, they also now share their design, global procedures
-      and css definitions with Grip's web-pages.
-
-
-[1] note that Guile-2.2 has an unfixed GOOPS related bug [3] which, until
-    solved, makes it impossible to run Kisê;
-
-[2] we still need to fix this problem for the liststore;
-
-[3] http://lists.gnu.org/archive/html/bug-guile/2015-03/msg00013.html
+	- GNU Foliot's web-pages have been entirely rewritten using sxml.
 
 
 * Older News
 
-For older News, see http://altosw.be/kise/news.html
+For older News, see http://www.gnu.org/software/foliot/news.html

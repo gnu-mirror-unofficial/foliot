@@ -1,10 +1,10 @@
 @c -*-texinfo-*-
-@c This is part of the Kisê User Manual.
+@c This is part of the GNU Foliot User Manual.
 @c Copyright (C)  2011 - 2016 Free Software Foundation, Inc.
 
 
 @copying
-This manual documents Kisê version @value{VERSION}.
+This manual documents GNU Foliot version @value{VERSION}.
 
 Copyright (C) 2011 - 2016 Free Software Foundation, Inc.
 
@@ -20,55 +20,55 @@ Documentation License.''
 @node Preface
 @unnumbered Preface
 
-This manual describes how to use Kisê.  It relates particularly to 
-Kisê version @value{VERSION}.
+This manual describes how to use GNU Foliot.  It relates particularly to
+GNU Foliot version @value{VERSION}.
 
 @menu
 * Contributors to this manual::
-* Kisê License::
+* GNU Foliot License::
 @end menu
 
 @node Contributors to this manual
 @unnumberedsec Contributors to this Manual
 
-Like Kisê itself, the Kisê user manual is a living entity. Right now, the
-contributors to this manual are:
+Like GNU Foliot itself, the GNU Foliot user manual is a living
+entity. Right now, the contributor to this manual is:
 
 @itemize @bullet
-@item Christian Lalune
 @item David Pirotte
 @end itemize
 
-who are also the authors and maintainers of Kisê.
+who is also the author and maintainer of GNU Foliot.
 
-You are most welcome to join and help.  Visit Kisê's web site at
-@uref{http://www.altosw.be/kise/} to find out how to get involved.
+You are most welcome to join and help.  Visit GNU Foliot's web site at
+@uref{@value{UFOLIOT}} to find out how to get involved.
 
 
-@node Kisê License
-@unnumberedsec The Kisê License
+@node GNU Foliot License
+@unnumberedsec The GNU Foliot License
 @cindex copying
 @cindex GPL
 @cindex license
 
-Kisê is Free Software.  Kisê is copyrighted, not public domain, and there are
-restrictions on its distribution or redistribution:
+GNU Foliot is Free Software.  GNU Foliot is copyrighted, not public
+domain, and there are restrictions on its distribution or
+redistribution:
 
 @itemize @bullet
 @item
-Kisê and supporting files are published under the terms of the GNU
+GNU Foliot and supporting files are published under the terms of the GNU
 General Public License version 3 or later.  See the file @file{LICENSE}.
 
 @item
-This manual is published under the terms of the GNU Free Documentation License
-(@pxref{GNU Free Documentation License}).
+This manual is published under the terms of the GNU Free Documentation
+License (@pxref{GNU Free Documentation License}).
 @end itemize
 
-You must be aware there is no warranty whatsoever for Kisê.  This is described
-in full in the license.
+You must be aware there is no warranty whatsoever for GNU Foliot.  This
+is described in full in the license.
 
 
 @c Local Variables:
-@c TeX-master: "kise.texi"
+@c TeX-master: "foliot.texi"
 @c ispell-local-dictionary: "american"
 @c End:

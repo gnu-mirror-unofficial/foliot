@@ -1,0 +1,161 @@
+% -*- coding: utf-8; -*-
+
+%%%%
+%%%% Copyright (C) 2011, 2012, 2013, 2016
+%%%% Free Software Foundation, Inc.
+
+%%%% This file is part of GNU Foliot.
+
+%%%% GNU Foliot is free software: you can redistribute it and/or modify
+%%%% it under the terms of the GNU General Public License as published
+%%%% by the Free Software Foundation, either version 3 of the License,
+%%%% or (at your option) any later version.
+
+%%%% GNU Foliot is distributed in the hope that it will be useful, but
+%%%% WITHOUT ANY WARRANTY; without even the implied warranty of
+%%%% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+%%%% General Public License for more details.
+
+%%%% You should have received a copy of the GNU General Public License
+%%%% along with GNU Foliot.  If not, see <http://www.gnu.org/licenses/>.
+%%%%
+
+%%%
+%%% Misc. and general stuff
+%%%
+
+\newcommand{\einsec}{~}
+
+\newcolumntype{y}{>{\color{\fabstbleftcolour}}r}
+\newcolumntype{Z}{>{\color{\fabstbrightcolour}}X}
+
+
+%%%
+%%% Sectionning
+%%%
+
+%% \@startsection{NAME}{LEVEL}{INDENT}{BEFORESKIP}{AFTERSKIP}{STYLE}
+%% @\z is equivalent to 0pt
+
+\makeatletter
+ \renewcommand\section{\@startsection{section}{1}{.2cm}%
+	{2ex \@plus -1ex \@minus -.2ex}%
+	{.5ex \@plus.2ex}%
+	{\reset@font\huge\bfseries}}
+\makeatother
+
+\makeatletter
+ \renewcommand\subsection{\@startsection{subsection}{2}{.54cm}%
+	{1.7ex \@plus -1ex \@minus -.2ex}%
+	{.5ex \@plus.2ex}%
+	{\reset@font\Large\bfseries}}
+\makeatother
+
+\makeatletter
+ \renewcommand\subsubsection{\@startsection{subsubsection}{3}{1.2cm}%
+	{1.7ex \@plus -1ex \@minus -.2ex}%
+	{.5ex \@plus.2ex}%
+	{\reset@font\large\bfseries}}
+\makeatother
+
+\makeatletter
+ \renewcommand\paragraph{\@startsection{paragraph}{4}{1.7cm}%
+	{1.7ex \@plus -1ex \@minus -.2ex}%
+	{.5ex \@plus.2ex}%
+	{\reset@font\normalsize\itshape}}
+\makeatother
+
+
+%%%
+%%% Rules
+%%%
+
+\newcommand{\ulksection}[2]{%
+  \textcolor{#2}{\rule{#1}{0.5pt}}\nobreak}
+
+
+%%%
+%%% Abstract
+%%%
+
+\newcommand{\fabstract}[2]{%
+\begin{center}
+  {\huge \textcolor{\fabstitlecolour}{\textbf{#1}}}\\
+  \vspace{-.17cm}
+  \ulksection{.7\textwidth}{\fabstitlecolour}
+  %\vspace{.1cm}
+  ~\\
+  {\normalsize
+  \begin{minipage}{.68\textwidth}
+    ~\\#2
+  \end{minipage}}
+\end{center}
+}
+
+
+%%%
+%%% Draft Sectioning
+%%%
+
+\newcommand{\fsection}[1]{%
+  \section*{\textcolor{\fsectioncolour}{\textbf{#1}}}
+  \vspace{-0.48cm}
+  \ulksection{\textwidth}{\fsectioncolour}
+}
+
+\newcommand{\fsubsection}[1]{%
+  \vspace{-0.2cm}
+  \subsection*{\textcolor{\fsubsectioncolour}{\textbf{#1}}}
+}
+
+\newcommand{\fsubsubsection}[1]{%
+  \subsubsection*{\textcolor{\fsubsubsectioncolour}{\underline{\textbf{#1}}}}
+  %\vspace{-0.65cm}
+  %\ulksection{\textwidth}{#2}
+  %\vspace{-0.3cm}
+}
+
+\newcommand{\fparagraph}[1]{%
+  \paragraph{\textcolor{\fparagraphcolour}{\textbf{#1}}}
+  %\vspace{-0.65cm}
+  %\ulksection{\textwidth}{#2}
+  %\vspace{-0.3cm}
+}
+
+
+\newcommand{\flabel}[1]{%
+  %%\textcolor{\fsectioncolour}{\textit{#1}}
+  \textcolor{\flabelcolour}{\textit{#1}}}
+
+
+
+
+
+
+
+%%%
+%%% Unused code
+%%%
+
+\def\tsrheadertwo{%
+\begin{tabularx}{12cm}{C}
+  {\Large \textbf{Timesheet Report}} \\
+  reference: \draftreference ~- internal document \\
+\end{tabularx}%
+}
+
+\newcommand{\tsrheaderthree}{%
+\begin{minipage}[t] {0 \linewidth}
+  \epsfxsize=70mm \epsfbox{Logo-blue.eps}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{.68 \linewidth}
+\begin{tabularx}{12cm}{C}
+  {\Large \textbf{Timesheet Report}} \\
+  reference: \draftreference ~- internal document \\
+  \einsec\\
+  \einsec\\
+  \einsec
+\end{tabularx}%
+\end{minipage}
+}
