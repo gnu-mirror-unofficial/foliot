@@ -1002,19 +1002,9 @@
                           <widget class="GtkComboBoxEntry" id="foliot/for_whom_combo">
                             <property name="width_request">120</property>
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="items" translatable="yes">alto
-cmh</property>
+                            <property name="can_focus">True</property>
+                            <property name="items" translatable="yes"></property>
                             <property name="text_column">0</property>
-                            <child internal-child="entry">
-                              <widget class="GtkEntry" id="comboboxentry-entry2">
-                                <property name="can_focus">False</property>
-                                <property name="primary_icon_activatable">False</property>
-                                <property name="secondary_icon_activatable">False</property>
-                                <property name="primary_icon_sensitive">True</property>
-                                <property name="secondary_icon_sensitive">True</property>
-                              </widget>
-                            </child>
                           </widget>
                           <packing>
                             <property name="left_attach">3</property>
@@ -1050,20 +1040,8 @@ cmh</property>
                               <widget class="GtkComboBoxEntry" id="foliot/what_combo">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="items" translatable="yes">admin
-asys
-devel
-maintenance</property>
+                                <property name="items" translatable="yes"></property>
                                 <property name="text_column">0</property>
-                                <child internal-child="entry">
-                                  <widget class="GtkEntry" id="comboboxentry-entry4">
-                                    <property name="can_focus">False</property>
-                                    <property name="primary_icon_activatable">False</property>
-                                    <property name="secondary_icon_activatable">False</property>
-                                    <property name="primary_icon_sensitive">True</property>
-                                    <property name="secondary_icon_sensitive">True</property>
-                                  </widget>
-                                </child>
                               </widget>
                               <packing>
                                 <property name="expand">True</property>
@@ -1110,19 +1088,8 @@ maintenance</property>
                             <property name="width_request">120</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="items" translatable="yes">david
-christian
-</property>
+                            <property name="items" translatable="yes"></property>
                             <property name="text_column">0</property>
-                            <child internal-child="entry">
-                              <widget class="GtkEntry" id="comboboxentry-entry6">
-                                <property name="can_focus">False</property>
-                                <property name="primary_icon_activatable">False</property>
-                                <property name="secondary_icon_activatable">False</property>
-                                <property name="primary_icon_sensitive">True</property>
-                                <property name="secondary_icon_sensitive">True</property>
-                              </widget>
-                            </child>
                           </widget>
                           <packing>
                             <property name="left_attach">3</property>
@@ -2235,15 +2202,6 @@ no
                             <property name="button_sensitivity">on</property>
                             <property name="items" translatable="yes"/>
                             <property name="text_column">0</property>
-                            <child internal-child="entry">
-                              <widget class="GtkEntry" id="comboboxentry-entry8">
-                                <property name="can_focus">False</property>
-                                <property name="primary_icon_activatable">False</property>
-                                <property name="secondary_icon_activatable">False</property>
-                                <property name="primary_icon_sensitive">True</property>
-                                <property name="secondary_icon_sensitive">True</property>
-                              </widget>
-                            </child>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
@@ -2297,15 +2255,6 @@ no
                             <property name="button_sensitivity">on</property>
                             <property name="items" translatable="yes">default</property>
                             <property name="text_column">0</property>
-                            <child internal-child="entry">
-                              <widget class="GtkEntry" id="comboboxentry-entry10">
-                                <property name="can_focus">False</property>
-                                <property name="primary_icon_activatable">False</property>
-                                <property name="secondary_icon_activatable">False</property>
-                                <property name="primary_icon_sensitive">True</property>
-                                <property name="secondary_icon_sensitive">True</property>
-                              </widget>
-                            </child>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
