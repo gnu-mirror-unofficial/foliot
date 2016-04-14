@@ -200,7 +200,7 @@ details.")
 	   (when (read-config "kise")
 	     (rename-file (get-config-filename "kise")
 			  (get-config-filename "foliot"))
-	     (kcfg/get 'reload))
+	     (fcfg/get 'reload))
 	   (set! *foliot*
 		 (foliot/animate-ui uname (storage-get 'gladefile) %version debug?))
 	   (when debug?

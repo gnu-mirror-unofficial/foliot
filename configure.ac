@@ -29,7 +29,7 @@ along with GNU Foliot.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_PREREQ(2.69)
 
-AC_INIT([foliot], [0.9.6-alpha], [david at altosw dot be])
+AC_INIT([foliot], [0.9.6-beta], [david at altosw dot be])
 
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])

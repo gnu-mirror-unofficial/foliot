@@ -21,9 +21,9 @@ GNU Foliot needs the following software to run:
 
     SQLite		>= 3.7
 	libpcre
-	Grip		>= 0.1.0
-	Grip-Gnome	>= 0.1.0
-	Grip-Sqlite	>= 0.1.0
+	Grip		>= 0.1.1
+	Grip-Gnome	>= 0.1.1
+	Grip-Sqlite	>= 0.1.1
 	LaTeX
 
 GNU Foliot reports needs the following font:
@@ -33,15 +33,15 @@ GNU Foliot reports needs the following font:
 
 ** Quickstart
 
-The latest release is foliot-0.9.6-alpha.tar.gz  - other releases are
+The latest release is foliot-0.9.6-beta.tar.gz - other releases are
 available here: http://ftp.gnu.org/gnu/foliot/
 
 Assuming you have satisfied the dependencies, open a terminal and
 proceed with the following steps:
 
 	cd <download-path>
-	tar zxf foliot-0.9.6-alpha.tar.gz
-	cd foliot-0.9.6-alpha
+	tar zxf foliot-0.9.6-beta.tar.gz
+	cd foliot-0.9.6-beta
 	./configure [--prefix=/your/prefix]
 	make
 	make install

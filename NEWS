@@ -4,55 +4,41 @@
 
 * Latest News
 
-** March the 7th, 2016
+** April the 14th, 2016
 
-GNU Foliot version 0.9.6-alpha is released.
+GNU Foliot version 0.9.6-beta is released, the next maintenance release
+for the 0.9 series.
 
-Special Note: Before GNU Foliot became a GNU package, it was named Kisê.
-The change of name has implied thousands of source code, manual and
-web-pages changes, which is why we decided to release GNU Foliot 0.9.6
-as an alpha release: despite we rate the application as pretty robust,
-wrt the implemented functionality as in version 0.9.5, and although we
-have taken all possible precaution, the huge quantity of source code
-changes is, in itlself, error prone.
+** Changes since 0.9.6-alpha
+
+This release fixes a serious GUI bug that appeared in GNU Foliot version
+0.9.6-alpha : none of the 'Who', 'For whom' and 'What' combobox gtk
+entries where editable.
+
+Here is a summary of the changes since version 0.9.6-alpha. See GNU
+Foliot's git summary [1] and git log [2] for a complete description:
+
+Dependencies
+------------
+
+	- GNU Foliot now depends on Grip, Grip-Gnome and Grip-SQLite
+      >= 0.1.1
 
 Core
 ----
 
-	- known bugs have been fixed, see org/kise-bugs.org if your are
-      interested;
-	- automatic schema migration from kise -> foliot has been
-      implemented; opening and re-importing dabatase(s) always trigger a
-      schema check and upgrade automatically if necessary.
-
-Because of the above, we strongly recommend you make a backup of your
-database(s), if you were a Kisê user of course: you can never be too
-prudent!
+	- fixing a bug in foliot, the script
 
 GUI
 ---
 
-	- list-store duration now rendered as text: this is to paliate a
-      gtk2 list store spin button rendering bug.
+	- none of the 'Who', 'For whom' and 'What' combobox gtk entries
+      where editable, fixed. See commit 90c38a7 in [2] for further
+      detail and how this bug appeared in GNU Foliot version
+      0.9.6-alpha.
 
-Printing
---------
-
-	- printing dialog title label layout reviewed: all dialogs
-      are now uniform in presentation.
-
-Documentation
--------------
-
-Note that the documentation is still a mock-up, but:
-
-	- all reviewed for the new name of course, and sync with
-      web-pages with repect to dependencies and installation procedure.
-
-Web-pages
----------
-
-	- GNU Foliot's web-pages have been entirely rewritten using sxml.
+[1] http://git.savannah.gnu.org/cgit/foliot.git
+[2] http://git.savannah.gnu.org/cgit/foliot.git/log/
 
 
 * Older News
