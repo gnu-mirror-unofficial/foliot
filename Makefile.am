@@ -1,6 +1,6 @@
 
 ####
-#### Copyright (C) 2015 - 2016
+#### Copyright (C) 2015 - 2017
 #### Free Software Foundation, Inc.
 
 #### This file is part of GNU Foliot.
@@ -27,11 +27,11 @@ moddir=$(ggdir)
 godir=$(gccache)
 
 SOURCES = \
-	foliot/config.scm			\
+	foliot/config.scm		\
 	foliot/globals.scm		\
 	foliot/colours.scm		\
-	foliot/db-con.scm			\
-	foliot/db-imported-db.scm		\
+	foliot/db-con.scm		\
+	foliot/db-imported-db.scm	\
 	foliot/db-foliot.scm		\
 	foliot/db-printing-templates.scm	\
 	foliot/db-shinning.scm		\
@@ -41,14 +41,14 @@ SOURCES = \
 	foliot/c-dialog.scm		\
 	foliot/connect.scm		\
 	foliot/i-dialog.scm		\
-	foliot/import.scm			\
+	foliot/import.scm		\
 	foliot/p-dialog.scm		\
 	foliot/p-common.scm		\
 	foliot/p-commercial.scm		\
 	foliot/p-draft.scm		\
 	foliot/p-lvars.scm		\
-	foliot/p-main.scm			\
-	foliot/print.scm			\
+	foliot/p-main.scm		\
+	foliot/print.scm		\
 	foliot/foliot.scm
 
 NOCOMP_SOURCES= \
@@ -67,9 +67,8 @@ EXTRA_DIST = \
 	NEWS				\
 	README				\
 	env.in				\
-	foliot/foliot.in			\
+	foliot/foliot.in		\
 	meta/guild.in			\
-	$(wildcard org/*)		\
 	$(wildcard am/*)		\
 	$(wildcard m4/*)		\
 	$(wildcard foliot/sqlite/*)	\
