@@ -52,7 +52,7 @@ AC_CONFIG_SRCDIR([foliot])
 AC_CHECK_PROG(have_makeinfo, makeinfo, yes, no)
 AM_CONDITIONAL(HAVE_MAKEINFO, test "$have_makeinfo" = yes)
 
-GUILE_PKG([2.2, 2.0])
+GUILE_PKG([2.2 2.0])
 GUILE_PROGS([2.0.11])
 GUILE_SITE_DIR
 GUILE_SITE_CCACHE_DIR
