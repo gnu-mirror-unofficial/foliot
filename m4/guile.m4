@@ -210,7 +210,7 @@ AC_DEFUN([GUILE_SITE_DIR],
 # The variable is marked for substitution, as by @code{AC_SUBST}.
 #
 AC_DEFUN([GUILE_GLOBAL_SITE_DIR],
- [AC_REQUIRE([GUILE_PKG])
+ [AC_REQUIRE([GUILE_PROGS])
   AC_MSG_CHECKING(for Guile global site directory)
   GUILE_GLOBAL_SITE=`$GUILE -c "(display (%global-site-dir))"`
   AC_MSG_RESULT($GUILE_GLOBAL_SITE)
@@ -235,11 +235,11 @@ AC_DEFUN([GUILE_SITE_CCACHE_DIR],
  [AC_REQUIRE([GUILE_PKG])
   AC_MSG_CHECKING(for Guile site-ccache directory)
   _guile_lib=`$PKG_CONFIG --print-errors --variable=libdir guile-$GUILE_EFFECTIVE_VERSION`
-  AC_MSG_RESULT($_guile_lib)
   if test "$_guile_lib" = ""; then
      AC_MSG_FAILURE(libdir not found)
   fi
   GUILE_SITE_CCACHE=$_guile_lib/guile/$GUILE_EFFECTIVE_VERSION/site-ccache
+  AC_MSG_RESULT($GUILE_SITE_CCACHE)
   AC_SUBST(GUILE_SITE_CCACHE)
  ])
 
@@ -292,8 +292,12 @@ AC_DEFUN([GUILE_PROGS],
   _major_version=`echo $_guile_required_version | cut -d . -f 1`
   _minor_version=`echo $_guile_required_version | cut -d . -f 2`
   _micro_version=`echo $_guile_required_version | cut -d . -f 3`
-  if test "$_guile_major_version" -ge "$_major_version"; then
-    if test "$_guile_minor_version" -ge "$_minor_version"; then
+  if test "$_guile_major_version" -gt "$_major_version"; then
+    true
+  elif test "$_guile_major_version" -eq "$_major_version"; then
+    if test "$_guile_minor_version" -gt "$_minor_version"; then
+      true
+    elif test "$_guile_minor_version" -eq "$_minor_version"; then
       if test -n "$_micro_version"; then
         if test "$_guile_micro_version" -lt "$_micro_version"; then
           AC_MSG_ERROR([Guile $_guile_required_version required, but $_guile_prog_version found])
