@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2011 - 2016
+;;;; Copyright (C) 2011 - 2018
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU Foliot.
@@ -28,6 +28,12 @@
 (define-module (foliot iter)
   #:use-module (oop goops)
   #:use-module (gnome gtk)
+
+  #:duplicates (merge-generics
+		replace
+		warn-override-core
+		warn
+		last)
 
   #:export (fiter/get-pos
 	    fiter/get

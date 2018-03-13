@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2011 - 2016
+;;;; Copyright (C) 2011 - 2018
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU Foliot.
@@ -33,6 +33,7 @@
   #:use-module (gnome glade)
   #:use-module (gnome gtk)
   #:use-module (gnome gtk gdk-event)
+  #:use-module (grip g-export)
   #:use-module (grip do)
   #:use-module (grip i18n)
   #:use-module (grip utils)
@@ -40,21 +41,31 @@
   #:use-module (foliot colours)
   #:use-module (foliot db)
 
+  #:duplicates (merge-generics
+		replace
+		warn-override-core
+		warn
+		last)
+
   #:export (*fi-widget*
 
 	    <fi-widget>
-	    gui-callback?
-	    dialog
-	    tv-model
-	    tv-sel
-	    add-bt
-	    remove-bt
-	    reimport-bt
 
 	    fiiter/get
 	    fiiter/set
 	    fi/make-dialog
 	    fi/fill-treeview))
+
+
+(g-export gui-callback?
+          dialog
+          tv-model
+          tv-sel
+          add-bt
+          remove-bt
+          reimport-bt
+          cancel-bt
+          close-bt)
 
 
 (eval-when (expand load eval)

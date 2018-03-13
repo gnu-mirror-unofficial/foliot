@@ -2,7 +2,7 @@
 
 
 ;;;;
-;;;; Copyright (C) 2011 - 2016
+;;;; Copyright (C) 2011 - 2018
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU Foliot.
@@ -37,6 +37,7 @@
   #:use-module (gnome glade)
   #:use-module (gnome gnome-ui)
   #:use-module (grip reexport)
+  #:use-module (grip g-export)
   #:use-module (grip push)
   #:use-module (grip do)
   #:use-module (grip dates)
@@ -53,108 +54,14 @@
   #:use-module (foliot db)
   #:use-module (foliot iter)
   ;; #:use-module (foliot what-tree)
+  
+  #:duplicates (merge-generics
+		replace
+		warn-override-core
+		warn
+		last)
 
   #:export (<foliot/tl-widget>
-	    gui-callback?
-	    user-name
-
-	    db-file
-	    db-tuples
-	    whos
-	    for-whoms
-	    whats
-	    current-row
-	    current-iter
-
-	    glade-file
-	    xml-code
-	    dialog
-	    menubar
-
-	    ;; sorting-lb
-	    ;; sorting-combo
-
-	    con-bt
-	    import-bt
-	    quit-bt
-	    dup-bt
-	    add-bt
-	    del-bt
-	    print-bt
-
-	    first-bt
-	    prev-bt
-	    next-bt
-	    last-bt
-	    ;; help-bt
-	    prefs-bt
-
-	    reference-lb
-	    reference-entry
-	    reference-eb
-
-	    date-lb
-	    date-entry
-	    date-icon ;; exported because currently hidden in foliot.scm
-	    date-edit ;; exported because currently hidden in foliot.scm
-
-	    who-lb
-	    who-entry
-	    who-combo
-
-	    for-whom-lb
-	    for-whom-entry
-	    for-whom-combo
-
-	    duration-lb
-	    duration-sb
-
-	    what-lb
-	    what-combo
-	    what-entry
-	    ;; what-tv
-	    ;; what-tv-model
-	    ;; what-tv-sel
-
-	    to-be-charged-cb
-
-	    description-lb
-	    description-sw
-	    description-entry
-
-	    db-name-lb1
-	    db-name-lb2
-	    db-name-lb3
-
-	    filter-icon ;; exported because currently hidden in foliot.scm
-	    filter-apply-bt
-	    filter-clear-bt
-	    filter-select-bt
-
-	    filter-date-entry
-	    filter-who-entry
-	    filter-who-lb
-	    filter-for-whom-entry
-	    filter-for-whom-lb
-	    filter-what-entry
-	    filter-what-lb
-	    filter-description-entry
-	    filter-to-be-charged-lb
-	    filter-to-be-charged-combo
-
-	    active-filter
-	    id-set
-
-	    sw
-	    tv
-	    tv-model
-	    tv-sel
-	    g-reselect-path?
-
-	    status-bar-1 ;; records info
-	    status-bar-2 ;; app messages
-	    status-bar-3 ;; total time
-	    status-bar-4 ;; charged time
 
 	    ftlw/write-config
 
@@ -196,6 +103,108 @@
 	    ftlw/normal-mode
 	    ftlw/filter-apply
 	    ftlw/filter-clear))
+
+(g-export gui-callback?
+          user-name
+
+          db-file
+          db-tuples
+          whos
+          for-whoms
+          whats
+          current-row
+          current-iter
+
+          glade-file
+          xml-code
+          dialog
+          menubar
+
+          ;; sorting-lb
+          ;; sorting-combo
+
+          con-bt
+          import-bt
+          quit-bt
+          dup-bt
+          add-bt
+          del-bt
+          print-bt
+
+          first-bt
+          prev-bt
+          next-bt
+          last-bt
+          ;; help-bt
+          prefs-bt
+
+          reference-lb
+          reference-entry
+          reference-eb
+
+          date-lb
+          date-entry
+          date-icon   ;; exported because currently hidden in foliot.scm
+          date-edit   ;; exported because currently hidden in foliot.scm
+
+          who-lb
+          who-entry
+          who-combo
+
+          for-whom-lb
+          for-whom-entry
+          for-whom-combo
+
+          duration-lb
+          duration-sb
+
+          what-lb
+          what-combo
+          what-entry
+          ;; what-tv
+          ;; what-tv-model
+          ;; what-tv-sel
+
+          to-be-charged-cb
+
+          description-lb
+          description-sw
+          description-entry
+
+          db-name-lb1
+          db-name-lb2
+          db-name-lb3
+
+          filter-icon ;; exported because currently hidden in foliot.scm
+          filter-apply-bt
+          filter-clear-bt
+          filter-select-bt
+
+          filter-date-entry
+          filter-who-entry
+          filter-who-lb
+          filter-for-whom-entry
+          filter-for-whom-lb
+          filter-what-entry
+          filter-what-lb
+          filter-description-entry
+          filter-to-be-charged-lb
+          filter-to-be-charged-combo
+
+          active-filter
+          id-set
+
+          sw
+          tv
+          tv-model
+          tv-sel
+          g-reselect-path?
+
+          status-bar-1   ;; records info
+          status-bar-2   ;; app messages
+          status-bar-3   ;; total time
+          status-bar-4   ;; charged time
+          show-me)
 
 
 (eval-when (expand load eval)
