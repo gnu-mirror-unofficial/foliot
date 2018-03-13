@@ -4,6 +4,38 @@
 
 * Latest News
 
+** March 2018
+
+GNU Foliot version 0.9.7 is released
+
+** Changes since 0.9.6-beta
+
+Here is a summary of the changes since version 0.9.6-alpha. See GNU
+Foliot's git summary [1] and git log [2] for a complete description:
+
+	[1] http://git.savannah.gnu.org/cgit/foliot.git
+	[2] http://git.savannah.gnu.org/cgit/foliot.git/log/
+
+Dependencies
+------------
+
+	- Guile-Gnome >= 2.16.5
+	- Guile >= 2.0.14
+	
+
+Core
+----
+
+	- 
+
+GUI
+---
+
+	- 
+
+
+* Older News
+
 ** April the 14th, 2016
 
 GNU Foliot version 0.9.6-beta is released, the next maintenance release
@@ -40,7 +72,3 @@ GUI
 [1] http://git.savannah.gnu.org/cgit/foliot.git
 [2] http://git.savannah.gnu.org/cgit/foliot.git/log/
 
-
-* Older News
-
-For older News, see http://www.gnu.org/software/foliot/news.html

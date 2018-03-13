@@ -7,7 +7,7 @@ dnl
 define(FOLIOT_CONFIGURE_COPYRIGHT,[[
 
 
-Copyright (C) 2015 - 2016
+Copyright (C) 2015 - 2018
 Free Software Foundation, Inc.
 
 This file is part of GNU Foliot.
@@ -29,7 +29,7 @@ along with GNU Foliot.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_PREREQ(2.69)
 
-AC_INIT([foliot], [0.9.6-beta], [david at altosw dot be])
+AC_INIT([foliot], [0.9.7-dev], [david at altosw dot be])
 
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
@@ -53,12 +53,12 @@ AC_CHECK_PROG(have_makeinfo, makeinfo, yes, no)
 AM_CONDITIONAL(HAVE_MAKEINFO, test "$have_makeinfo" = yes)
 
 GUILE_PKG([2.2 2.0])
-GUILE_PROGS([2.0.11])
+GUILE_PROGS([2.0.14])
 GUILE_SITE_DIR
 GUILE_SITE_CCACHE_DIR
 GUILE_MODULE_REQUIRED([gnome-2])
 
-GUILE_GNOME_PROGS([2.16.4])
+GUILE_GNOME_PROGS([2.16.5])
 GUILE_GNOME_FLAGS
 GUILE_GNOME_INST_DIR
 GUILE_GNOME_LIBS_PATH
