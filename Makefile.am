@@ -68,7 +68,6 @@ EXTRA_DIST = \
 	README				\
 	pre-inst-env.in			\
 	foliot/foliot.in		\
-	meta/guild.in			\
 	$(wildcard am/*)		\
 	$(wildcard m4/*)		\
 	$(wildcard foliot/sqlite/*)	\

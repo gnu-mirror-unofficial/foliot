@@ -119,7 +119,6 @@ LATEX_PACKAGE_REQUIRED([calc])
 LATEX_PACKAGE_REQUIRED([geometry])
 
 AC_CONFIG_FILES([pre-inst-env], [chmod +x env])
-AC_CONFIG_FILES([meta/guild], [chmod +x meta/guild])
 AC_CONFIG_FILES([foliot/foliot], [chmod +x foliot/foliot])
 AC_CONFIG_FILES([Makefile doc/Makefile])
 AC_OUTPUT
