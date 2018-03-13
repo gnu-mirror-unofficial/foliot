@@ -66,7 +66,7 @@ EXTRA_DIST = \
 	LICENSE				\
 	NEWS				\
 	README				\
-	env.in				\
+	pre-inst-env.in			\
 	foliot/foliot.in		\
 	meta/guild.in			\
 	$(wildcard am/*)		\
