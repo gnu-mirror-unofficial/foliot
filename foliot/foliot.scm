@@ -351,7 +351,8 @@
 				  0 ;; list-store offset or #f
 				  ;; msg to display if empty and not allowed to be
 				  (_ "The date can not be empty. It has been reset to its previous value.")
-				  'date)))
+				  'date)
+               #f))
 
     ;; what-tv connect ...
     ;; (kwt/connect-what-tree tl-widget)
@@ -399,9 +400,9 @@
 		 (ftlw/entry-std-cb entry
 				    tl-widget
 				    'description
-				    #f      ; column position if used in the list-store
-				    #f))
-	       #f))  ; msg to display if empty and not allowed to be
+				    #f    ;; column position if used in the list-store
+				    #f))  ;; msg to display if empty and not allowed to be
+	       #f))
     ;;
     ;; filters
     ;;
