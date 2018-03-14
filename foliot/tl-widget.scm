@@ -785,12 +785,12 @@
 	      (gtk2/status-pop (status-bar-2 tl-widget) "")
 	      (gtk2/status-push (status-bar-2 tl-widget) empty-msg "")
 	      (gtk2/set-text entry old-entry))
-	    (receive (updated?)
+	    (receive (updated? reordered?)
 		(if (null? date?)
 		    (db-foliot/update db-tuple what new-entry)
 		    (if (date/valid-date? new-entry)
 			(db-foliot/update db-tuple what (date/iso-date new-entry) new-entry)
-			#f))
+			(values #f #f)))
 	      (gtk2/status-pop (status-bar-2 tl-widget) "")
 	      (if updated?
 		  (begin
@@ -801,7 +801,8 @@
 		  (begin
 		    (gdk-beep)
 		    (gtk2/status-pop (status-bar-2 tl-widget) "")
-		    (gtk2/status-push (status-bar-2 tl-widget) "Invalid date. The previous value is restored" "")
+		    (gtk2/status-push (status-bar-2 tl-widget)
+                                      "Invalid date. The previous value is restored" "")
 		    (gtk2/set-text entry old-entry)
 		    )))))
     ;; must return #f, this is imposed by gtk+ 2.x
