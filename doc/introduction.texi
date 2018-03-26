@@ -110,7 +110,7 @@ Automake >= 1.14
 wrappers:
 
   @indentedblock
-  Gobject, Glib, Pango, Pangocairo, libgnome, lingnomeui, libglade, Gtk
+  Glib, Gobject, Pango, Pangocairo, libgnome, libgnomeui, libglade, Gtk
   @end indentedblock
 
 @item 
@@ -124,13 +124,11 @@ libpcre
 @comment regular expression support for SQLite
 
 @item
-@uref{@value{UGRIP}, Grip} >= 0.1.1
+@uref{@value{UGRIP}, Grip} >= 0.1.2
 
-@item
-@uref{@value{UGRIP-GNOME}, Grip-Gnome} >= 0.1.1
-
-@item
-@uref{@value{UGRIP-SQLITE}, Grip-SQLite} >= 0.1.1
+  @indentedblock
+  Grip (core), Grip-gnome, Grip-SQLite
+  @end indentedblock
 
 @item
 @uref{@value{ULATEX}, LaTex}: any recent LaTex 2e version will do
@@ -161,11 +159,13 @@ make
 make install
 @end example
 
-To start GNU Foliot:
+To start GNU Foliot, open a terminal and enter:
 
 @example
 foliot
 @end example
+
+Happy GNU Foliot!
 
 @*
 @strong{Notes:}
@@ -224,8 +224,6 @@ install-pdf} ...]. Note that as it is, GNU Foliot's documentation still
 is a mock-up.
 
 @end enumerate
-
-Happy GNU Foliot!
 
 
 @node Contact
