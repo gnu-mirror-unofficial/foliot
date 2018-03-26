@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2011 - 2016
+;;;; Copyright (C) 2011 - 2018
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU Foliot.
@@ -31,18 +31,26 @@
   #:use-module (gnome gobject)
   #:use-module (gnome glade)
   #:use-module (gnome gtk)
+  #:use-module (grip g-export)
   #:use-module (grip i18n)
   #:use-module (grip gnome)
   #:use-module (foliot colours) ;; <- later use storage-set/get and delete this file
 
+  #:duplicates (merge-generics
+		replace
+		warn-override-core
+		warn
+		last)
+
   #:export (fc/close-dialog
 	    fc/make-dialog
-	    <fc/widget>
-	    dialog
-	    mode
-	    reuse-db-cb
-	    ok-bt
-	    cancel-bt))
+	    <fc/widget>))
+
+(g-export dialog
+          mode
+          reuse-db-cb
+          ok-bt
+          cancel-bt)
 
 
 (define *fc-widget* #f)

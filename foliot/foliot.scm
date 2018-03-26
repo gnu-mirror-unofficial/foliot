@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2011 - 2016
+;;;; Copyright (C) 2011 - 2018
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU Foliot.
@@ -51,6 +51,12 @@
   :use-module (foliot connect)
   :use-module (foliot import)
   :use-module (foliot print)
+
+  #:duplicates (merge-generics
+		replace
+		warn-override-core
+		warn
+		last)
 
   :export (*tl-widget*
 	   foliot/animate-ui
@@ -345,7 +351,8 @@
 				  0 ;; list-store offset or #f
 				  ;; msg to display if empty and not allowed to be
 				  (_ "The date can not be empty. It has been reset to its previous value.")
-				  'date)))
+				  'date)
+               #f))
 
     ;; what-tv connect ...
     ;; (kwt/connect-what-tree tl-widget)
@@ -393,9 +400,9 @@
 		 (ftlw/entry-std-cb entry
 				    tl-widget
 				    'description
-				    #f      ; column position if used in the list-store
-				    #f))
-	       #f))  ; msg to display if empty and not allowed to be
+				    #f    ;; column position if used in the list-store
+				    #f))  ;; msg to display if empty and not allowed to be
+	       #f))
     ;;
     ;; filters
     ;;

@@ -4,6 +4,47 @@
 
 * Latest News
 
+** March 2018
+
+GNU Foliot version 0.9.7 is released.  This is a maintenance release,
+which brings GNU Foliot up-to-date with Guile-2.2, which introduced an
+incompatible module - goops related - change.
+
+** Changes since 0.9.6-beta
+
+Here is a summary of the changes since version 0.9.6-alpha. See GNU
+Foliot's git summary [1] and git log [2] for a complete description:
+
+	[1] http://git.savannah.gnu.org/cgit/foliot.git
+	[2] http://git.savannah.gnu.org/cgit/foliot.git/log/
+
+Dependencies
+------------
+
+	- Guile       >= 2.0.14
+	- Guile-Gnome >= 2.16.5
+	- Grip 	      >= 0.1.2
+      Grip-Gnome
+	  Grip-SQLite
+
+Core
+----
+
+	- Guile-2.2 does not query (default-duplicate-binding-handler)
+      at module expand eval load time as it did for Guile-2.0, a bad
+      decision imo, but we have to cope with it, and declare
+      #:duplicates (merge-generics ...) in each individual module
+      instead.  We also removed our patched version of guild, since it
+      became useless, and now use the version that comes with Guile.
+
+	- All getters, setters, accessors and methods are now exported
+      using g-export - defined in (grip g-export) - which re-export
+      defined names (and precisely should only be used for getters,
+      setters, accessors and methods).
+
+
+* Older News
+
 ** April the 14th, 2016
 
 GNU Foliot version 0.9.6-beta is released, the next maintenance release
@@ -40,7 +81,3 @@ GUI
 [1] http://git.savannah.gnu.org/cgit/foliot.git
 [2] http://git.savannah.gnu.org/cgit/foliot.git/log/
 
-
-* Older News
-
-For older News, see http://www.gnu.org/software/foliot/news.html

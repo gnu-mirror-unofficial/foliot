@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2011 - 2016
+;;;; Copyright (C) 2011 - 2018
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU Foliot.
@@ -29,30 +29,40 @@
   #:use-module (ice-9 format)
   #:use-module (oop goops)
   #:use-module (grip reexport)
+  #:use-module (grip g-export)
   #:use-module (grip passwd)
   #:use-module (foliot globals)
 
-  #:export (show-me
-	    <tex-file>
-	    p-directory
-	    short-filename
-	    tex-filename
-	    ps-filename
-	    pdf-filename
-	    full-filename
+  #:duplicates (merge-generics
+		replace
+		warn-override-core
+		warn
+		last)
+
+  #:export (<tex-file>
 	    <tex-files>
-	    pdf
-	    ps
-	    doc-ref
-	    lvars
-	    draft
-	    draftLT
-	    commercial
 	    fp/common-filenames
 	    fp/get-ps-fname-from-pdf
 	    fp/compile-tex-file
 	    fp/write-pdf
 	    fp/write-printer))
+
+
+(g-export show-me
+          p-directory
+          short-filename
+          tex-filename
+          ps-filename
+          pdf-filename
+          full-filename
+
+          pdf
+          ps
+          doc-ref
+          lvars
+          draft
+          draftLT
+          commercial)
 
 
 (eval-when (expand load eval)
