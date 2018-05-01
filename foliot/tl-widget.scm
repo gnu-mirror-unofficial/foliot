@@ -44,7 +44,7 @@
   #:use-module (grip i18n)
   #:use-module (grip utils)
   #:use-module (grip xft)
-  #:use-module (grip strings)
+  #:use-module (grip string)
   #:use-module (grip nbs)
   #:use-module (grip gnome)
   #:use-module (grip sqlite)

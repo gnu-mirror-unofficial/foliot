@@ -35,7 +35,7 @@
   #:use-module (grip date)
   #:use-module (grip i18n)
   #:use-module (grip utils)
-  #:use-module (grip strings)
+  #:use-module (grip string)
   #:use-module (foliot globals)
   #:use-module (foliot db-con)
 
@@ -63,7 +63,7 @@
 			      (grip date)
 			      (grip i18n)
 			      (grip utils)
-			      (grip strings)
+			      (grip string)
 			      (foliot globals)
 			      (foliot db-con))
   (textdomain "db-printing-templates")
