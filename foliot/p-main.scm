@@ -31,7 +31,7 @@
   #:use-module (gnome gtk)
   #:use-module (grip module)
   #:use-module (grip passwd)
-  #:use-module (grip dates)
+  #:use-module (grip date)
   #:use-module (grip i18n)
   #:use-module (grip utils)
   #:use-module (grip gnome filechooser)

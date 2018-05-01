@@ -34,7 +34,7 @@
   #:use-module (gnome gobject)
   #:use-module (gnome gtk)
   #:use-module (grip do)
-  #:use-module (grip dates)
+  #:use-module (grip date)
   #:use-module (grip passwd)
   #:use-module (grip i18n)
   #:use-module (grip nbs)

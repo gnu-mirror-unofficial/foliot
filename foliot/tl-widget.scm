@@ -40,7 +40,7 @@
   #:use-module (grip g-export)
   #:use-module (grip push)
   #:use-module (grip do)
-  #:use-module (grip dates)
+  #:use-module (grip date)
   #:use-module (grip i18n)
   #:use-module (grip utils)
   #:use-module (grip xft)

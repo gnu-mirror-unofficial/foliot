@@ -28,7 +28,7 @@
 (define-module (foliot p-lvars)
   #:use-module (oop goops)
   #:use-module (grip module)
-  #:use-module (grip dates)
+  #:use-module (grip date)
   #:use-module (grip passwd)
   #:use-module (grip i18n)
   #:use-module (grip utils)
@@ -48,7 +48,7 @@
 
 
 (eval-when (expand load eval)
-  (re-export-public-interface (grip dates)
+  (re-export-public-interface (grip date)
 			      (grip i18n)
 			      (grip utils))
   (textdomain "p-lvars")
