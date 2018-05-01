@@ -34,7 +34,7 @@
   #:use-module (grip sqlite)
   #:use-module (grip i18n)
   #:use-module (grip utils)
-  #:use-module (grip nbs)
+  #:use-module (grip number)
   #:use-module (grip string)
   #:use-module (foliot globals)
   #:use-module (foliot db-con)

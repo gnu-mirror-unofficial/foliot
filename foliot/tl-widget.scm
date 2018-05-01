@@ -45,7 +45,7 @@
   #:use-module (grip utils)
   #:use-module (grip xft)
   #:use-module (grip string)
-  #:use-module (grip nbs)
+  #:use-module (grip number)
   #:use-module (grip gnome)
   #:use-module (grip sqlite)
   #:use-module (grip db filters)

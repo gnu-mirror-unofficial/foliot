@@ -37,7 +37,7 @@
   #:use-module (grip date)
   #:use-module (grip passwd)
   #:use-module (grip i18n)
-  #:use-module (grip nbs)
+  #:use-module (grip number)
   #:use-module (grip tex-utils)
   #:use-module (grip gnome)
   #:use-module (foliot globals)
