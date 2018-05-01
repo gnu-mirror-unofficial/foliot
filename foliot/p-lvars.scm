@@ -33,7 +33,7 @@
   #:use-module (grip i18n)
   #:use-module (grip utils)
   #:use-module (grip number)
-  #:use-module (grip tex-utils)
+  #:use-module (grip latex)
   #:use-module (foliot config)
   #:use-module (foliot p-common)
   #:use-module (foliot p-dialog)
