@@ -111,7 +111,7 @@
 					   (_ "Warning!")
 					   (_ "Colour set:")
 					   (format #f "~?" *no-available-colour-set-msg*
-						   (list (colour-set-name idb-cs) idb-cs))
+						   (list (color-set-name idb-cs) idb-cs))
 					   (lambda () 'nothing)
 					   'dialog-warning))
 		      (set! (gui-callback? tl-widget) #f)

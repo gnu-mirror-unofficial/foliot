@@ -39,10 +39,10 @@
   (re-export-public-interface (grip gnome color)))
 
 
-(define *filters-bg* (colour-set-bg 60))
-(define *filters-border* (colour-set-border 60))
-(define *filters-fg* (colour-set-fg 60))
-(define *dialog-title-eb-bg* (colour-set-bg 50))
+(define *filters-bg* (color-set-bg 60))
+(define *filters-border* (color-set-border 60))
+(define *filters-fg* (color-set-fg 60))
+(define *dialog-title-eb-bg* (color-set-bg 50))
 
 
 #!

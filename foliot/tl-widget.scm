@@ -48,7 +48,7 @@
   #:use-module (grip number)
   #:use-module (grip gnome)
   #:use-module (grip sqlite)
-  #:use-module (grip db filters)
+  #:use-module (grip db filter)
   #:use-module (foliot config)
   #:use-module (foliot colours)
   #:use-module (foliot db)

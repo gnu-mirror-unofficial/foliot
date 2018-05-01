@@ -271,7 +271,7 @@
 			(fiiter/set 'by model iter (db-idb/get idb-tuple 'imported_by))
 			(fiiter/set 'id model iter (number->string (db-idb/get idb-tuple 'id)))
 			(fiiter/set 'filename model iter filename)
-			(fiiter/set 'ibg model iter (colour-set-bg (db-idb/get idb-tuple 'colour_set)))))
+			(fiiter/set 'ibg model iter (color-set-bg (db-idb/get idb-tuple 'colour_set)))))
 	      idb-tuples)))))
 
 
