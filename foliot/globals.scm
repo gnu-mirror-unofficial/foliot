@@ -26,7 +26,7 @@
 
 
 (define-module (foliot globals)
-  #:use-module (grip reexport)
+  #:use-module (grip module)
   #:use-module (grip utils))
 
 

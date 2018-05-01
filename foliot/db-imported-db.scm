@@ -28,7 +28,7 @@
 (define-module (foliot db-imported-db)
   #:use-module (ice-9 format)
   #:use-module (srfi srfi-1)
-  #:use-module (grip reexport)
+  #:use-module (grip module)
   #:use-module (grip do)
   #:use-module (grip sqlite)
   #:use-module (grip dates)
@@ -208,7 +208,7 @@
 (define (db-idb/update db-tuple what value . displayed-value)
   (let* ((id (db-idb/get db-tuple 'id))
 	 (sql-value (case what
-		      ((filename) (str/prep-str-for-sql value))
+		      ((filename) (string-escape-sql value))
 		      (else
 		       value)))
 	 (sql-str (case what

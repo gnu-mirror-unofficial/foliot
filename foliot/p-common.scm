@@ -28,7 +28,7 @@
 (define-module (foliot p-common)
   #:use-module (ice-9 format)
   #:use-module (oop goops)
-  #:use-module (grip reexport)
+  #:use-module (grip module)
   #:use-module (grip g-export)
   #:use-module (grip passwd)
   #:use-module (foliot globals)

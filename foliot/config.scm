@@ -33,7 +33,7 @@
 
 
 (define-module (foliot config)
-  #:use-module (grip reexport)
+  #:use-module (grip module)
   #:use-module (grip passwd)
   #:use-module (grip config)
 

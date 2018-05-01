@@ -27,7 +27,7 @@
 
 (define-module (foliot p-lvars)
   #:use-module (oop goops)
-  #:use-module (grip reexport)
+  #:use-module (grip module)
   #:use-module (grip dates)
   #:use-module (grip passwd)
   #:use-module (grip i18n)

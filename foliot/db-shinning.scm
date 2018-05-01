@@ -29,7 +29,7 @@
   #:use-module (ice-9 format)
   #:use-module (ice-9 threads)
   #:use-module (srfi srfi-1)
-  #:use-module (grip reexport)
+  #:use-module (grip module)
   #:use-module (grip do)
   #:use-module (grip sqlite)
   #:use-module (grip i18n)

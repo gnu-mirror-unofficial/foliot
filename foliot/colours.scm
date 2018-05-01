@@ -26,7 +26,7 @@
 
 
 (define-module (foliot colours)
-  #:use-module (grip reexport)
+  #:use-module (grip module)
   #:use-module (grip gnome colours)
 
   #:export (*filters-fg*

@@ -34,7 +34,7 @@
   :use-module (gnome gtk)
   :use-module (gnome gtk gdk-event)
   :use-module (gnome gnome-ui)
-  :use-module (grip reexport)
+  :use-module (grip module)
   :use-module (grip push)
   :use-module (grip do)
   :use-module (grip dates)

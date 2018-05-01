@@ -29,7 +29,7 @@
   #:use-module (oop goops)
   #:use-module (gnome gobject)
   #:use-module (gnome gtk)
-  ;; #:use-module (grip reexport)
+  ;; #:use-module (grip module)
   #:use-module (grip gnome)
   #:use-module (foliot globals)
   #:use-module (foliot tl-widget)
