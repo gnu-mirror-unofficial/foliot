@@ -295,15 +295,15 @@
   (filter-map (lambda (tuple) (db-idb/get tuple 'colour_set)) (db-idb/select-all)))
 
 (define (db-idb/get-unused-colour-set-ids)
-  (lset-difference = (colour-set-ids) (db-idb/get-used-colour-set-ids)))
+  (lset-difference = (color-set-ids) (db-idb/get-used-colour-set-ids)))
 
 (define (db-idb/get-colour-alist)
   (let ((alist (list)))
     (for-each (lambda (tuple)
 		(let* ((id (db-idb/get tuple 'id))
 		       (ics (db-idb/get tuple 'colour_set))
-		       (ibg (colour-set-bg ics))
-		       (ifg (colour-set-fg ics)))
+		       (ibg (color-set-bg ics))
+		       (ifg (color-set-fg ics)))
 		  (set! alist (assoc-set! alist id (cons ibg ifg)))))
 	(db-idb/select-all))
     alist))
