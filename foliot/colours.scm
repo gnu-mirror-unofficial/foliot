@@ -27,7 +27,7 @@
 
 (define-module (foliot colours)
   #:use-module (grip module)
-  #:use-module (grip gnome colours)
+  #:use-module (grip gnome color)
 
   #:export (*filters-fg*
 	    *filters-border*
@@ -36,7 +36,7 @@
 
 
 (eval-when (expand load eval)
-  (re-export-public-interface (grip gnome colours)))
+  (re-export-public-interface (grip gnome color)))
 
 
 (define *filters-bg* (colour-set-bg 60))

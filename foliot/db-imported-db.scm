@@ -35,7 +35,7 @@
   #:use-module (grip i18n)
   #:use-module (grip utils)
   #:use-module (grip strings)
-  #:use-module (grip gnome colours)
+  #:use-module (grip gnome color)
   #:use-module (foliot globals)
   #:use-module (foliot db-con)
 

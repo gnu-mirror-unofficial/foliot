@@ -37,7 +37,7 @@
   #:use-module (grip passwd)
   #:use-module (grip strings)
   #:use-module (grip sqlite)
-  #:use-module (grip gnome colours)
+  #:use-module (grip gnome color)
   #:use-module (foliot globals)
   #:use-module (foliot db-con)
   #:use-module (foliot db-imported-db)
