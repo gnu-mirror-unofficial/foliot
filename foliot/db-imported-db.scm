@@ -29,7 +29,7 @@
   #:use-module (ice-9 format)
   #:use-module (srfi srfi-1)
   #:use-module (grip module)
-  #:use-module (grip do)
+  #:use-module (grip iter)
   #:use-module (grip sqlite)
   #:use-module (grip date)
   #:use-module (grip i18n)

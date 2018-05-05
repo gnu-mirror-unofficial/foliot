@@ -28,7 +28,7 @@
 (define-module (foliot import)
   #:use-module (oop goops)
   #:use-module (grip module)
-  #:use-module (grip do)
+  #:use-module (grip iter)
   #:use-module (grip i18n)
   #:use-module (grip gnome)
   #:use-module (foliot config)

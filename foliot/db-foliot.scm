@@ -30,7 +30,7 @@
   #:use-module (ice-9 receive)
   #:use-module (oop goops)
   #:use-module (grip module)
-  #:use-module (grip do)
+  #:use-module (grip iter)
   #:use-module (grip date)
   #:use-module (grip i18n)
   #:use-module (grip utils)

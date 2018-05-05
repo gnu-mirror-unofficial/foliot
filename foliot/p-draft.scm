@@ -33,7 +33,7 @@
   #:use-module (oop goops)
   #:use-module (gnome gobject)
   #:use-module (gnome gtk)
-  #:use-module (grip do)
+  #:use-module (grip iter)
   #:use-module (grip date)
   #:use-module (grip passwd)
   #:use-module (grip i18n)

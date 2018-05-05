@@ -30,7 +30,7 @@
   #:use-module (ice-9 threads)
   #:use-module (srfi srfi-1)
   #:use-module (grip module)
-  #:use-module (grip do)
+  #:use-module (grip iter)
   #:use-module (grip sqlite)
   #:use-module (grip i18n)
   #:use-module (grip utils)
@@ -56,7 +56,7 @@
 
 
 (eval-when (expand load eval)
-  (re-export-public-interface (grip do)
+  (re-export-public-interface (grip iter)
 			      (grip sqlite)
 			      (grip i18n)
 			      (grip utils)

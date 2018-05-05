@@ -34,7 +34,7 @@
   #:use-module (gnome gtk)
   #:use-module (gnome gtk gdk-event)
   #:use-module (grip g-export)
-  #:use-module (grip do)
+  #:use-module (grip iter)
   #:use-module (grip i18n)
   #:use-module (grip utils)
   #:use-module (grip gnome)
