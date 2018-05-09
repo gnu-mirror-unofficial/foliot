@@ -37,7 +37,6 @@
   #:use-module (gnome glade)
   #:use-module (gnome gnome-ui)
   #:use-module (grip module)
-  #:use-module (grip g-export)
   #:use-module (grip queue)
   #:use-module (grip iter)
   #:use-module (grip date)
@@ -660,13 +659,13 @@
 	(list (make-vector 1 #f)))))
 
 (define (ftlw/get-hour-hours nb)
-  (if (or (fp/<? nb 1) (fp/=? nb 1)) (_ "hour") (_ "hours")))
+  (if (or (float<? nb 1) (float=? nb 1)) (_ "hour") (_ "hours")))
 
 (define (ftlw/get-hr-hrs nb)
-  (if (or (fp/<? nb 1) (fp/=? nb 1)) (_ "hr") (_ "hrs")))
+  (if (or (float<? nb 1) (float=? nb 1)) (_ "hr") (_ "hrs")))
 
 (define (ftlw/get-day-days nb)
-  (if (or (fp/<? nb 1) (fp/=? nb 1)) (_ "day") (_ "days")))
+  (if (or (float<? nb 1) (float=? nb 1)) (_ "day") (_ "days")))
 
 (define (ftlw/get-totals tl-widget)
   ;; tresult, returned by guile-sqlite, is a list of 1 vector
@@ -674,12 +673,12 @@
   ;; subset upon which the query is performed is empty].
   (let* ((tresult (db-foliot/select-some (active-filter tl-widget) (id-set tl-widget) "sum(duration)"))
 	 (tduration (vector-ref (car tresult) 0))
-	 (ttime (and tduration (fp/round tduration 1)))
-	 (tdays (and ttime (fp/round (/ ttime 8) 1)))
+	 (ttime (and tduration (float-round tduration 1)))
+	 (tdays (and ttime (float-round (/ ttime 8) 1)))
 	 (cresult (ftlw/select-ctime tl-widget))
 	 (cduration (vector-ref (car cresult) 0))
-	 (ctime (and cduration (fp/round cduration 1)))
-	 (cdays (and ctime (fp/round (/ ctime 8) 1))))
+	 (ctime (and cduration (float-round cduration 1)))
+	 (cdays (and ctime (float-round (/ ctime 8) 1))))
     (values (if ttime ttime 0.0) (if tdays tdays 0.0)
 	    (if ctime ctime 0.0) (if cdays cdays 0.0))))
 

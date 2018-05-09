@@ -228,7 +228,7 @@
     (let ((tuples (db-foliot/select-all)))
       (par-map (lambda (tuple)
 		 (db-foliot/update tuple 'duration
-				 (fp/round (db-foliot/get tuple 'duration) 1)))
+				 (float-round (db-foliot/get tuple 'duration) 1)))
 	  tuples))
     (sqlite/commit db)
     (db-shi/update-flag 'floats-1dec-only flags tuple db)))

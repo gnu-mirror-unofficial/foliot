@@ -364,7 +364,7 @@
 		 (let ((model (tv-model tl-widget))
 		       (row (current-row tl-widget))
 		       (iter (current-iter tl-widget))
-		       (value (fp/round (get-value widget) 1)))
+		       (value (float-round (get-value widget) 1)))
 		   ;; (dimfi 'row row 'duration value)
 		   (fiter/set 'duration model iter (number->string value))
 		   ;; update-db

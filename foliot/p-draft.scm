@@ -319,7 +319,7 @@
     (dotimes (i (length tuple-group-values))
       (let* ((c-val (list-ref tuple-group-values i))
 	     (same? (cond ((string? c-val) (string=? (vector-ref current i) c-val))
-			  ((number? c-val) (fp/=? (vector-ref current i) c-val))
+			  ((number? c-val) (float=? (vector-ref current i) c-val))
 			  (else
 			   (format #t "Warning: fp/group-compare-current, unmanaged value type ~S~%" c-val)
 			   #t)))) ;; <- not knowing, we suppose it is the same as before
