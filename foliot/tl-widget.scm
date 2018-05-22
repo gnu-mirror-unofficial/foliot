@@ -659,13 +659,13 @@
 	(list (make-vector 1 #f)))))
 
 (define (ftlw/get-hour-hours nb)
-  (if (or (float<? nb 1) (float=? nb 1)) (_ "hour") (_ "hours")))
+  (if (or (float<? nb 1.0) (float=? nb 1.0)) (_ "hour") (_ "hours")))
 
 (define (ftlw/get-hr-hrs nb)
-  (if (or (float<? nb 1) (float=? nb 1)) (_ "hr") (_ "hrs")))
+  (if (or (float<? nb 1.0) (float=? nb 1.0)) (_ "hr") (_ "hrs")))
 
 (define (ftlw/get-day-days nb)
-  (if (or (float<? nb 1) (float=? nb 1)) (_ "day") (_ "days")))
+  (if (or (float<? nb 1.0) (float=? nb 1.0)) (_ "day") (_ "days")))
 
 (define (ftlw/get-totals tl-widget)
   ;; tresult, returned by guile-sqlite, is a list of 1 vector
