@@ -2,7 +2,53 @@
 
 #+TITLE: GNU Foliot NEWS
 
+#+BEGIN_COMMENT
+
+Copyright (C) 2015 - 2018
+Free Software Foundation, Inc.
+
+This file is part of GNU Foliot.
+
+Copying and distribution of this file, with or without modification, are
+permitted in any medium without royalty provided the copyright notice
+and this notice are preserved.  This file is offered as-is, without any
+warranty.
+
+#+END_COMMENT
+
+
+                Foliot - History of user-visible changes
+                ========================================
+
+          Please send Foliot bug reports to one of the following
+                               addresses:
+
+                           bug-foliot@gnu.org
+
+
 * Latest News
+
+** June 2018
+
+GNU Foliot version 0.9.8 is released.  This is a maintenance release,
+which brings GNU Foliot up-to-date with Grip 0.2.0, upon which it
+depends.  But other then that, there is no user visible change with this
+release.
+
+** Changes since 0.9.7
+
+Here is a summary of the changes since version 0.9.7. See GNU Foliot's
+[[http://git.savannah.gnu.org/cgit/foliot.git][git summary]] and [[http://git.savannah.gnu.org/cgit/foliot.git/log/][git log]] for a complete description.
+
+Dependencies
+------------
+
+	- Grip 	      >= 0.2.0
+      Grip-Gnome
+	  Grip-SQLite
+
+
+* Older News
 
 ** March 2018
 
@@ -42,8 +88,6 @@ Core
       defined names (and precisely should only be used for getters,
       setters, accessors and methods).
 
-
-* Older News
 
 ** April the 14th, 2016
 
