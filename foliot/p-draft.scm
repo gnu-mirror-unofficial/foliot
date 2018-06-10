@@ -58,7 +58,7 @@
 
 (eval-when (expand load eval)
   (textdomain "p-draft")
-  (bindtextdomain "p-draft" (storage-get 'pofdir)))
+  (bindtextdomain "p-draft" (ref (foliot-store) 'pofdir)))
 
 
 ;;;
@@ -79,7 +79,7 @@
 {extarticle}~%"))
 
 (define (fp/write-draft-inputs ostream)
-  (let ((latexdir (storage-get 'latexdir)))
+  (let ((latexdir (ref %foliot-store 'latexdir)))
     (format ostream "
   \\input{~A/draft-packages}
   \\input{~A/draft-commandes}
@@ -492,7 +492,8 @@ Core fields: ~S
  Row format: ~S~%~%"
 	  groups core-fields preamble rowfmt))
 
-(define (fp/write-draft-core-content ostream tuples groups core-fields fp-widget tl-widget draftLT-file-object)
+(define (fp/write-draft-core-content ostream tuples groups
+                                     core-fields fp-widget tl-widget draftLT-file-object)
   (let* ((current (make-vector (length groups) #f))
 	 (pdir (p-directory draftLT-file-object))
 	 (ltx-offset (fp/get-core-table-offset groups))
@@ -503,14 +504,17 @@ Core fields: ~S
     (fp/write-ltx-offset ostream ltx-offset)
     (receive (preamble rowfmt nb-cols description?)
 	(fp/get-ltx-preamble-rowfmt-nb-cols core-fields)
-      (if (storage-get 'debug) (fp/display-ltx-preamble-debug-info groups core-fields preamble rowfmt nb-cols description?))
+      (if (ref %foliot-store 'debug)
+          (fp/display-ltx-preamble-debug-info groups core-fields
+                                              preamble rowfmt nb-cols description?))
       (if (null? groups)
 	  (begin
 	    (format ostream "\\bigskip~%")
 	    (fp/write-draft-ltxtable-cmd ostream ltx-shortname)
 	    (tex/write-utf8-comment-line ltx-stream)
 	    (fp/write-draft-begin-ltx ltx-stream preamble)
-	    (fp/write-draft-ltx-tuples ltx-stream tuples core-fields rowfmt nb-cols description? ltx-offset)
+	    (fp/write-draft-ltx-tuples ltx-stream tuples
+                                       core-fields rowfmt nb-cols description? ltx-offset)
 	    (fp/write-draft-end-ltx ltx-stream)
 	    (close ltx-stream))
 	  (begin

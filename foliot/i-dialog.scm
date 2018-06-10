@@ -38,6 +38,7 @@
   #:use-module (grip i18n)
   #:use-module (grip utils)
   #:use-module (grip gnome)
+  #:use-module (foliot globals)
   #:use-module (foliot colours)
   #:use-module (foliot db)
 
@@ -70,7 +71,7 @@
 
 (eval-when (expand load eval)
   (textdomain "i-dialog")
-  (bindtextdomain "i-dialog" (storage-get 'pofdir)))
+  (bindtextdomain "i-dialog" (ref (foliot-store) 'pofdir)))
 
 
 (define *foliot-i-dialog-offset*
@@ -156,8 +157,8 @@
 	    (get-selection treeview))))
 
 (define (fi/add-columns fi-widget treeview)
-  (let* ((dpi-ratio (storage-get 'Xft.dpi.ratio))
-	 (apply-ratio? (storage-get 'apply-dpi-ratio?))
+  (let* ((dpi-ratio (ref %foliot-store 'Xft.dpi.ratio))
+	 (apply-ratio? (ref %foliot-store 'apply-dpi-ratio?))
 	 (model (get-model treeview))
 	 ;; IMPORTED ROW COLOUR
 	 (renderer0 (make <gtk-cell-renderer-text>))

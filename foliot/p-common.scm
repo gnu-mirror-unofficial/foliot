@@ -69,7 +69,7 @@
 			      (grip passwd)
 			      (foliot globals))
   (textdomain "p-common")
-  (bindtextdomain "p-common" (storage-get 'pofdir)))
+  (bindtextdomain "p-common" (ref (foliot-store) 'pofdir)))
 
 
 ;;;
@@ -138,7 +138,7 @@
        (format #f "~A/~A.ps" (dirname pdfname) (basename pdfname ".pdf"))))
 
 (define (fp/common-filenames reference pdfname)
-  (let* ((p-dir (storage-get 'printdir))
+  (let* ((p-dir (ref %foliot-store 'printdir))
 	 ;; (reference (gensym))
 	 (uname (sys/get 'uname))
 

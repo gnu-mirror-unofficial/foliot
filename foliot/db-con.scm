@@ -29,6 +29,7 @@
   #:use-module (grip module)
   #:use-module (grip utils)
   #:use-module (grip sqlite)
+  #:use-module (foliot globals)
 
   #:export (db-con
 	    db-name
@@ -47,20 +48,20 @@
 ;;;
 
 (define (db-con)
-  (storage-get 'db-con))
+  (ref %foliot-store 'db-con))
 
 (define (db-name)
-  (storage-get 'db-name))
+  (ref %foliot-store 'db-name))
 
 (define (db-con/set-db-con db db-name)
   (let ((pcre-lib-ext "/usr/lib/sqlite3/pcre.so"))
-    (storage-set 'db-con db)
-    (storage-set 'db-name db-name)
+    (set-! %foliot-store 'db-con db)
+    (set-! %foliot-store 'db-name db-name)
     (when (access? pcre-lib-ext R_OK)
       (sqlite-enable-load-extension db 1)
       (sqlite/query db (format #f "~?" (db-con/load-pcre-ext-str) (list pcre-lib-ext)))
       (sqlite-enable-load-extension db 0) ;; avoiding security holes
-      (storage-set 'db-pcre #t))))
+      (set-! %foliot-store 'db-pcre #t))))
 
 (define (db-con/load-pcre-ext-str)
   "select load_extension('~A')")
@@ -77,8 +78,8 @@
 (define* (db-con/close db #:optional (set-db-con? #t))
   (sqlite-close db)
   (when set-db-con?
-    (storage-set 'db-con #f)
-    (storage-set 'db-name #f)))
+    (set-! %foliot-store 'db-con #f)
+    (set-! %foliot-store 'db-name #f)))
 
 
 #!

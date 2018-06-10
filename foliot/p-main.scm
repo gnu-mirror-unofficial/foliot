@@ -35,6 +35,7 @@
   #:use-module (grip i18n)
   #:use-module (grip utils)
   #:use-module (grip gnome filechooser)
+  #:use-module (foliot globals)
   #:use-module (foliot p-dialog)
   #:use-module (foliot p-common)
   #:use-module (foliot p-lvars)
@@ -52,7 +53,7 @@
 
 (eval-when (expand load eval)
   (textdomain "p-main")
-  (bindtextdomain "p-main" (storage-get 'pofdir)))
+  (bindtextdomain "p-main" (ref (foliot-store) 'pofdir)))
 
 
 (define (fp/print-1 fp/widget tl-widget pdf-filename)

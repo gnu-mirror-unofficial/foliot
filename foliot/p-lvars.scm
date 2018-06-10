@@ -34,6 +34,7 @@
   #:use-module (grip utils)
   #:use-module (grip number)
   #:use-module (grip latex)
+  #:use-module (foliot globals)
   #:use-module (foliot config)
   #:use-module (foliot p-common)
   #:use-module (foliot p-dialog)
@@ -52,7 +53,7 @@
 			      (grip i18n)
 			      (grip utils))
   (textdomain "p-lvars")
-  (bindtextdomain "p-lvars" (storage-get 'pofdir)))
+  (bindtextdomain "p-lvars" (ref (foliot-store) 'pofdir)))
 
 
 ;;;

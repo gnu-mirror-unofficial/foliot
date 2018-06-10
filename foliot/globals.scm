@@ -1,7 +1,7 @@
 ;; -*- mode: scheme; coding: utf-8 -*-
 
 ;;;;
-;;;; Copyright (C) 2011 - 2016
+;;;; Copyright (C) 2011 - 2018
 ;;;; Free Software Foundation, Inc.
 
 ;;;; This file is part of GNU Foliot.
@@ -26,41 +26,43 @@
 
 
 (define-module (foliot globals)
+  #:use-module (oop goops)
   #:use-module (grip module)
-  #:use-module (grip utils))
+  #:use-module (grip store)
+  #:use-module (grip utils)
+
+  #:export (%foliot-store
+            foliot-store))
 
 
 (eval-when (expand load eval)
-  (re-export-public-interface (grip utils))
-  (let* ((foliotdir (dirname (search-path %load-path "foliot/foliot.scm")))
-	 (pofdir (string-append foliotdir "/pof"))
-	 (gtkrcdir (string-append foliotdir "/gtkrc"))
-	 (iconsdir (string-append foliotdir "/icons"))
-	 (gladedir (string-append foliotdir "/glade"))
-	 (latexdir (string-append foliotdir "/latex"))
-	 (printdir "/tmp"))
-    (storage-set 'foliotdir foliotdir)
-    (storage-set 'pofdir pofdir)
-    (storage-set 'iconsdir iconsdir)
-    (storage-set 'gladedir gladedir)
-    (storage-set 'gladefile (string-append gladedir "/foliot.glade"))
-    (storage-set 'gtkrcdir gtkrcdir)
-    (storage-set 'gtkrcfile (string-append gtkrcdir "/gtkrc.foliot"))
-    (storage-set 'latexdir latexdir)
-    (storage-set 'printdir printdir)
-    (storage-set 'imported-ids-delta 1000000)))
+  (re-export-public-interface (grip store)
+                              (grip utils)))
 
 
-#!
+(define %foliot-store #f)
 
-(storage-get 'foliotdir)
-(storage-get 'pofdir)
-(storage-get 'gladedir)
-(storage-get 'iconsdir)
-(storage-get 'gladefile)
-(storage-get 'gtkrcfile)
-(storage-get 'latexdir)
-(storage-get 'printdir)
-(storage-get 'imported-ids-delta)
-
-!#
+(define (foliot-store)
+  (or %foliot-store
+      (let* ((store (make <store>))
+             (foliotdir (dirname (search-path %load-path "foliot/foliot.scm")))
+             (pofdir (string-append foliotdir "/pof"))
+             (gtkrcdir (string-append foliotdir "/gtkrc"))
+             (iconsdir (string-append foliotdir "/icons"))
+             (gladedir (string-append foliotdir "/glade"))
+             (latexdir (string-append foliotdir "/latex"))
+             (printdir "/tmp"))
+        (init! store
+               `((foliotdir . ,foliotdir)
+                 (pofdir . ,pofdir)
+                 (iconsdir . ,iconsdir)
+                 (gladedir . ,gladedir)
+                 (gladefile . ,(string-append gladedir "/foliot.glade"))
+                 (gtkrcdir . ,gtkrcdir)
+                 (gtkrcfile . ,(string-append gtkrcdir "/gtkrc.foliot"))
+                 (latexdir . ,latexdir)
+                 (printdir . ,printdir)
+                 (imported-ids-delta . 1000000))
+               #:no-checks #t)
+        (set! %foliot-store store)
+        store)))

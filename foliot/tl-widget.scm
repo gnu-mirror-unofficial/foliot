@@ -47,6 +47,7 @@
   #:use-module (grip sqlite)
   #:use-module (grip db filter)
   #:use-module (foliot config)
+  #:use-module (foliot globals)
   #:use-module (foliot colours)
   #:use-module (foliot db)
   #:use-module (foliot iter)
@@ -211,7 +212,7 @@
 			      (gnome glade)
 			      (foliot config))
   (textdomain "tl-widget")
-  (bindtextdomain "tl-widget" (storage-get 'pofdir)))
+  (bindtextdomain "tl-widget" (ref (foliot-store) 'pofdir)))
 
 
 ;;;
@@ -392,8 +393,8 @@
     (values model (get-selection treeview))))
 
 (define (ftlw/add-columns tl-widget treeview)
-  (let* ((dpi-ratio (storage-get 'Xft.dpi.ratio))
-	 (apply-ratio? (storage-get 'apply-dpi-ratio?))
+  (let* ((dpi-ratio (ref %foliot-store 'Xft.dpi.ratio))
+	 (apply-ratio? (ref %foliot-store 'apply-dpi-ratio?))
 	 (model (get-model treeview))
 	 ;; IMPORTED ROW COLOUR
 	 (renderer0 (make <gtk-cell-renderer-text>))
@@ -947,7 +948,7 @@
 	(,whats ,what-combo what))))
 
 (define (ftlw/trace-combo-callback tl-widget combo entry db-fname in-store? signal)
-  (when (storage-get 'debug)
+  (when (ref %foliot-store 'debug)
     (let* ((row (current-row tl-widget))
 	   (db-tuple (ftlw/get-tuple tl-widget row))
 	   (id (db-foliot/get db-tuple 'id)))
@@ -1072,8 +1073,8 @@
 	(db-tuples tl-widget))))
 
 (define (ftlw/apply-xft-dpi-ratio tl-widget)
-  (when (storage-get 'apply-dpi-ratio?)
-    (let* ((dpi-ratio (storage-get 'Xft.dpi.ratio))
+  (when (ref %foliot-store 'apply-dpi-ratio?)
+    (let* ((dpi-ratio (ref %foliot-store 'Xft.dpi.ratio))
 	   (widget-size-dates (inexact->exact (round (* dpi-ratio (get (date-entry tl-widget) 'width-request)))))
 	   (widget-size-whos (inexact->exact (round (* dpi-ratio (get (who-combo tl-widget) 'width-request))))))
       (set (reference-entry tl-widget) 'width-request widget-size-dates)
@@ -1448,10 +1449,10 @@ filter date: ~S~%"
 	(image (filter-icon tl-widget)))
     (case mode
       ((on)
-       (set-from-file image (string-append (storage-get 'iconsdir) "/pie-partial-colour.svg"))
+       (set-from-file image (string-append (ref %foliot-store 'iconsdir) "/pie-partial-colour.svg"))
        (set-tip t-tip image (_ "ON: you are working on a subset of your database.")))
       ((off)
-       (set-from-file image (string-append (storage-get 'iconsdir) "/pie-full-grey.svg"))
+       (set-from-file image (string-append (ref %foliot-store 'iconsdir) "/pie-full-grey.svg"))
        (set-tip t-tip image (_ "OFF: you are working on the entire database."))))))
 
 (define (ftlw/filter-apply tl-widget . force?)
@@ -1473,7 +1474,10 @@ filter date: ~S~%"
 	      (set! (id-set tl-widget) #f)
 	      (let* ((new-tuple-set (db-foliot/select-some filter? #f))
 		     (new-pos (ftlw/filter-get-row-new-pos-if-any tl-widget new-tuple-set)))
-		(when (storage-get 'debug) (ftlw/-display-filter-apply-infos filter? (length new-tuple-set) new-pos))
+		(when (ref %foliot-store 'debug)
+                  (ftlw/-display-filter-apply-infos filter?
+                                                    (length new-tuple-set)
+                                                    new-pos))
 		(set! (db-tuples tl-widget) new-tuple-set)
 		(ftlw/fill-tv tl-widget)
 		(ftlw/update-totals-status-bars tl-widget)

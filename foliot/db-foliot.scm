@@ -79,7 +79,7 @@
 			      (foliot db-con)
 			      (foliot db-imported-db))
   (textdomain "db-foliot")
-  (bindtextdomain "db-foliot" (storage-get 'pofdir)))
+  (bindtextdomain "db-foliot" (ref (foliot-store) 'pofdir)))
 
 
 ;;;
@@ -399,7 +399,7 @@
     (if value (1+ value) 0)))
 
 (define (db-foliot/get-next-id)
-  (let* ((delta (storage-get 'imported-ids-delta))
+  (let* ((delta (ref %foliot-store 'imported-ids-delta))
 	 (query (format #f "~?" (db-foliot/get-next-id-str) (list delta)))
 	 (tuple (car (sqlite/query (db-con) query)))
 	 (max-id (vector-ref tuple 0)))
@@ -588,7 +588,7 @@
 
 (define (db-foliot/import-2 tuples idb-id)
   ;; sql transaction must be started by the caller
-  (let ((ids-delta (* (1+ idb-id) (storage-get 'imported-ids-delta))))
+  (let ((ids-delta (* (1+ idb-id) (ref %foliot-store 'imported-ids-delta))))
     (for-each (lambda (tuple)
 		(let ((imported-id (db-foliot/get tuple 'id)))
 		  (db-foliot/add-from-other-db (+ imported-id ids-delta)

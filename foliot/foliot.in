@@ -128,7 +128,7 @@ details.")
   (displayln %debug-help-3 port))
 
 (define (set-locale msg-port)
-  (let ((locale (storage-get 'lang)))
+  (let ((locale (getenv "LANG")))
     (catch #t
       (lambda () (setlocale LC_ALL "")) ;; gettext will not work otherwise
       (lambda (key . parameters)
@@ -141,15 +141,16 @@ details.")
 	  (set! locale fallback)
 	  (setlocale LC_ALL fallback))
 	#f))
-    (storage-set 'locale locale)
+    (set-! (foliot-store) 'locale locale)
     locale))
 
 
 (eval-when (expand load eval)
   (textdomain "main")
-  (bindtextdomain "main" (storage-get 'pofdir))
+  (bindtextdomain "main" (ref (foliot-store) 'pofdir))
   ;; the following must be done before (a) writting to the port and (b)
   ;; loading any gnome modules.
+  (foliot-store)
   (let ((port (current-output-port)))
     (set-locale port)
     (set-port-encoding! port "utf-8")))
@@ -186,11 +187,11 @@ details.")
 	  (help? (help port))
 	  (else
 	   (welcome port)
-	   (storage-set 'debug debug?)
-	   (gtk-rc-parse (storage-get 'gtkrcfile))
+	   (set-! %foliot-store 'debug debug?)
+	   (gtk-rc-parse (ref %foliot-store 'gtkrcfile))
 	   (load-user-init)
-	   (gnome-program-init "GNU Foliot" %version)
-	   (gnome-authentication-manager-init)
+	   #;(gnome-program-init "GNU Foliot" %version)
+	   #;(gnome-authentication-manager-init)
 	   ;; February the 9th, Foliot is now part of GNU and becomes GNU Foliot.
 	   ;; Before, it was named Kisê, with kise.conf as its config file.  We
 	   ;; need to check and if there is a file ~/config/kise.conf, rename it
@@ -200,7 +201,7 @@ details.")
 			  (get-config-filename "foliot"))
 	     (fcfg/get 'reload))
 	   (set! *foliot*
-		 (foliot/animate-ui uname (storage-get 'gladefile) %version debug?))
+		 (foliot/animate-ui uname (ref %foliot-store 'gladefile) %version debug?))
 	   (when debug?
 	     (receive (server-port thread)
 		 (spawn-server-any-port #:start 1968)

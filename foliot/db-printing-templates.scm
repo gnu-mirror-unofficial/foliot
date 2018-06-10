@@ -67,7 +67,7 @@
 			      (foliot globals)
 			      (foliot db-con))
   (textdomain "db-printing-templates")
-  (bindtextdomain "db-printing-templates" (storage-get 'pofdir)))
+  (bindtextdomain "db-printing-templates" (ref (foliot-store) 'pofdir)))
 
 
 ;;;

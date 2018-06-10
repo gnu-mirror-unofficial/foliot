@@ -89,7 +89,7 @@
 			      (foliot import)
 			      (foliot print))
   (textdomain "foliot")
-  (bindtextdomain "foliot" (storage-get 'pofdir)))
+  (bindtextdomain "foliot" (ref (foliot-store) 'pofdir)))
 
 
 ;;;
@@ -516,11 +516,15 @@
 
     (gtk2/set-sensitive `(,(reference-entry tl-widget)) #f)
     (show-all (dialog tl-widget))
-    (if (storage-get 'debug)
+    (if (ref %foliot-store 'debug)
 	(begin
-	  (set-flags (date-edit tl-widget) '(show-time))
-	  (set-flags (date-edit tl-widget) '())
-	  (set-time (date-edit tl-widget) 0))
+	  ;; these where in (gnome gnome)
+          ;; which has been deprecated (we were only using a gnome
+          ;; date-edit in debug mode ...
+          #;(set-flags (date-edit tl-widget) '(show-time))
+	  #;(set-flags (date-edit tl-widget) '())
+	  #;(set-time (date-edit tl-widget) 0)
+          'done)
 	(gtk2/hide `(,(date-edit tl-widget)))) ;; experimental stuff
     (gtk2/hide `(,(menubar tl-widget)
 		 ,(date-icon tl-widget)
@@ -605,7 +609,7 @@
 
 (define g2 (gnome-date-edit-new 0 #f #f))
 (get-flags g2)
-(set-flags g2 '(show-time))
+#;(set-flags g2 '(show-time))
 
 (let ((flags (get-flags gdedit))
       (g2 (gnome-date-edit-new 0 #f #f)))

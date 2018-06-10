@@ -66,7 +66,7 @@
 			      (foliot globals)
 			      (foliot db-con))
   (textdomain "db-imported-db")
-  (bindtextdomain "db-imported-db" (storage-get 'pofdir)))
+  (bindtextdomain "db-imported-db" (ref (foliot-store) 'pofdir)))
 
 
 ;;;
