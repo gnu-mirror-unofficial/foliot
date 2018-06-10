@@ -29,15 +29,13 @@
   #:use-module (oop goops)
   #:use-module (grip module)
   #:use-module (grip store)
-  #:use-module (grip utils)
 
   #:export (%foliot-store
             foliot-store))
 
 
 (eval-when (expand load eval)
-  (re-export-public-interface (grip store)
-                              (grip utils)))
+  (re-export-public-interface (grip store)))
 
 
 (define %foliot-store #f)
