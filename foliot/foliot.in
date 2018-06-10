@@ -150,7 +150,6 @@ details.")
   (bindtextdomain "main" (ref (foliot-store) 'pofdir))
   ;; the following must be done before (a) writting to the port and (b)
   ;; loading any gnome modules.
-  (foliot-store)
   (let ((port (current-output-port)))
     (set-locale port)
     (set-port-encoding! port "utf-8")))
