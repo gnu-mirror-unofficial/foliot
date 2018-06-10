@@ -118,5 +118,9 @@ LATEX_PACKAGE_REQUIRED([geometry])
 
 AC_CONFIG_FILES([pre-inst-env], [chmod +x pre-inst-env])
 AC_CONFIG_FILES([foliot/foliot], [chmod +x foliot/foliot])
-AC_CONFIG_FILES([Makefile doc/Makefile])
+AC_CONFIG_FILES([
+        Makefile
+        doc/Makefile
+        test-suite/Makefile
+])
 AC_OUTPUT

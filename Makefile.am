@@ -85,6 +85,7 @@ ETAGS_ARGS = \
 	$(SOURCES)
 
 SUBDIRS = \
+	test-suite	\
 	doc
 
 distclean-local:
