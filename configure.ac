@@ -67,12 +67,10 @@ dnl has wrapped the gnome libraries foliot needs.  strictly speaking,
 dnl the list below is 'too much' because some guile-gnome modules are
 dnl always part of guile-gnome, but hey, no arm and nice to see all
 dnl the checks.
-GUILE_GNOME_MODULE_REQUIRED([gnome gnome])
-GUILE_GNOME_MODULE_REQUIRED([gnome gobject])
 GUILE_GNOME_MODULE_REQUIRED([gnome glib])
+GUILE_GNOME_MODULE_REQUIRED([gnome gobject])
 GUILE_GNOME_MODULE_REQUIRED([gnome gtk])
 GUILE_GNOME_MODULE_REQUIRED([gnome gtk gdk-event])
-GUILE_GNOME_MODULE_REQUIRED([gnome gnome-ui])
 GUILE_GNOME_MODULE_REQUIRED([gnome glade])
 
 # Checks are in Grip_SQLite

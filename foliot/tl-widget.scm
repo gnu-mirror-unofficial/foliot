@@ -30,12 +30,10 @@
   #:use-module (ice-9 format)
   #:use-module (ice-9 receive)
   #:use-module (oop goops)
-  #:use-module (gnome gnome) ;; could use the system help
   #:use-module (gnome gobject)
   #:use-module (gnome gtk)
   #:use-module (gnome gtk gdk-event)
   #:use-module (gnome glade)
-  #:use-module (gnome gnome-ui)
   #:use-module (grip module)
   #:use-module (grip queue)
   #:use-module (grip iter)

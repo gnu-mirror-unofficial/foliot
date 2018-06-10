@@ -160,10 +160,8 @@ details.")
 ;;;
 
 (use-modules (gnome-2)
-	     (gnome gnome)
-	     (gnome gnome-ui) ;; <- uses $LANG
-	     (gnome gtk)
 	     (gnome glib)
+	     (gnome gtk)
 	     (grip server)
 	     (grip config)
 	     (foliot config)
