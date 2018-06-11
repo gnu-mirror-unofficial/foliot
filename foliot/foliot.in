@@ -49,7 +49,11 @@ exec @GUILE@ --no-auto-compile -e main -s "$0" "$@"
 	     (foliot globals))
 
 
-(eval-when (expand load eval)
+;; guile-2.2 has removed the hability to globally define we want to
+;; handle default-duplicate-binding-handler ... but I'll keep the code
+;; in case it changes in the future.
+
+#;(eval-when (expand load eval)
   (use-modules (oop goops))
   (default-duplicate-binding-handler
     '(merge-generics replace warn-override-core warn last)))
