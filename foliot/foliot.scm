@@ -89,7 +89,7 @@
 			      (foliot import)
 			      (foliot print))
   (textdomain "foliot")
-  (bindtextdomain "foliot" (ref (foliot-store) 'pofdir)))
+  (bindtextdomain "foliot" (ref %foliot-store 'pofdir)))
 
 
 ;;;

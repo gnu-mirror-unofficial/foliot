@@ -67,7 +67,7 @@
 
 (eval-when (expand load eval)
   (textdomain "p-dialog")
-  (bindtextdomain "p-dialog" (ref (foliot-store) 'pofdir)))
+  (bindtextdomain "p-dialog" (ref %foliot-store 'pofdir)))
 
 
 (define *foliot-p-dialog-offsets*

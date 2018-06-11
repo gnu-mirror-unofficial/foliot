@@ -26,6 +26,7 @@
 
 
 (define-module (foliot db-con)
+  #:use-module (oop goops)
   #:use-module (grip module)
   #:use-module (grip utils)
   #:use-module (grip sqlite)

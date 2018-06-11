@@ -64,7 +64,7 @@
 			      (foliot globals)
 			      (foliot db-con))
   (textdomain "db-shinning")
-  (bindtextdomain "db-shinning" (ref (foliot-store) 'pofdir)))
+  (bindtextdomain "db-shinning" (ref %foliot-store 'pofdir)))
 
 
 ;;;

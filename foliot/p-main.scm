@@ -53,7 +53,7 @@
 
 (eval-when (expand load eval)
   (textdomain "p-main")
-  (bindtextdomain "p-main" (ref (foliot-store) 'pofdir)))
+  (bindtextdomain "p-main" (ref %foliot-store 'pofdir)))
 
 
 (define (fp/print-1 fp/widget tl-widget pdf-filename)

@@ -145,13 +145,13 @@ details.")
 	  (set! locale fallback)
 	  (setlocale LC_ALL fallback))
 	#f))
-    (set-! (foliot-store) 'locale locale)
+    (set-! %foliot-store 'locale locale)
     locale))
 
 
 (eval-when (expand load eval)
   (textdomain "main")
-  (bindtextdomain "main" (ref (foliot-store) 'pofdir))
+  (bindtextdomain "main" (ref %foliot-store 'pofdir))
   ;; the following must be done before (a) writting to the port and (b)
   ;; loading any gnome modules.
   (let ((port (current-output-port)))
@@ -204,7 +204,8 @@ details.")
 			  (get-config-filename "foliot"))
 	     (fcfg/get 'reload))
 	   (set! *foliot*
-		 (foliot/animate-ui uname (ref %foliot-store 'gladefile) %version debug?))
+		 (foliot/animate-ui uname
+                                    (ref %foliot-store 'gladefile) %version debug?))
 	   (when debug?
 	     (receive (server-port thread)
 		 (spawn-server-any-port #:start 1968)

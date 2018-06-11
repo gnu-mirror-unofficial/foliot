@@ -58,7 +58,7 @@
 
 (eval-when (expand load eval)
   (textdomain "p-draft")
-  (bindtextdomain "p-draft" (ref (foliot-store) 'pofdir)))
+  (bindtextdomain "p-draft" (ref %foliot-store 'pofdir)))
 
 
 ;;;

@@ -30,37 +30,36 @@
   #:use-module (grip module)
   #:use-module (grip store)
 
-  #:export (%foliot-store
-            foliot-store))
+  #:export (%foliot-store))
 
 
 (eval-when (expand load eval)
-  (re-export-public-interface (grip store)))
+  (re-export-public-interface (oop goops)
+                              (grip store)))
 
 
 (define %foliot-store #f)
 
-(define (foliot-store)
-  (or %foliot-store
-      (let* ((store (make <store>))
-             (foliotdir (dirname (search-path %load-path "foliot/foliot.scm")))
-             (pofdir (string-append foliotdir "/pof"))
-             (gtkrcdir (string-append foliotdir "/gtkrc"))
-             (iconsdir (string-append foliotdir "/icons"))
-             (gladedir (string-append foliotdir "/glade"))
-             (latexdir (string-append foliotdir "/latex"))
-             (printdir "/tmp"))
-        (init! store
-               `((foliotdir . ,foliotdir)
-                 (pofdir . ,pofdir)
-                 (iconsdir . ,iconsdir)
-                 (gladedir . ,gladedir)
-                 (gladefile . ,(string-append gladedir "/foliot.glade"))
-                 (gtkrcdir . ,gtkrcdir)
-                 (gtkrcfile . ,(string-append gtkrcdir "/gtkrc.foliot"))
-                 (latexdir . ,latexdir)
-                 (printdir . ,printdir)
-                 (imported-ids-delta . 1000000))
-               #:no-checks #t)
-        (set! %foliot-store store)
-        store)))
+
+(eval-when (expand load eval)
+  (set! %foliot-store
+        (let* ((store (make <store>))
+               (foliotdir (dirname (search-path %load-path "foliot/foliot.scm")))
+               (pofdir (string-append foliotdir "/pof"))
+               (gtkrcdir (string-append foliotdir "/gtkrc"))
+               (iconsdir (string-append foliotdir "/icons"))
+               (gladedir (string-append foliotdir "/glade"))
+               (latexdir (string-append foliotdir "/latex"))
+               (printdir "/tmp"))
+          (init! store
+                 `((foliotdir . ,foliotdir)
+                   (pofdir . ,pofdir)
+                   (iconsdir . ,iconsdir)
+                   (gladedir . ,gladedir)
+                   (gladefile . ,(string-append gladedir "/foliot.glade"))
+                   (gtkrcdir . ,gtkrcdir)
+                   (gtkrcfile . ,(string-append gtkrcdir "/gtkrc.foliot"))
+                   (latexdir . ,latexdir)
+                   (printdir . ,printdir)
+                   (imported-ids-delta . 1000000))
+                 #:no-checks #t))))

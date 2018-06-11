@@ -79,7 +79,7 @@
 			      (foliot db-con)
 			      (foliot db-imported-db))
   (textdomain "db-foliot")
-  (bindtextdomain "db-foliot" (ref (foliot-store) 'pofdir)))
+  (bindtextdomain "db-foliot" (ref %foliot-store 'pofdir)))
 
 
 ;;;
@@ -104,6 +104,7 @@
    imported_id,
    imported_db"
 	    sep sep sep sep sep sep)))
+
 
 ;;;
 ;;; Attr pos, get, set

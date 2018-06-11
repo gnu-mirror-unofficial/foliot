@@ -69,7 +69,7 @@
 			      (grip passwd)
 			      (foliot globals))
   (textdomain "p-common")
-  (bindtextdomain "p-common" (ref (foliot-store) 'pofdir)))
+  (bindtextdomain "p-common" (ref %foliot-store 'pofdir)))
 
 
 ;;;

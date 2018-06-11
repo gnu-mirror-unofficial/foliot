@@ -212,7 +212,7 @@
 			      (gnome glade)
 			      (foliot config))
   (textdomain "tl-widget")
-  (bindtextdomain "tl-widget" (ref (foliot-store) 'pofdir)))
+  (bindtextdomain "tl-widget" (ref %foliot-store 'pofdir)))
 
 
 ;;;
@@ -394,7 +394,7 @@
 
 (define (ftlw/add-columns tl-widget treeview)
   (let* ((dpi-ratio (ref %foliot-store 'Xft.dpi.ratio))
-	 (apply-ratio? (ref %foliot-store 'apply-dpi-ratio?))
+         (apply-ratio? (ref %foliot-store 'apply-dpi-ratio?))
 	 (model (get-model treeview))
 	 ;; IMPORTED ROW COLOUR
 	 (renderer0 (make <gtk-cell-renderer-text>))
@@ -1093,10 +1093,10 @@
       (set (dialog tl-widget) 'height-request (inexact->exact (round (* .9 (get (dialog tl-widget) 'height-request)))))
       (set (sw tl-widget) 'height-request (inexact->exact (round (* .9 (get (sw tl-widget) 'height-request)))))
       #;(format #t "
-  reference: ~S
-       date: ~S
-        who: ~S
-filter date: ~S~%"
+      reference: ~S
+      date: ~S
+      who: ~S
+      filter date: ~S~%"
 	      (get (reference-entry tl-widget) 'width-request)
 	      (get (date-entry tl-widget) 'width-request)
 	      (get (who-combo tl-widget) 'width-request)

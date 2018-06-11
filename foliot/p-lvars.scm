@@ -53,7 +53,7 @@
 			      (grip i18n)
 			      (grip utils))
   (textdomain "p-lvars")
-  (bindtextdomain "p-lvars" (ref (foliot-store) 'pofdir)))
+  (bindtextdomain "p-lvars" (ref %foliot-store 'pofdir)))
 
 
 ;;;

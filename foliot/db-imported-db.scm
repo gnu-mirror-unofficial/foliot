@@ -28,6 +28,7 @@
 (define-module (foliot db-imported-db)
   #:use-module (ice-9 format)
   #:use-module (srfi srfi-1)
+  #:use-module (oop goops)
   #:use-module (grip module)
   #:use-module (grip iter)
   #:use-module (grip sqlite)
@@ -66,7 +67,7 @@
 			      (foliot globals)
 			      (foliot db-con))
   (textdomain "db-imported-db")
-  (bindtextdomain "db-imported-db" (ref (foliot-store) 'pofdir)))
+  (bindtextdomain "db-imported-db" (ref %foliot-store 'pofdir)))
 
 
 ;;;

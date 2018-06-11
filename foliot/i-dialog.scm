@@ -71,7 +71,7 @@
 
 (eval-when (expand load eval)
   (textdomain "i-dialog")
-  (bindtextdomain "i-dialog" (ref (foliot-store) 'pofdir)))
+  (bindtextdomain "i-dialog" (ref %foliot-store 'pofdir)))
 
 
 (define *foliot-i-dialog-offset*
@@ -158,7 +158,7 @@
 
 (define (fi/add-columns fi-widget treeview)
   (let* ((dpi-ratio (ref %foliot-store 'Xft.dpi.ratio))
-	 (apply-ratio? (ref %foliot-store 'apply-dpi-ratio?))
+         (apply-ratio? (ref %foliot-store 'apply-dpi-ratio?))
 	 (model (get-model treeview))
 	 ;; IMPORTED ROW COLOUR
 	 (renderer0 (make <gtk-cell-renderer-text>))
