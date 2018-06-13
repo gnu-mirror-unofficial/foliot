@@ -40,7 +40,6 @@
   #:use-module (grip date)
   #:use-module (grip i18n)
   #:use-module (grip utils)
-  #:use-module (grip xft)
   #:use-module (grip string)
   #:use-module (grip number)
   #:use-module (grip gnome)
@@ -393,8 +392,8 @@
     (values model (get-selection treeview))))
 
 (define (ftlw/add-columns tl-widget treeview)
-  (let* ((dpi-ratio (ref %foliot-store 'Xft.dpi.ratio))
-         (apply-ratio? (ref %foliot-store 'apply-dpi-ratio?))
+  (let* ((dpi-ratio (ref %xft-store 'scale-factor))
+         (apply-ratio? (ref %xft-store 'apply-scale-factor?))
 	 (model (get-model treeview))
 	 ;; IMPORTED ROW COLOUR
 	 (renderer0 (make <gtk-cell-renderer-text>))
@@ -1073,8 +1072,8 @@
 	(db-tuples tl-widget))))
 
 (define (ftlw/apply-xft-dpi-ratio tl-widget)
-  (when (ref %foliot-store 'apply-dpi-ratio?)
-    (let* ((dpi-ratio (ref %foliot-store 'Xft.dpi.ratio))
+  (when (ref %xft-store 'apply-scale-factor?)
+    (let* ((dpi-ratio (ref %xft-store 'scale-factor))
 	   (widget-size-dates (inexact->exact (round (* dpi-ratio (get (date-entry tl-widget) 'width-request)))))
 	   (widget-size-whos (inexact->exact (round (* dpi-ratio (get (who-combo tl-widget) 'width-request))))))
       (set (reference-entry tl-widget) 'width-request widget-size-dates)

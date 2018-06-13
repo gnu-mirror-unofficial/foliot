@@ -157,8 +157,8 @@
 	    (get-selection treeview))))
 
 (define (fi/add-columns fi-widget treeview)
-  (let* ((dpi-ratio (ref %foliot-store 'Xft.dpi.ratio))
-         (apply-ratio? (ref %foliot-store 'apply-dpi-ratio?))
+  (let* ((dpi-ratio (ref %xft-store 'scale-factor))
+         (apply-ratio? (ref %xft-store 'apply-scale-factor?))
 	 (model (get-model treeview))
 	 ;; IMPORTED ROW COLOUR
 	 (renderer0 (make <gtk-cell-renderer-text>))

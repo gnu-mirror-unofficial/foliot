@@ -29,8 +29,10 @@
   #:use-module (oop goops)
   #:use-module (grip module)
   #:use-module (grip store)
+  #:use-module (grip xft)
 
-  #:export (%foliot-store))
+  #:export (%foliot-store
+            %xft-store))
 
 
 (eval-when (expand load eval)
@@ -39,7 +41,7 @@
 
 
 (define %foliot-store #f)
-
+(define %xft-store #f)
 
 (eval-when (expand load eval)
   (set! %foliot-store
@@ -62,4 +64,5 @@
                    (latexdir . ,latexdir)
                    (printdir . ,printdir)
                    (imported-ids-delta . 1000000))
-                 #:no-checks #t))))
+                 #:no-checks #t)))
+  (set! %xft-store (xft-store)))
