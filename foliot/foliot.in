@@ -32,8 +32,9 @@ exec @GUILE@ --no-auto-compile -e main -s "$0" "$@"
 ;; want to make sure (setlocale LC_ALL "") 'pass' first.  It may fail,
 ;; if the user $LANG is set to uninstalled locale.  In this case, the
 ;; user is warned, as we catch the exception, and then we start to look
-;; to other possibilities, first looking for utf-8 available locales and
-;; in last ressort if no utf-8 locale is available, it is set to "C".
+;; for other possibilities, first looking for utf-8 available locales
+;; and in last ressort if no utf-8 locale is available, it is set to
+;; "C".
 
 ;;; Code:
 
@@ -49,11 +50,11 @@ exec @GUILE@ --no-auto-compile -e main -s "$0" "$@"
 	     (foliot globals))
 
 
-;; guile-2.2 has removed the hability to globally define we want to
-;; handle default-duplicate-binding-handler ... but I'll keep the code
-;; in case it changes in the future.
+;; it is necessary to globally set duplicate binding handlers, so that
+;; both the foliot script - and the spawned server when -d or --debug is
+;; passed to the script - correctly merge all generics.
 
-#;(eval-when (expand load eval)
+(eval-when (expand load eval)
   (use-modules (oop goops))
   (default-duplicate-binding-handler
     '(merge-generics replace warn-override-core warn last)))
