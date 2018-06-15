@@ -209,6 +209,6 @@ details.")
                                     (ref %foliot-store 'gladefile) %version debug?))
 	   (when debug?
 	     (receive (server-port thread)
-		 (spawn-server-any-port #:start 1968)
+		 (spawn-server-any-port)
 	       (debug-help server-port port)))
 	   (g-main-loop-run (g-main-loop-new))))))
