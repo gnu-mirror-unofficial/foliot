@@ -21,7 +21,7 @@ GNU Foliot needs the following software to run:
 
     SQLite		>= 3.7
 	libpcre
-	Grip		>= 0.1.2
+	Grip		>= 0.2.0
 
 		Grip (core), Grip-Gnome, Grip-Sqlite
 
