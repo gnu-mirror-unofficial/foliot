@@ -131,16 +131,33 @@ libpcre
   @end indentedblock
 
 @item
-@uref{@value{ULATEX}, LaTex}: any recent LaTex 2e version will do
+@uref{@value{ULATEX}, LaTex}
 
-@end itemize
+  @indentedblock
+  Any modern latex distribution will do, we use
+  @uref{@value{UTEXLIVE}, TexLive}.
 
-GNU Foliot reports needs the following font:
+  Foliot will check that it can find the extarticle document class, as
+  well as the following packages: inputenc, fontenc, lmodern, pifont,
+  amsfonts, amssymb, amsmath, wasysym, graphicx, parskip, xspace,
+  tabularx, longtable, ltxtable, multicol, booktabs, hhline, numprint,
+  fancyhdr, lastpage, xcolor, colortbl, fancybox, textcomp, calc,
+  geometry and Iwona.
 
-@itemize @bullet
-@item 
-@uref{@value{UIWONA}, Iwona}: on debian iwona is part of the
-texlive-fonts-extra package
+  @uref{@value{UIWONA}, Iwona} is the font used to create the
+  reports. Note that it could be that it is not part of your ’basic’
+  LaTex distro, on debian for example, iwona is part of the
+  texlive-fonts-extra package.
+  @end indentedblock
+
+@item
+@uref{@value{UGUILE-LIB}, Guile-Lib} >= 0.2.5
+
+  @indentedblock
+  This is a soft dependency: Guile-Lib is required to run the
+  test-suite, which is recommended but not mandatory.
+  @end indentedblock
+
 @end itemize
 
 

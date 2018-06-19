@@ -16,21 +16,36 @@ GNU Foliot needs the following software to run:
 	Guile 		>= 2.0.14
 	Guile-Gnome	>= 2.16.5, the following wrappers:
 
-		Glib, Gobject, Pango, Pangocairo, libgnome, lingnomeui,
-		libglade, Gtk
+	  Glib, Gobject, Pango, Pangocairo, libgnome, lingnomeui,
+	  libglade, Gtk
 
     SQLite		>= 3.7
 	libpcre
 	Grip		>= 0.2.0
 
-		Grip (core), Grip-Gnome, Grip-Sqlite
+	  Grip (core), Grip-Gnome, Grip-Sqlite
 
 	LaTeX
 
-GNU Foliot reports needs the following font:
+	  Any modern latex distribution will do, we use TexLive.
 
-	iwona: on debian iwona is part of the texlive-fonts-extra
-	package.
+	  Foliot will check that it can find the extarticle document
+	  class, as well as the following packages: inputenc, fontenc,
+	  lmodern, pifont, amsfonts, amssymb, amsmath, wasysym,
+	  graphicx, parskip, xspace, tabularx, longtable, ltxtable,
+	  multicol, booktabs, hhline, numprint, fancyhdr, lastpage,
+	  xcolor, colortbl, fancybox, textcomp, calc, geometry and
+	  Iwona.
+
+	  Iwona is the font used to create the reports. Note that it
+	  could be that it is not part of your ’basic’ LaTex distro, on
+	  debian for example, iwona is part of the texlive-fonts-extra
+	  package.
+
+	Guile-Lib >= 0.2.5
+
+	  This is a soft dependency: Guile-Lib is required to run the
+	  test-suite, which is recommended but not mandatory.
 
 ** Quickstart
 

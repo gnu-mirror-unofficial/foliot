@@ -81,6 +81,17 @@ PKG_CHECK_MODULES([Grip], [grip-1.0 >= 0.2.0])
 PKG_CHECK_MODULES([Grip_Gnome], [grip-gnome-1.0 >= 0.2.0])
 PKG_CHECK_MODULES([Grip_SQLite], [grip-sqlite-1.0 >= 0.2.0])
 
+###
+### Guile-Lib
+###
+
+PKG_CHECK_MODULES(
+  [GUILE_LIB],
+  [guile-lib-1.0 >= 0.2.5],
+  [HAVE_GUILE_LIB=yes],
+  [HAVE_GUILE_LIB=no])
+
+
 AC_CHECK_PROG(PDFLATEX, pdflatex, yes)
 if test -z "$PDFLATEX"; then
   AC_MSG_ERROR([pdflatex required but not found])
@@ -90,8 +101,6 @@ LATEX_DOCUMENT_CLASS_REQUIRED([extarticle])
 LATEX_PACKAGE_REQUIRED([inputenc])
 LATEX_PACKAGE_REQUIRED([fontenc])
 LATEX_PACKAGE_REQUIRED([lmodern])
-LATEX_PACKAGE_AVAILABLE([HAS_IWONA], [iwona])
-# LATEX_PACKAGE_REQUIRED([iwona])
 LATEX_PACKAGE_REQUIRED([pifont])
 LATEX_PACKAGE_REQUIRED([amsfonts])
 LATEX_PACKAGE_REQUIRED([amssymb])
@@ -115,6 +124,8 @@ LATEX_PACKAGE_REQUIRED([fancybox])
 LATEX_PACKAGE_REQUIRED([textcomp])
 LATEX_PACKAGE_REQUIRED([calc])
 LATEX_PACKAGE_REQUIRED([geometry])
+# LATEX_PACKAGE_AVAILABLE([HAS_IWONA], [iwona])
+LATEX_PACKAGE_REQUIRED([iwona])
 
 AC_CONFIG_FILES([pre-inst-env], [chmod +x pre-inst-env])
 AC_CONFIG_FILES([foliot/foliot], [chmod +x foliot/foliot])
