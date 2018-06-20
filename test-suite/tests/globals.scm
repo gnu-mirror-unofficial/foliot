@@ -36,9 +36,7 @@
 
 
 (define-method (test-foliot-store (self <foliot-tests-globals>))
-  (assert (foliot-store))
   (let ((store %foliot-store))
-    (assert-true (eq? %foliot-store (foliot-store)))
     (assert-true (get store 'foliotdir))
     (assert-true (get store 'pofdir))
     (assert-true (get store 'gladedir))
