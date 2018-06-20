@@ -1,6 +1,6 @@
 
 ####
-#### Copyright (C) 2015 - 2016
+#### Copyright (C) 2015 - 2018
 #### Free Software Foundation, Inc.
 
 #### This file is part of GNU Foliot.
@@ -24,6 +24,9 @@ AUTOMAKE_OPTIONS = gnu
 
 info_TEXINFOS = foliot.texi
 
+DOC_CSS = \
+	$(wildcard css/*)
+
 foliot_TEXINFOS =	\
   version.texi		\
   variables.texi	\
@@ -31,3 +34,11 @@ foliot_TEXINFOS =	\
   introduction.texi	\
   using-foliot.texi	\
   fdl.texi
+
+nobase_doc_DATA = \
+	$(DOC_CSS)
+
+EXTRA_DIST = \
+	$(DOC_CSS)
+
+AM_MAKEINFOHTMLFLAGS = --css-ref=../css/manual.css
