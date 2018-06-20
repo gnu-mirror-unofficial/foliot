@@ -1,6 +1,6 @@
 ## Autoconf macros for working with Guile-Gnome.
 ##
-##   Copyright (C) 2015 - 2016 Free Software Foundation, Inc.
+##   Copyright (C) 2015 - 2018 Free Software Foundation, Inc.
 ##
 ## This library is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -25,7 +25,7 @@
 ###
 
 ## GUILE_GNOME_PROGS
-## GUILE_GNOME_INST_DIR
+## GUILE_GNOME_SITE_DIR
 ## GUILE_GNOME_CHECK
 ## GUILE_GNOME_MODULE_CHECK
 ## GUILE_GNOME_MODULE_AVAILABLE
@@ -104,27 +104,27 @@ AC_DEFUN([GUILE_GNOME_PROGS],
 
 
 ###
-### GUILE_GNOME_INST_DIR
+### GUILE_GNOME_SITE_DIR
 ###   -- find path of the Guile-Gnome directory
 ###
 
-# Usage: GUILE_GNOME_INST_DIR
+# Usage: GUILE_GNOME_SITE_DIR
 #
 # This looks for Guile-Gnome's directory, usually something like
-# PREFIX/share/guile-gnome-2, and sets var @var{GUILE_GNOME_DIR} to
+# PREFIX/share/guile-gnome-2, and sets var @var{GUILE_GNOME_SITE} to
 # the path.  Note that the var name is different from the macro name.
 #
 # The variable is marked for substitution, as by @code{AC_SUBST}.
 #
-AC_DEFUN([GUILE_GNOME_INST_DIR],
+AC_DEFUN([GUILE_GNOME_SITE_DIR],
  [AC_REQUIRE([GUILE_GNOME_PROGS])
   AC_MSG_CHECKING(for Guile-Gnome directory)
-  GUILE_GNOME_DIR=`$GUILE_GNOME -c '(display (dirname (dirname (%search-load-path "gnome/glib.scm"))))'`
-  AC_MSG_RESULT($GUILE_GNOME_DIR)
-  if test "$GUILE_GNOME_DIR" = ""; then
+  GUILE_GNOME_SITE=`$GUILE_GNOME -c '(display (dirname (dirname (%search-load-path "gnome/glib.scm"))))'`
+  AC_MSG_RESULT($GUILE_GNOME_SITE)
+  if test "$GUILE_GNOME_SITE" = ""; then
      AC_MSG_FAILURE(directory not found)
   fi
-  AC_SUBST(GUILE_GNOME_DIR)
+  AC_SUBST(GUILE_GNOME_SITE)
  ])
 
 
@@ -143,9 +143,9 @@ AC_DEFUN([GUILE_GNOME_INST_DIR],
 # The variable is marked for substitution, as by @code{AC_SUBST}.
 #
 AC_DEFUN([GUILE_GNOME_LIBS_PATH],
- [AC_REQUIRE([GUILE_GNOME_INST_DIR])
+ [AC_REQUIRE([GUILE_GNOME_SITE_DIR])
   _guile_gnome_libdir=`$PKG_CONFIG --variable=libdir guile-gnome-glib-2`
-  _gg_dir_bname=`$GUILE_GNOME -c "(display (basename \"$GUILE_GNOME_DIR\"))"`
+  _gg_dir_bname=`$GUILE_GNOME -c "(display (basename \"$GUILE_GNOME_SITE\"))"`
   GUILE_GNOME_LTDL_LIBRARY_PATH="$_guile_gnome_libdir:$_guile_gnome_libdir/$_gg_dir_bname"
   AC_SUBST([GUILE_GNOME_LTDL_LIBRARY_PATH])
  ])

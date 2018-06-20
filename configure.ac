@@ -29,7 +29,10 @@ along with GNU Foliot.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_PREREQ(2.69)
 
-AC_INIT([foliot], [0.9.7], [bug-foliot@gnu.org])
+AC_INIT(
+  [foliot],
+  [0.9.7],
+  [bug-foliot@gnu.org])
 
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
@@ -60,7 +63,7 @@ GUILE_MODULE_REQUIRED([gnome-2])
 
 GUILE_GNOME_PROGS([2.16.5])
 GUILE_GNOME_FLAGS
-GUILE_GNOME_INST_DIR
+GUILE_GNOME_SITE_DIR
 GUILE_GNOME_LIBS_PATH
 dnl guile-gnome is a set of wrappers, we need to check that the user
 dnl has wrapped the gnome libraries foliot needs.  strictly speaking,
@@ -127,8 +130,12 @@ LATEX_PACKAGE_REQUIRED([geometry])
 # LATEX_PACKAGE_AVAILABLE([HAS_IWONA], [iwona])
 LATEX_PACKAGE_REQUIRED([iwona])
 
-AC_CONFIG_FILES([pre-inst-env], [chmod +x pre-inst-env])
-AC_CONFIG_FILES([foliot/foliot], [chmod +x foliot/foliot])
+AC_CONFIG_FILES(
+  [pre-inst-env],
+  [chmod +x pre-inst-env])
+AC_CONFIG_FILES(
+  [foliot/foliot],
+  [chmod +x foliot/foliot])
 AC_CONFIG_FILES([
         Makefile
         doc/Makefile

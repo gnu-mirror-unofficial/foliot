@@ -23,7 +23,7 @@
 
 gev=$(GUILE_EFFECTIVE_VERSION)
 gccache=$(GUILE_SITE_CCACHE)
-ggdir=$(GUILE_GNOME_DIR)
+ggdir=$(GUILE_GNOME_SITE)
 
 GOBJECTS = $(SOURCES:%.scm=%.go)
 
