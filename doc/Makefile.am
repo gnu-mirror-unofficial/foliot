@@ -20,7 +20,8 @@
 #### <http://www.gnu.org/licenses/>.
 ####
 
-AUTOMAKE_OPTIONS = gnu
+# we use wildcard - non-POSIX variable name
+# AUTOMAKE_OPTIONS = gnu
 
 info_TEXINFOS = foliot.texi
 
