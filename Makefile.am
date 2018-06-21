@@ -23,8 +23,8 @@
 
 include $(top_srcdir)/am/guile.mk
 
-moddir=$(ggdir)
-godir=$(gccache)
+moddir=$(sitedir)
+godir=$(siteccachedir)
 
 SOURCES = \
 	foliot/config.scm		\

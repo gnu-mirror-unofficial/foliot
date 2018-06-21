@@ -61,6 +61,23 @@ GUILE_SITE_DIR
 GUILE_SITE_CCACHE_DIR
 GUILE_MODULE_REQUIRED([gnome-2])
 
+AC_ARG_WITH(
+  [guile-site],
+  [AS_HELP_STRING(
+     [--with-guile-site],
+     [install source modules using Guile-Gnome site dir and compiled files using Guile's site-ccache dir])],
+  [case "x$withval" in
+     xyes)
+     guile_site="yes";;
+     *)
+     guile_site="";;
+   esac],
+  [guile_site=""])
+
+AM_CONDITIONAL(
+  [USE_GUILE_SITE],
+  [test $guile_site = yes])
+
 GUILE_GNOME_PROGS([2.16.5])
 GUILE_GNOME_FLAGS
 GUILE_GNOME_SITE_DIR

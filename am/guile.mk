@@ -21,9 +21,14 @@
 ####
 
 
-gev=$(GUILE_EFFECTIVE_VERSION)
-gccache=$(GUILE_SITE_CCACHE)
-ggdir=$(GUILE_GNOME_SITE)
+if USE_GUILE_SITE
+  sitedir=$(GUILE_GNOME_SITE)
+  siteccachedir = $(GUILE_SITE_CCACHE)
+else
+  sitedir=$(datadir)/foliot
+  siteccachedir = $(libdir)/foliot/guile/$(GUILE_EFFECTIVE_VERSION)/site-ccache
+endif
+
 
 GOBJECTS = $(SOURCES:%.scm=%.go)
 
@@ -44,3 +49,6 @@ SUFFIXES = .scm .go
 .scm.go:
 	$(AM_V_GEN)$(top_builddir)/pre-inst-env \
 	guild compile $(GUILE_WARNINGS) -o "$@" "$<"
+
+printenv:
+	printf '$(sitedir)\n$(siteccachedir)\n'

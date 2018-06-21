@@ -189,45 +189,66 @@ Happy GNU Foliot!
 
 @enumerate
 @item
-In the above @code{configure} step, @code{--prefix=/your/prefix} is
-optional.  The default value is @code{/usr/local}.  As an example, you
-could use
+The default and --prefix installation locations for source modules and
+compiled files (in the absence of --with-guile-site=yes, otherwise see
+below) are:
 
 @example
-./configure --prefix=/opt
+$(datadir)/foliot
+$(libdir)/foliot/guile/$(GUILE_EFFECTIVE_VERSION)/site-ccache
+@end example
+
+In the above, $(datadir) is substituted to the default
+@file{/usr/local/share} or @file{/your/prefix/share} and
+@code{$(libdir)} is substituted to @file{/usr/local/lib} or
+@file{/your/prefix/lib}, when/if @code{--prefix} was passed.
+
+@code{$(GUILE_EFFECTIVE_VERSION)} is substituted to the stable version
+number with which Foliot is being compile, for example, @code{2.2}
+
+Unless you passed @code{--with-guile-site=yes}, you must augment Guile's
+@code{%load-path} and @code{%load-compiled-path}, respectively, with the
+two (substituted) paths described above, so that Guile finds Foliot's
+installed source modules and compiled files.
+
+To do this, you either (a) create/update your personnal @file{~/.guile}
+file, (b) update Guile's global site init.scm file or (c) define/update
+both @code{GUILE_LOAD_PATH} and @code{GUILE_LOAD_COMPILED_PATH} (Make
+sure you read Guile's manual 'Environment Variables' and 'Load Paths'
+subsections if you are not familiar).
+
+Here is an example for (c), assuming these variables were not already
+defined and no @code{--prefix} has been given, using the Bash shell:
+
+@example
+export GUILE_LOAD_PATH="/usr/local/share/foliot"
+export GUILE_LOAD_COMPILED_PATH="/usr/local/lib/foliot/guile/2.2/site-ccache"
 @end example
 
 @item
-To install GNU Foliot, @code{make install}, you must have @code{write
-permissions} for (a) @code{$prefix} and its subdirs, (b) the
-@code{guile-gnome-2} and (c) guile's @code{site-ccache} dirs [see
-below].
-@ifhtml
-@*@*
-@end ifhtml
-
-@item
-GNU Foliot's modules are installed in the @code{guile-gnome-2} directory.  If
-you want to know its location, it is listed as part of the configure
-step and stored in the config.log file, look for "checking for
-guile-gnome-2"
-@ifhtml
-@*@*
-@end ifhtml
-
-@item
-GNU Foliot's compiled modules are installed in the Guile's @code{site-ccache}
-directory.  If you want to know its location, enter the following
-expression in a terminal:
+If you pass @code{--with-guile-site=yes}, Foliot's source modules will
+be installed in the Guile-Gnome site directory and compiled files will
+be installed using Guile's site-ccache directory.  You may check these
+two locations using:
 
 @example
+guile -c "(use-modules (gnome-2)) (display (path %load-path \"gnome/gtk.scm\")))) (newline)"
 guile -c "(display (%site-ccache-dir)) (newline)"
 @end example
 
 @item
-Unless already done, add @file{/your/prefix/bin} to the @code{PATH}
-variable of your default shell configuration file.  As an example, using
-bash, you would add the following line at the end of your .bashrc file
+To install Foliot, you must have write permissions to the default or
+$prefix dir and its subdirs, as well as to both Guile-Gnome site
+directory and Guile's site-ccache directory if --with-guile-site=yes was
+passed.
+@ifhtml
+@*@*
+@end ifhtml
+
+@item
+Unless already done, add @file{$prefix/bin} to the @code{PATH} variable
+of your default shell configuration file.  As an example, using bash,
+you would add the following line at the end of your .bashrc file
 [assuming --prefix=/opt]:
 
 @example
@@ -239,7 +260,6 @@ Like for any other GNU Tool Chain compatible software, you may install
 the documentation locally using @code{make install-html} [or @code{make
 install-pdf} ...]. Note that as it is, GNU Foliot's documentation still
 is a mock-up.
-
 @end enumerate
 
 
