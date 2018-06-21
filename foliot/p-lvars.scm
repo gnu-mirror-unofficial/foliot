@@ -27,13 +27,14 @@
 
 (define-module (foliot p-lvars)
   #:use-module (oop goops)
-  #:use-module (grip reexport)
-  #:use-module (grip dates)
+  #:use-module (grip module)
+  #:use-module (grip date)
   #:use-module (grip passwd)
   #:use-module (grip i18n)
   #:use-module (grip utils)
-  #:use-module (grip nbs)
-  #:use-module (grip tex-utils)
+  #:use-module (grip number)
+  #:use-module (grip latex)
+  #:use-module (foliot globals)
   #:use-module (foliot config)
   #:use-module (foliot p-common)
   #:use-module (foliot p-dialog)
@@ -48,11 +49,11 @@
 
 
 (eval-when (expand load eval)
-  (re-export-public-interface (grip dates)
+  (re-export-public-interface (grip date)
 			      (grip i18n)
 			      (grip utils))
   (textdomain "p-lvars")
-  (bindtextdomain "p-lvars" (storage-get 'pofdir)))
+  (bindtextdomain "p-lvars" (ref %foliot-store 'pofdir)))
 
 
 ;;;

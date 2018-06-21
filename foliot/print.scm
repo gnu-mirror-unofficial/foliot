@@ -29,7 +29,7 @@
   #:use-module (oop goops)
   #:use-module (gnome gobject)
   #:use-module (gnome gtk)
-  ;; #:use-module (grip reexport)
+  ;; #:use-module (grip module)
   #:use-module (grip gnome)
   #:use-module (foliot globals)
   #:use-module (foliot tl-widget)
@@ -99,7 +99,7 @@ dialog	;; in guile-gnome?
 ;;;
 
 (define tl-widget (make <foliot/tl-widget>))
-(define p-widget (fp/make-dialog (dialog tl-widget) (storage-get 'gladefile)))
+(define p-widget (fp/make-dialog (dialog tl-widget) (ref %foliot-store 'gladefile)))
 
 (dialog tl-widget)
 (dialog p-widget)
@@ -109,7 +109,7 @@ dialog	;; in guile-gnome?
 ;;; 2.
 ;;;
 
-(define p-widget (fp/make-dialog #f (storage-get 'gladefile)))
+(define p-widget (fp/make-dialog #f (ref %foliot-store 'gladefile)))
 
 (dialog p-widget)
 
@@ -119,7 +119,7 @@ dialog	;; in guile-gnome?
 ;;;
 
 (define tl-widget (make-tl-widget))
-(define p-widget (fp/make-dialog (dialog tl-widget) (storage-get 'gladefile)))
+(define p-widget (fp/make-dialog (dialog tl-widget) (ref %foliot-store 'gladefile)))
 
 (dialog p-widget)
 (dialog tl-widget)

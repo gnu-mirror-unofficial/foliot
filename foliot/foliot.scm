@@ -29,18 +29,16 @@
   :use-module (ice-9 format)
   :use-module (ice-9 receive)
   :use-module (oop goops)
-  :use-module (gnome gnome) ;; could [later] use the help system
   :use-module (gnome gobject)
   :use-module (gnome gtk)
   :use-module (gnome gtk gdk-event)
-  :use-module (gnome gnome-ui)
-  :use-module (grip reexport)
-  :use-module (grip push)
-  :use-module (grip do)
-  :use-module (grip dates)
+  :use-module (grip module)
+  :use-module (grip queue)
+  :use-module (grip iter)
+  :use-module (grip date)
   :use-module (grip i18n)
   :use-module (grip sqlite)
-  :use-module (grip nbs)
+  :use-module (grip number)
   :use-module (grip gnome)
   :use-module (foliot db)
   :use-module (foliot config)
@@ -76,11 +74,10 @@
 			      (gnome gobject)
 			      (gnome gtk)
 			      (gnome gtk gdk-event)
-			      (gnome gnome-ui)
-			      (grip dates)
+			      (grip date)
 			      (grip i18n)
 			      (grip sqlite)
-			      (grip nbs)
+			      (grip number)
 			      (grip gnome)
 			      (foliot db)
 			      (foliot config)
@@ -92,7 +89,7 @@
 			      (foliot import)
 			      (foliot print))
   (textdomain "foliot")
-  (bindtextdomain "foliot" (storage-get 'pofdir)))
+  (bindtextdomain "foliot" (ref %foliot-store 'pofdir)))
 
 
 ;;;
@@ -364,7 +361,7 @@
 		 (let ((model (tv-model tl-widget))
 		       (row (current-row tl-widget))
 		       (iter (current-iter tl-widget))
-		       (value (fp/round (get-value widget) 1)))
+		       (value (float-round (get-value widget) 1)))
 		   ;; (dimfi 'row row 'duration value)
 		   (fiter/set 'duration model iter (number->string value))
 		   ;; update-db
@@ -519,11 +516,15 @@
 
     (gtk2/set-sensitive `(,(reference-entry tl-widget)) #f)
     (show-all (dialog tl-widget))
-    (if (storage-get 'debug)
+    (if (ref %foliot-store 'debug)
 	(begin
-	  (set-flags (date-edit tl-widget) '(show-time))
-	  (set-flags (date-edit tl-widget) '())
-	  (set-time (date-edit tl-widget) 0))
+	  ;; these where in (gnome gnome)
+          ;; which has been deprecated (we were only using a gnome
+          ;; date-edit in debug mode ...
+          #;(set-flags (date-edit tl-widget) '(show-time))
+	  #;(set-flags (date-edit tl-widget) '())
+	  #;(set-time (date-edit tl-widget) 0)
+          'done)
 	(gtk2/hide `(,(date-edit tl-widget)))) ;; experimental stuff
     (gtk2/hide `(,(menubar tl-widget)
 		 ,(date-icon tl-widget)
@@ -608,7 +609,7 @@
 
 (define g2 (gnome-date-edit-new 0 #f #f))
 (get-flags g2)
-(set-flags g2 '(show-time))
+#;(set-flags g2 '(show-time))
 
 (let ((flags (get-flags gdedit))
       (g2 (gnome-date-edit-new 0 #f #f)))

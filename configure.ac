@@ -29,7 +29,10 @@ along with GNU Foliot.  If not, see <http://www.gnu.org/licenses/>.
 
 AC_PREREQ(2.69)
 
-AC_INIT([foliot], [0.9.7], [bug-foliot@gnu.org])
+AC_INIT(
+  [foliot],
+  [0.9.8],
+  [bug-foliot@gnu.org])
 
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
@@ -57,31 +60,57 @@ GUILE_PROGS([2.0.14])
 GUILE_SITE_DIR
 GUILE_SITE_CCACHE_DIR
 GUILE_MODULE_REQUIRED([gnome-2])
+f
+AC_ARG_WITH(
+  [guile-site],
+  [AS_HELP_STRING(
+     [--with-guile-site],
+     [install source modules using Guile-Gnome site dir and compiled files using Guile's site-ccache dir])],
+  [case "x$withval" in
+     xyes)
+     guile_site="yes";;
+     *)
+     guile_site="";;
+   esac],
+  [guile_site=""])
+
+AM_CONDITIONAL(
+  [USE_GUILE_SITE],
+  [test $guile_site = yes])
 
 GUILE_GNOME_PROGS([2.16.5])
 GUILE_GNOME_FLAGS
-GUILE_GNOME_INST_DIR
+GUILE_GNOME_SITE_DIR
 GUILE_GNOME_LIBS_PATH
 dnl guile-gnome is a set of wrappers, we need to check that the user
 dnl has wrapped the gnome libraries foliot needs.  strictly speaking,
 dnl the list below is 'too much' because some guile-gnome modules are
 dnl always part of guile-gnome, but hey, no arm and nice to see all
 dnl the checks.
-GUILE_GNOME_MODULE_REQUIRED([gnome gnome])
-GUILE_GNOME_MODULE_REQUIRED([gnome gobject])
 GUILE_GNOME_MODULE_REQUIRED([gnome glib])
+GUILE_GNOME_MODULE_REQUIRED([gnome gobject])
 GUILE_GNOME_MODULE_REQUIRED([gnome gtk])
 GUILE_GNOME_MODULE_REQUIRED([gnome gtk gdk-event])
-GUILE_GNOME_MODULE_REQUIRED([gnome gnome-ui])
 GUILE_GNOME_MODULE_REQUIRED([gnome glade])
 
 # Checks are in Grip_SQLite
 PKG_CHECK_MODULES(SQLite3, sqlite3 >= 3.7)
 PKG_CHECK_MODULES(libpcre, libpcre)
 
-PKG_CHECK_MODULES([Grip], [grip-1.0 >= 0.1.2])
-PKG_CHECK_MODULES([Grip_Gnome], [grip-gnome-1.0 >= 0.1.2])
-PKG_CHECK_MODULES([Grip_SQLite], [grip-sqlite-1.0 >= 0.1.2])
+PKG_CHECK_MODULES([Grip], [grip-1.0 >= 0.2.0])
+PKG_CHECK_MODULES([Grip_Gnome], [grip-gnome-1.0 >= 0.2.0])
+PKG_CHECK_MODULES([Grip_SQLite], [grip-sqlite-1.0 >= 0.2.0])
+
+###
+### Guile-Lib
+###
+
+PKG_CHECK_MODULES(
+  [GUILE_LIB],
+  [guile-lib-1.0 >= 0.2.5],
+  [HAVE_GUILE_LIB=yes],
+  [HAVE_GUILE_LIB=no])
+
 
 AC_CHECK_PROG(PDFLATEX, pdflatex, yes)
 if test -z "$PDFLATEX"; then
@@ -92,8 +121,6 @@ LATEX_DOCUMENT_CLASS_REQUIRED([extarticle])
 LATEX_PACKAGE_REQUIRED([inputenc])
 LATEX_PACKAGE_REQUIRED([fontenc])
 LATEX_PACKAGE_REQUIRED([lmodern])
-LATEX_PACKAGE_AVAILABLE([HAS_IWONA], [iwona])
-# LATEX_PACKAGE_REQUIRED([iwona])
 LATEX_PACKAGE_REQUIRED([pifont])
 LATEX_PACKAGE_REQUIRED([amsfonts])
 LATEX_PACKAGE_REQUIRED([amssymb])
@@ -117,8 +144,18 @@ LATEX_PACKAGE_REQUIRED([fancybox])
 LATEX_PACKAGE_REQUIRED([textcomp])
 LATEX_PACKAGE_REQUIRED([calc])
 LATEX_PACKAGE_REQUIRED([geometry])
+# LATEX_PACKAGE_AVAILABLE([HAS_IWONA], [iwona])
+LATEX_PACKAGE_REQUIRED([iwona])
 
-AC_CONFIG_FILES([pre-inst-env], [chmod +x pre-inst-env])
-AC_CONFIG_FILES([foliot/foliot], [chmod +x foliot/foliot])
-AC_CONFIG_FILES([Makefile doc/Makefile])
+AC_CONFIG_FILES(
+  [pre-inst-env],
+  [chmod +x pre-inst-env])
+AC_CONFIG_FILES(
+  [foliot/foliot],
+  [chmod +x foliot/foliot])
+AC_CONFIG_FILES([
+        Makefile
+        doc/Makefile
+        test-suite/Makefile
+])
 AC_OUTPUT

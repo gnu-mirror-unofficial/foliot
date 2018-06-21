@@ -29,9 +29,10 @@
   #:use-module (oop goops)
   #:use-module (gnome gobject)
   #:use-module (gnome gtk)
-  ;; #:use-module (grip reexport)
+  ;; #:use-module (grip module)
   #:use-module (grip gnome)
   #:use-module (grip i18n)
+  #:use-module (foliot globals)
   #:use-module (foliot db)
   #:use-module (foliot tl-widget)
   #:use-module (foliot config)
@@ -176,10 +177,10 @@ create/connect to another GNU Foliot database.
 #!
 
 (define tl-widget (make <foliot/tl-widget>
-		    #:glade-file (storage-get 'gladefile)))
+		    #:glade-file (ref %foliot-store 'gladefile)))
 (fc/select-gui tl-widget "/usr/alto/db" "sqlite.alto.db")
 
-(define c-widget (fc/make-dialog (dialog tl-widget) (storage-get 'gladefile)))
+(define c-widget (fc/make-dialog (dialog tl-widget) (ref %foliot-store 'gladefile)))
 (dialog tl-widget)
 (dialog c-widget)
 

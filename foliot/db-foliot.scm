@@ -29,15 +29,15 @@
   #:use-module (ice-9 format)
   #:use-module (ice-9 receive)
   #:use-module (oop goops)
-  #:use-module (grip reexport)
-  #:use-module (grip do)
-  #:use-module (grip dates)
+  #:use-module (grip module)
+  #:use-module (grip iter)
+  #:use-module (grip date)
   #:use-module (grip i18n)
   #:use-module (grip utils)
   #:use-module (grip passwd)
-  #:use-module (grip strings)
+  #:use-module (grip string)
   #:use-module (grip sqlite)
-  #:use-module (grip gnome colours)
+  #:use-module (grip gnome color)
   #:use-module (foliot globals)
   #:use-module (foliot db-con)
   #:use-module (foliot db-imported-db)
@@ -70,16 +70,16 @@
 
 (eval-when (expand load eval)
   (re-export-public-interface (grip sqlite)
-			      (grip dates)
+			      (grip date)
 			      (grip i18n)
 			      (grip utils)
 			      (grip passwd)
-			      (grip strings)
+			      (grip string)
 			      (foliot globals)
 			      (foliot db-con)
 			      (foliot db-imported-db))
   (textdomain "db-foliot")
-  (bindtextdomain "db-foliot" (storage-get 'pofdir)))
+  (bindtextdomain "db-foliot" (ref %foliot-store 'pofdir)))
 
 
 ;;;
@@ -104,6 +104,7 @@
    imported_id,
    imported_db"
 	    sep sep sep sep sep sep)))
+
 
 ;;;
 ;;; Attr pos, get, set
@@ -353,7 +354,7 @@
 (define (db-foliot/update db-tuple what value . displayed-value)
   (let* ((id (db-foliot/get db-tuple 'id))
 	 (sql-value (case what
-		      ((who for_whom what description) (str/prep-str-for-sql value))
+		      ((who for_whom what description) (string-escape-sql value))
 		      (else
 		       value)))
 	 (sql-str (case what
@@ -399,7 +400,7 @@
     (if value (1+ value) 0)))
 
 (define (db-foliot/get-next-id)
-  (let* ((delta (storage-get 'imported-ids-delta))
+  (let* ((delta (ref %foliot-store 'imported-ids-delta))
 	 (query (format #f "~?" (db-foliot/get-next-id-str) (list delta)))
 	 (tuple (car (sqlite/query (db-con) query)))
 	 (max-id (vector-ref tuple 0)))
@@ -478,14 +479,14 @@
 	 (iso-today (date/iso-date today))
 	 (date (date/iso-date (db-foliot/get tuple 'date_)))
 	 (username (sys/get 'uname))
-	 (who (str/prep-str-for-sql (db-foliot/get tuple 'who))))
+	 (who (string-escape-sql (db-foliot/get tuple 'who))))
     (db-foliot/add date
 		 who
-		 (str/prep-str-for-sql (db-foliot/get tuple 'for_whom))
-		 (str/prep-str-for-sql (db-foliot/get tuple 'what))
+		 (string-escape-sql (db-foliot/get tuple 'for_whom))
+		 (string-escape-sql (db-foliot/get tuple 'what))
 		 (db-foliot/get tuple 'duration)
 		 (db-foliot/get tuple 'to_be_charged)
-		 (str/prep-str-for-sql (db-foliot/get tuple 'description))
+		 (string-escape-sql (db-foliot/get tuple 'description))
 		 iso-today
 		 username
 		 iso-today
@@ -588,21 +589,21 @@
 
 (define (db-foliot/import-2 tuples idb-id)
   ;; sql transaction must be started by the caller
-  (let ((ids-delta (* (1+ idb-id) (storage-get 'imported-ids-delta))))
+  (let ((ids-delta (* (1+ idb-id) (ref %foliot-store 'imported-ids-delta))))
     (for-each (lambda (tuple)
 		(let ((imported-id (db-foliot/get tuple 'id)))
 		  (db-foliot/add-from-other-db (+ imported-id ids-delta)
 					     (db-foliot/get tuple 'date_)
-					     (str/prep-str-for-sql (db-foliot/get tuple 'who))
-					     (str/prep-str-for-sql (db-foliot/get tuple 'for_whom))
-					     (str/prep-str-for-sql (db-foliot/get tuple 'what))
+					     (string-escape-sql (db-foliot/get tuple 'who))
+					     (string-escape-sql (db-foliot/get tuple 'for_whom))
+					     (string-escape-sql (db-foliot/get tuple 'what))
 					     (db-foliot/get tuple 'duration)
 					     (db-foliot/get tuple 'to_be_charged)
-					     (str/prep-str-for-sql (db-foliot/get tuple 'description))
+					     (string-escape-sql (db-foliot/get tuple 'description))
 					     (db-foliot/get tuple 'created_the)
-					     (str/prep-str-for-sql (db-foliot/get tuple 'created_by))
+					     (string-escape-sql (db-foliot/get tuple 'created_by))
 					     (db-foliot/get tuple 'modified_the)
-					     (str/prep-str-for-sql (db-foliot/get tuple 'modified_by))
+					     (string-escape-sql (db-foliot/get tuple 'modified_by))
 					     imported-id
 					     idb-id)))
 		tuples)))

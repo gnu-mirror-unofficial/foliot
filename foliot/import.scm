@@ -27,8 +27,8 @@
 
 (define-module (foliot import)
   #:use-module (oop goops)
-  #:use-module (grip reexport)
-  #:use-module (grip do)
+  #:use-module (grip module)
+  #:use-module (grip iter)
   #:use-module (grip i18n)
   #:use-module (grip gnome)
   #:use-module (foliot config)
@@ -111,7 +111,7 @@
 					   (_ "Warning!")
 					   (_ "Colour set:")
 					   (format #f "~?" *no-available-colour-set-msg*
-						   (list (colour-set-name idb-cs) idb-cs))
+						   (list (color-set-name idb-cs) idb-cs))
 					   (lambda () 'nothing)
 					   'dialog-warning))
 		      (set! (gui-callback? tl-widget) #f)

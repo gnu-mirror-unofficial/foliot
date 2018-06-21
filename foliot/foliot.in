@@ -32,8 +32,9 @@ exec @GUILE@ --no-auto-compile -e main -s "$0" "$@"
 ;; want to make sure (setlocale LC_ALL "") 'pass' first.  It may fail,
 ;; if the user $LANG is set to uninstalled locale.  In this case, the
 ;; user is warned, as we catch the exception, and then we start to look
-;; to other possibilities, first looking for utf-8 available locales and
-;; in last ressort if no utf-8 locale is available, it is set to "C".
+;; for other possibilities, first looking for utf-8 available locales
+;; and in last ressort if no utf-8 locale is available, it is set to
+;; "C".
 
 ;;; Code:
 
@@ -48,6 +49,10 @@ exec @GUILE@ --no-auto-compile -e main -s "$0" "$@"
 			;; to %load-path
 	     (foliot globals))
 
+
+;; it is necessary to globally set duplicate binding handlers, so that
+;; both the foliot script - and the spawned server when -d or --debug is
+;; passed to the script - correctly merge all generics.
 
 (eval-when (expand load eval)
   (use-modules (oop goops))
@@ -128,7 +133,7 @@ details.")
   (displayln %debug-help-3 port))
 
 (define (set-locale msg-port)
-  (let ((locale (storage-get 'lang)))
+  (let ((locale (getenv "LANG")))
     (catch #t
       (lambda () (setlocale LC_ALL "")) ;; gettext will not work otherwise
       (lambda (key . parameters)
@@ -141,13 +146,13 @@ details.")
 	  (set! locale fallback)
 	  (setlocale LC_ALL fallback))
 	#f))
-    (storage-set 'locale locale)
+    (set-! %foliot-store 'locale locale)
     locale))
 
 
 (eval-when (expand load eval)
   (textdomain "main")
-  (bindtextdomain "main" (storage-get 'pofdir))
+  (bindtextdomain "main" (ref %foliot-store 'pofdir))
   ;; the following must be done before (a) writting to the port and (b)
   ;; loading any gnome modules.
   (let ((port (current-output-port)))
@@ -160,10 +165,8 @@ details.")
 ;;;
 
 (use-modules (gnome-2)
-	     (gnome gnome)
-	     (gnome gnome-ui) ;; <- uses $LANG
-	     (gnome gtk)
 	     (gnome glib)
+	     (gnome gtk)
 	     (grip server)
 	     (grip config)
 	     (foliot config)
@@ -188,11 +191,11 @@ details.")
 	  (help? (help port))
 	  (else
 	   (welcome port)
-	   (storage-set 'debug debug?)
-	   (gtk-rc-parse (storage-get 'gtkrcfile))
+	   (set-! %foliot-store 'debug debug?)
+	   (gtk-rc-parse (ref %foliot-store 'gtkrcfile))
 	   (load-user-init)
-	   (gnome-program-init "GNU Foliot" %version)
-	   (gnome-authentication-manager-init)
+	   #;(gnome-program-init "GNU Foliot" %version)
+	   #;(gnome-authentication-manager-init)
 	   ;; February the 9th, Foliot is now part of GNU and becomes GNU Foliot.
 	   ;; Before, it was named Kisê, with kise.conf as its config file.  We
 	   ;; need to check and if there is a file ~/config/kise.conf, rename it
@@ -202,9 +205,10 @@ details.")
 			  (get-config-filename "foliot"))
 	     (fcfg/get 'reload))
 	   (set! *foliot*
-		 (foliot/animate-ui uname (storage-get 'gladefile) %version debug?))
+		 (foliot/animate-ui uname
+                                    (ref %foliot-store 'gladefile) %version debug?))
 	   (when debug?
 	     (receive (server-port thread)
-		 (spawn-server-any-port #:start 1968)
+		 (spawn-server-any-port)
 	       (debug-help server-port port)))
 	   (g-main-loop-run (g-main-loop-new))))))

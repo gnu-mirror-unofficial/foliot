@@ -8,11 +8,17 @@
 @set MANUAL-REVISION 1
 
 @set UGUILE http://www.gnu.org/software/guile
+
+@set UGUILE-LIB http://www.nongnu.org/guile-lib
+
 @set UGUILE-GNOME http://www.gnu.org/software/guile-gnome
 @set USQLITE http://www.sqlite.org
 @set USQLITE3-PCRE https://github.com/oojah/sqlite3-pcre
+
 @set ULATEX http://www.latex-project.org
+@set UTEXLIVE https://tug.org/texlive/
 @set UIWONA http://www.tug.dk/FontCatalogue/iwona/
+
 @set USCHEME http://schemers.org
 
 @set UFOLIOT http://www.gnu.org/software/foliot/

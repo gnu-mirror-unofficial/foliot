@@ -33,11 +33,12 @@
   #:use-module (gnome glade)
   #:use-module (gnome gtk)
   #:use-module (gnome gtk gdk-event)
-  #:use-module (grip g-export)
-  #:use-module (grip do)
+  #:use-module (grip module)
+  #:use-module (grip iter)
   #:use-module (grip i18n)
   #:use-module (grip utils)
   #:use-module (grip gnome)
+  #:use-module (foliot globals)
   #:use-module (foliot colours)
   #:use-module (foliot db)
 
@@ -70,7 +71,7 @@
 
 (eval-when (expand load eval)
   (textdomain "i-dialog")
-  (bindtextdomain "i-dialog" (storage-get 'pofdir)))
+  (bindtextdomain "i-dialog" (ref %foliot-store 'pofdir)))
 
 
 (define *foliot-i-dialog-offset*
@@ -156,8 +157,8 @@
 	    (get-selection treeview))))
 
 (define (fi/add-columns fi-widget treeview)
-  (let* ((dpi-ratio (storage-get 'Xft.dpi.ratio))
-	 (apply-ratio? (storage-get 'apply-dpi-ratio?))
+  (let* ((dpi-ratio (ref %xft-store 'scale-factor))
+         (apply-ratio? (ref %xft-store 'apply-scale-factor?))
 	 (model (get-model treeview))
 	 ;; IMPORTED ROW COLOUR
 	 (renderer0 (make <gtk-cell-renderer-text>))
@@ -271,7 +272,7 @@
 			(fiiter/set 'by model iter (db-idb/get idb-tuple 'imported_by))
 			(fiiter/set 'id model iter (number->string (db-idb/get idb-tuple 'id)))
 			(fiiter/set 'filename model iter filename)
-			(fiiter/set 'ibg model iter (colour-set-bg (db-idb/get idb-tuple 'colour_set)))))
+			(fiiter/set 'ibg model iter (color-set-bg (db-idb/get idb-tuple 'colour_set)))))
 	      idb-tuples)))))
 
 

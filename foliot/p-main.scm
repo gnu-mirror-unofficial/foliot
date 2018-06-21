@@ -29,12 +29,13 @@
   #:use-module (oop goops)
   #:use-module (gnome gobject)
   #:use-module (gnome gtk)
-  #:use-module (grip reexport)
+  #:use-module (grip module)
   #:use-module (grip passwd)
-  #:use-module (grip dates)
+  #:use-module (grip date)
   #:use-module (grip i18n)
   #:use-module (grip utils)
   #:use-module (grip gnome filechooser)
+  #:use-module (foliot globals)
   #:use-module (foliot p-dialog)
   #:use-module (foliot p-common)
   #:use-module (foliot p-lvars)
@@ -52,7 +53,7 @@
 
 (eval-when (expand load eval)
   (textdomain "p-main")
-  (bindtextdomain "p-main" (storage-get 'pofdir)))
+  (bindtextdomain "p-main" (ref %foliot-store 'pofdir)))
 
 
 (define (fp/print-1 fp/widget tl-widget pdf-filename)

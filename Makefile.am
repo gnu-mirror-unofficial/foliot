@@ -23,8 +23,8 @@
 
 include $(top_srcdir)/am/guile.mk
 
-moddir=$(ggdir)
-godir=$(gccache)
+moddir=$(sitedir)
+godir=$(siteccachedir)
 
 SOURCES = \
 	foliot/config.scm		\
@@ -85,6 +85,7 @@ ETAGS_ARGS = \
 	$(SOURCES)
 
 SUBDIRS = \
+	test-suite	\
 	doc
 
 distclean-local:

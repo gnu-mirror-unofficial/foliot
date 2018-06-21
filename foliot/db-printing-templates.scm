@@ -29,13 +29,13 @@
   #:use-module (ice-9 format)
   ;; #:use-module (ice-9 receive)
   ;; #:use-module (oop goops)
-  #:use-module (grip reexport)
-  #:use-module (grip do)
+  #:use-module (grip module)
+  #:use-module (grip iter)
   #:use-module (grip sqlite)
-  #:use-module (grip dates)
+  #:use-module (grip date)
   #:use-module (grip i18n)
   #:use-module (grip utils)
-  #:use-module (grip strings)
+  #:use-module (grip string)
   #:use-module (foliot globals)
   #:use-module (foliot db-con)
 
@@ -60,14 +60,14 @@
 
 (eval-when (expand load eval)
   (re-export-public-interface (grip sqlite)
-			      (grip dates)
+			      (grip date)
 			      (grip i18n)
 			      (grip utils)
-			      (grip strings)
+			      (grip string)
 			      (foliot globals)
 			      (foliot db-con))
   (textdomain "db-printing-templates")
-  (bindtextdomain "db-printing-templates" (storage-get 'pofdir)))
+  (bindtextdomain "db-printing-templates" (ref %foliot-store 'pofdir)))
 
 
 ;;;
@@ -167,7 +167,7 @@
 (define (db-pt/update db-tuple what value . displayed-value)
   (let* ((id (db-pt/get db-tuple 'id))
 	 (sql-value (case what
-		      ((name) (str/prep-str-for-sql value))
+		      ((name) (string-escape-sql value))
 		      (else
 		       value)))
 	 (cmd (format #f "~?" (db-pt/set-str) (list what sql-value id))))
@@ -215,7 +215,7 @@
 (define (db-pt/add name items mode group-and-sort)
   (let* ((next-id (db-pt/get-next-id))
 	 (insert (format #f "~?" (db-pt/add-str)
-			 (list next-id (str/prep-str-for-sql name) items mode group-and-sort))))
+			 (list next-id (string-escape-sql name) items mode group-and-sort))))
     ;; (format #t "~S~%" insert)
     (sqlite/command (db-con) insert)
     next-id))
@@ -263,7 +263,7 @@
   (if (null? tuple)
       (set! tuple (car (db-pt/select-one reference)))
       (set! tuple (car tuple)))
-  (db-pt/add (string-append (str/prep-str-for-sql (db-pt/get tuple 'name)) "1")
+  (db-pt/add (string-append (string-escape-sql (db-pt/get tuple 'name)) "1")
 	     (db-pt/get tuple 'items)
 	     (db-pt/get tuple 'mode)
 	     (db-pt/get tuple 'group_and_sort)))

@@ -29,13 +29,13 @@
   #:use-module (ice-9 format)
   #:use-module (ice-9 threads)
   #:use-module (srfi srfi-1)
-  #:use-module (grip reexport)
-  #:use-module (grip do)
+  #:use-module (grip module)
+  #:use-module (grip iter)
   #:use-module (grip sqlite)
   #:use-module (grip i18n)
   #:use-module (grip utils)
-  #:use-module (grip nbs)
-  #:use-module (grip strings)
+  #:use-module (grip number)
+  #:use-module (grip string)
   #:use-module (foliot globals)
   #:use-module (foliot db-con)
   #:use-module (foliot db-foliot)
@@ -56,15 +56,15 @@
 
 
 (eval-when (expand load eval)
-  (re-export-public-interface (grip do)
+  (re-export-public-interface (grip iter)
 			      (grip sqlite)
 			      (grip i18n)
 			      (grip utils)
-			      (grip strings)
+			      (grip string)
 			      (foliot globals)
 			      (foliot db-con))
   (textdomain "db-shinning")
-  (bindtextdomain "db-shinning" (storage-get 'pofdir)))
+  (bindtextdomain "db-shinning" (ref %foliot-store 'pofdir)))
 
 
 ;;;
@@ -228,7 +228,7 @@
     (let ((tuples (db-foliot/select-all)))
       (par-map (lambda (tuple)
 		 (db-foliot/update tuple 'duration
-				 (fp/round (db-foliot/get tuple 'duration) 1)))
+				 (float-round (db-foliot/get tuple 'duration) 1)))
 	  tuples))
     (sqlite/commit db)
     (db-shi/update-flag 'floats-1dec-only flags tuple db)))

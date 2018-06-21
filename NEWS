@@ -2,7 +2,104 @@
 
 #+TITLE: GNU Foliot NEWS
 
+#+BEGIN_COMMENT
+
+Copyright (C) 2015 - 2018
+Free Software Foundation, Inc.
+
+This file is part of GNU Foliot.
+
+Copying and distribution of this file, with or without modification, are
+permitted in any medium without royalty provided the copyright notice
+and this notice are preserved.  This file is offered as-is, without any
+warranty.
+
+#+END_COMMENT
+
+
+                Foliot - History of user-visible changes
+                ========================================
+
+          Please send Foliot bug reports to one of the following
+                               addresses:
+
+                           bug-foliot@gnu.org
+
+
 * Latest News
+
+** June 2018
+
+GNU Foliot version 0.9.8 is released.  This is a maintenance release,
+which brings GNU Foliot up-to-date with Grip 0.2.0, upon which it
+depends.  In addition, the default installation locations changed, and
+there is a new configure option - see below for a complete description
+of these changes.
+
+*** Changes since 0.9.7
+
+Here is a summary of the changes since version 0.9.7. See GNU Foliot's
+[[http://git.savannah.gnu.org/cgit/foliot.git][git summary]] and [[http://git.savannah.gnu.org/cgit/foliot.git/log/][git log]] for a complete description.
+
+**** Dependencies
+
+Grip 	      >= 0.2.0
+Grip-Gnome
+Grip-SQLite
+
+Iwona
+
+ This is the font used to make the GNU Foliot reports. It is now a hard
+ depdency.  It was a soft dependency, but that was a mistake, since as
+ it is, the making of the reports would fail unless the Iwona font is
+ available.
+
+Guile-Lib   >= 0.2.5
+
+  This is a soft dependency: Guile-Lib is required to run the
+  test-suite, which is recommended but not mandatory.
+
+**** Installation location changes
+
+The default and --prefix installation locations for source modules and
+compiled files has been changed, and, in the absence of the new
+configure option described below, are now:
+
+  $(datadir)/foliot
+  $(libdir)/foliot/guile/$(GUILE_EFFECTIVE_VERSION)/site-ccache
+
+In the above, $(datadir) is substituted to the default /usr/local/share
+or /your/prefix/share and $(libdir) is substituted to /usr/local/lib or
+/your/prefix/lib, when/if --prefix was passed.
+
+$(GUILE_EFFECTIVE_VERSION) is substituted to the stable version number
+with which Foliot is being compile, for example, 2.2
+
+This change makes GNU Foliot compatible with the GNU Coding Standards,
+but it also implies that, unless you use the new configure option
+describe below, you will have to augment both Guile's variables
+%load-path and %load-compiled-path, respectively, with the two
+(substituted) paths described above, so that Guile finds Foliot's
+installed source modules and compiled files (see Foliot's installation
+'Notes' for more on this).
+
+**** New configure option
+
+The configure option --with-guile-site has been added, used to
+explicitly ask Foliot's source modules to be installed in the
+Guile-Gnome site directory, and the compiled files using Guile's
+site-ccache directories respectively (see Foliot's installation 'Notes'
+for more on this).
+
+It will only be honored if (and only if) it is passed as:
+
+  --with-guile-site=yes
+
+  [ in this case, there is obviously no need to augment Guile's
+  [ variables %load-path and %load-compiled-path
+
+
+* Older News
 
 ** March 2018
 
@@ -42,8 +139,6 @@ Core
       defined names (and precisely should only be used for getters,
       setters, accessors and methods).
 
-
-* Older News
 
 ** April the 14th, 2016
 

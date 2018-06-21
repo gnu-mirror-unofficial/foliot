@@ -28,8 +28,7 @@
 (define-module (foliot p-common)
   #:use-module (ice-9 format)
   #:use-module (oop goops)
-  #:use-module (grip reexport)
-  #:use-module (grip g-export)
+  #:use-module (grip module)
   #:use-module (grip passwd)
   #:use-module (foliot globals)
 
@@ -70,7 +69,7 @@
 			      (grip passwd)
 			      (foliot globals))
   (textdomain "p-common")
-  (bindtextdomain "p-common" (storage-get 'pofdir)))
+  (bindtextdomain "p-common" (ref %foliot-store 'pofdir)))
 
 
 ;;;
@@ -139,7 +138,7 @@
        (format #f "~A/~A.ps" (dirname pdfname) (basename pdfname ".pdf"))))
 
 (define (fp/common-filenames reference pdfname)
-  (let* ((p-dir (storage-get 'printdir))
+  (let* ((p-dir (ref %foliot-store 'printdir))
 	 ;; (reference (gensym))
 	 (uname (sys/get 'uname))
 

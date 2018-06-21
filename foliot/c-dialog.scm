@@ -31,7 +31,7 @@
   #:use-module (gnome gobject)
   #:use-module (gnome glade)
   #:use-module (gnome gtk)
-  #:use-module (grip g-export)
+  #:use-module (grip module)
   #:use-module (grip i18n)
   #:use-module (grip gnome)
   #:use-module (foliot colours) ;; <- later use storage-set/get and delete this file

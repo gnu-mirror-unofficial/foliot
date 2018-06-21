@@ -33,11 +33,12 @@
   #:use-module (gnome glade)
   #:use-module (gnome gtk)
   #:use-module (gnome gtk gdk-event)
-  #:use-module (grip g-export)
-  #:use-module (grip do)
+  #:use-module (grip module)
+  #:use-module (grip iter)
   #:use-module (grip i18n)
   #:use-module (grip utils)
   #:use-module (grip gnome)
+  #:use-module (foliot globals)
   #:use-module (foliot colours)
   #:use-module (foliot db-foliot)
   #:use-module (foliot db-printing-templates)
@@ -66,7 +67,7 @@
 
 (eval-when (expand load eval)
   (textdomain "p-dialog")
-  (bindtextdomain "p-dialog" (storage-get 'pofdir)))
+  (bindtextdomain "p-dialog" (ref %foliot-store 'pofdir)))
 
 
 (define *foliot-p-dialog-offsets*
@@ -945,7 +946,7 @@
 
 (use-modules (foliot tl-widget))
 (use-modules (foliot p-dialog))
-(fp/make-dialog #f (string-append (storage-get 'glade-path) "/foliot.glade"))
+(fp/make-dialog #f (string-append (ref %foliot-store 'glade-path) "/foliot.glade"))
 (define fp-widget $1)
 (dialog fp-widget)
 
@@ -956,7 +957,7 @@
 
 (use-modules (foliot p-dialog))
 (use-modules (foliot tl-widget))
-(fp/make-dialog #f (string-append (storage-get 'glade-path) "/foliot.glade"))
+(fp/make-dialog #f (string-append (ref %foliot-store 'glade-path) "/foliot.glade"))
 (define fp-widget $1)
 (dialog fp-widget)
 

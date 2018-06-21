@@ -28,14 +28,15 @@
 (define-module (foliot db-imported-db)
   #:use-module (ice-9 format)
   #:use-module (srfi srfi-1)
-  #:use-module (grip reexport)
-  #:use-module (grip do)
+  #:use-module (oop goops)
+  #:use-module (grip module)
+  #:use-module (grip iter)
   #:use-module (grip sqlite)
-  #:use-module (grip dates)
+  #:use-module (grip date)
   #:use-module (grip i18n)
   #:use-module (grip utils)
-  #:use-module (grip strings)
-  #:use-module (grip gnome colours)
+  #:use-module (grip string)
+  #:use-module (grip gnome color)
   #:use-module (foliot globals)
   #:use-module (foliot db-con)
 
@@ -59,14 +60,14 @@
 
 (eval-when (expand load eval)
   (re-export-public-interface (grip sqlite)
-			      (grip dates)
+			      (grip date)
 			      (grip i18n)
 			      (grip utils)
-			      (grip strings)
+			      (grip string)
 			      (foliot globals)
 			      (foliot db-con))
   (textdomain "db-imported-db")
-  (bindtextdomain "db-imported-db" (storage-get 'pofdir)))
+  (bindtextdomain "db-imported-db" (ref %foliot-store 'pofdir)))
 
 
 ;;;
@@ -208,7 +209,7 @@
 (define (db-idb/update db-tuple what value . displayed-value)
   (let* ((id (db-idb/get db-tuple 'id))
 	 (sql-value (case what
-		      ((filename) (str/prep-str-for-sql value))
+		      ((filename) (string-escape-sql value))
 		      (else
 		       value)))
 	 (sql-str (case what
@@ -295,15 +296,15 @@
   (filter-map (lambda (tuple) (db-idb/get tuple 'colour_set)) (db-idb/select-all)))
 
 (define (db-idb/get-unused-colour-set-ids)
-  (lset-difference = (colour-set-ids) (db-idb/get-used-colour-set-ids)))
+  (lset-difference = (color-set-ids) (db-idb/get-used-colour-set-ids)))
 
 (define (db-idb/get-colour-alist)
   (let ((alist (list)))
     (for-each (lambda (tuple)
 		(let* ((id (db-idb/get tuple 'id))
 		       (ics (db-idb/get tuple 'colour_set))
-		       (ibg (colour-set-bg ics))
-		       (ifg (colour-set-fg ics)))
+		       (ibg (color-set-bg ics))
+		       (ifg (color-set-fg ics)))
 		  (set! alist (assoc-set! alist id (cons ibg ifg)))))
 	(db-idb/select-all))
     alist))

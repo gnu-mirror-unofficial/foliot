@@ -30,26 +30,23 @@
   #:use-module (ice-9 format)
   #:use-module (ice-9 receive)
   #:use-module (oop goops)
-  #:use-module (gnome gnome) ;; could use the system help
   #:use-module (gnome gobject)
   #:use-module (gnome gtk)
   #:use-module (gnome gtk gdk-event)
   #:use-module (gnome glade)
-  #:use-module (gnome gnome-ui)
-  #:use-module (grip reexport)
-  #:use-module (grip g-export)
-  #:use-module (grip push)
-  #:use-module (grip do)
-  #:use-module (grip dates)
+  #:use-module (grip module)
+  #:use-module (grip queue)
+  #:use-module (grip iter)
+  #:use-module (grip date)
   #:use-module (grip i18n)
   #:use-module (grip utils)
-  #:use-module (grip xft)
-  #:use-module (grip strings)
-  #:use-module (grip nbs)
+  #:use-module (grip string)
+  #:use-module (grip number)
   #:use-module (grip gnome)
   #:use-module (grip sqlite)
-  #:use-module (grip db filters)
+  #:use-module (grip db filter)
   #:use-module (foliot config)
+  #:use-module (foliot globals)
   #:use-module (foliot colours)
   #:use-module (foliot db)
   #:use-module (foliot iter)
@@ -214,7 +211,7 @@
 			      (gnome glade)
 			      (foliot config))
   (textdomain "tl-widget")
-  (bindtextdomain "tl-widget" (storage-get 'pofdir)))
+  (bindtextdomain "tl-widget" (ref %foliot-store 'pofdir)))
 
 
 ;;;
@@ -395,8 +392,8 @@
     (values model (get-selection treeview))))
 
 (define (ftlw/add-columns tl-widget treeview)
-  (let* ((dpi-ratio (storage-get 'Xft.dpi.ratio))
-	 (apply-ratio? (storage-get 'apply-dpi-ratio?))
+  (let* ((dpi-ratio (ref %xft-store 'scale-factor))
+         (apply-ratio? (ref %xft-store 'apply-scale-factor?))
 	 (model (get-model treeview))
 	 ;; IMPORTED ROW COLOUR
 	 (renderer0 (make <gtk-cell-renderer-text>))
@@ -550,10 +547,10 @@
 
 (define (ftlw/build-filter-conditions-sepxr tl-widget)
   (let* ((date-f (gtk2/get-text (filter-date-entry tl-widget) 'trim))
-	 (who-f (str/prep-str-for-sql (gtk2/get-text (filter-who-entry tl-widget) 'trim)))
-	 (for-whom-f (str/prep-str-for-sql (gtk2/get-text (filter-for-whom-entry tl-widget) 'trim)))
-	 (what-f (str/prep-str-for-sql (gtk2/get-text (filter-what-entry tl-widget) 'trim)))
-	 (description-f (str/prep-str-for-sql (gtk2/get-text (filter-description-entry tl-widget) 'trim)))
+	 (who-f (string-escape-sql (gtk2/get-text (filter-who-entry tl-widget) 'trim)))
+	 (for-whom-f (string-escape-sql (gtk2/get-text (filter-for-whom-entry tl-widget) 'trim)))
+	 (what-f (string-escape-sql (gtk2/get-text (filter-what-entry tl-widget) 'trim)))
+	 (description-f (string-escape-sql (gtk2/get-text (filter-description-entry tl-widget) 'trim)))
 	 (to-be-charged-f (ftlw/filter-to-be-charged? tl-widget)))
     (and (or (not (string-null? date-f))
 	     (not (string-null? who-f))
@@ -660,13 +657,13 @@
 	(list (make-vector 1 #f)))))
 
 (define (ftlw/get-hour-hours nb)
-  (if (or (fp/<? nb 1) (fp/=? nb 1)) (_ "hour") (_ "hours")))
+  (if (or (float<? nb 1.0) (float=? nb 1.0)) (_ "hour") (_ "hours")))
 
 (define (ftlw/get-hr-hrs nb)
-  (if (or (fp/<? nb 1) (fp/=? nb 1)) (_ "hr") (_ "hrs")))
+  (if (or (float<? nb 1.0) (float=? nb 1.0)) (_ "hr") (_ "hrs")))
 
 (define (ftlw/get-day-days nb)
-  (if (or (fp/<? nb 1) (fp/=? nb 1)) (_ "day") (_ "days")))
+  (if (or (float<? nb 1.0) (float=? nb 1.0)) (_ "day") (_ "days")))
 
 (define (ftlw/get-totals tl-widget)
   ;; tresult, returned by guile-sqlite, is a list of 1 vector
@@ -674,12 +671,12 @@
   ;; subset upon which the query is performed is empty].
   (let* ((tresult (db-foliot/select-some (active-filter tl-widget) (id-set tl-widget) "sum(duration)"))
 	 (tduration (vector-ref (car tresult) 0))
-	 (ttime (and tduration (fp/round tduration 1)))
-	 (tdays (and ttime (fp/round (/ ttime 8) 1)))
+	 (ttime (and tduration (float-round tduration 1)))
+	 (tdays (and ttime (float-round (/ ttime 8) 1)))
 	 (cresult (ftlw/select-ctime tl-widget))
 	 (cduration (vector-ref (car cresult) 0))
-	 (ctime (and cduration (fp/round cduration 1)))
-	 (cdays (and ctime (fp/round (/ ctime 8) 1))))
+	 (ctime (and cduration (float-round cduration 1)))
+	 (cdays (and ctime (float-round (/ ctime 8) 1))))
     (values (if ttime ttime 0.0) (if tdays tdays 0.0)
 	    (if ctime ctime 0.0) (if cdays cdays 0.0))))
 
@@ -950,7 +947,7 @@
 	(,whats ,what-combo what))))
 
 (define (ftlw/trace-combo-callback tl-widget combo entry db-fname in-store? signal)
-  (when (storage-get 'debug)
+  (when (ref %foliot-store 'debug)
     (let* ((row (current-row tl-widget))
 	   (db-tuple (ftlw/get-tuple tl-widget row))
 	   (id (db-foliot/get db-tuple 'id)))
@@ -1075,8 +1072,8 @@
 	(db-tuples tl-widget))))
 
 (define (ftlw/apply-xft-dpi-ratio tl-widget)
-  (when (storage-get 'apply-dpi-ratio?)
-    (let* ((dpi-ratio (storage-get 'Xft.dpi.ratio))
+  (when (ref %xft-store 'apply-scale-factor?)
+    (let* ((dpi-ratio (ref %xft-store 'scale-factor))
 	   (widget-size-dates (inexact->exact (round (* dpi-ratio (get (date-entry tl-widget) 'width-request)))))
 	   (widget-size-whos (inexact->exact (round (* dpi-ratio (get (who-combo tl-widget) 'width-request))))))
       (set (reference-entry tl-widget) 'width-request widget-size-dates)
@@ -1095,10 +1092,10 @@
       (set (dialog tl-widget) 'height-request (inexact->exact (round (* .9 (get (dialog tl-widget) 'height-request)))))
       (set (sw tl-widget) 'height-request (inexact->exact (round (* .9 (get (sw tl-widget) 'height-request)))))
       #;(format #t "
-  reference: ~S
-       date: ~S
-        who: ~S
-filter date: ~S~%"
+      reference: ~S
+      date: ~S
+      who: ~S
+      filter date: ~S~%"
 	      (get (reference-entry tl-widget) 'width-request)
 	      (get (date-entry tl-widget) 'width-request)
 	      (get (who-combo tl-widget) 'width-request)
@@ -1451,10 +1448,10 @@ filter date: ~S~%"
 	(image (filter-icon tl-widget)))
     (case mode
       ((on)
-       (set-from-file image (string-append (storage-get 'iconsdir) "/pie-partial-colour.svg"))
+       (set-from-file image (string-append (ref %foliot-store 'iconsdir) "/pie-partial-colour.svg"))
        (set-tip t-tip image (_ "ON: you are working on a subset of your database.")))
       ((off)
-       (set-from-file image (string-append (storage-get 'iconsdir) "/pie-full-grey.svg"))
+       (set-from-file image (string-append (ref %foliot-store 'iconsdir) "/pie-full-grey.svg"))
        (set-tip t-tip image (_ "OFF: you are working on the entire database."))))))
 
 (define (ftlw/filter-apply tl-widget . force?)
@@ -1476,7 +1473,10 @@ filter date: ~S~%"
 	      (set! (id-set tl-widget) #f)
 	      (let* ((new-tuple-set (db-foliot/select-some filter? #f))
 		     (new-pos (ftlw/filter-get-row-new-pos-if-any tl-widget new-tuple-set)))
-		(when (storage-get 'debug) (ftlw/-display-filter-apply-infos filter? (length new-tuple-set) new-pos))
+		(when (ref %foliot-store 'debug)
+                  (ftlw/-display-filter-apply-infos filter?
+                                                    (length new-tuple-set)
+                                                    new-pos))
 		(set! (db-tuples tl-widget) new-tuple-set)
 		(ftlw/fill-tv tl-widget)
 		(ftlw/update-totals-status-bars tl-widget)
