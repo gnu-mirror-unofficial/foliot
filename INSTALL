@@ -49,15 +49,15 @@ GNU Foliot needs the following software to run:
 
 ** Quickstart
 
-The latest release is foliot-0.9.7.tar.gz - other releases are
+The latest release is foliot-0.9.8.tar.gz - other releases are
 available here: http://ftp.gnu.org/gnu/foliot/
 
 Assuming you have satisfied the dependencies, open a terminal and
 proceed with the following steps:
 
 	cd <download-path>
-	tar zxf foliot-0.9.7.tar.gz
-	cd foliot-0.9.7
+	tar zxf foliot-0.9.8.tar.gz
+	cd foliot-0.9.8
 	./configure [--prefix=/your/prefix] [--with-guile-site=yes]
 	make
 	make install
