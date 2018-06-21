@@ -31,7 +31,7 @@ AC_PREREQ(2.69)
 
 AC_INIT(
   [foliot],
-  [0.9.7],
+  [0.9.8],
   [bug-foliot@gnu.org])
 
 AC_CONFIG_AUX_DIR([build-aux])
@@ -60,7 +60,7 @@ GUILE_PROGS([2.0.14])
 GUILE_SITE_DIR
 GUILE_SITE_CCACHE_DIR
 GUILE_MODULE_REQUIRED([gnome-2])
-
+f
 AC_ARG_WITH(
   [guile-site],
   [AS_HELP_STRING(
